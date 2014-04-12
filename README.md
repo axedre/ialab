@@ -1,4 +1,4 @@
-IAlab
+IALab
 =====
 
 Progetti di Intelligenza Artificiale, a.a. 2012/13:
