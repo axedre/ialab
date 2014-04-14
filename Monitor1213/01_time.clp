@@ -1,5 +1,8 @@
 (defmodule TIME (import AGENT ?ALL) (export ?ALL))
 
+
+;; commento del cazzo
+
 (defrule time-clean1
 		(declare (salience 150))
 ?f <-	(last-direction)
