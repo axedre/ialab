@@ -182,95 +182,50 @@
     (focus INIT_PUNTEGGI)
 )
 
-(defrule control-time
-		(not (hurry))
-       (status (step ?s))
-       (not (time_checked ?s))
+(defrule control-punteggi
+	(status (step ?s))
+	(not (punteggi_checked ?s))
+    =>
+	(focus PUNTEGGI)
+)
+
+(defrule control-astar
+        (status (step ?s))
+        (perc-vision (step ?s) (pos-r ?r) (pos-c ?c))
+	(punteggi_checked ?s)
+        (not (astar_checked ?s))        
+    =>        
+        (focus ASTAR)
+)
+
+(defrule control-time		
+	(status (step ?s))
+	(punteggi_checked ?s)
+	(astar_checked ?s)
+	(not (time_checked ?s))
+	(not (hurry))
    =>
        (focus TIME)
 )
 
-(defrule control-inform
-		(not (hurry))
-        (status (step ?s))
-        (not (inform_checked ?s))
-        ;(time_checked ?s)
-    =>
-        (focus INFORM)
-)
-
-(defrule control-punteggi
-		(not (hurry))
-        (status (step ?s))
-        ;(perc-vision (step ?s))
-        (not (punteggi_checked ?s))
-        (inform_checked ?s)
-    =>
-        (focus PUNTEGGI)
-)
-
-(defrule control-astar
-		(not (hurry))
-        (status (step ?s))
-        (perc-vision (step ?s) (pos-r ?r) (pos-c ?c))
-;?e <-	(exit-found)
-		;momentaneo
-		(punteggi_checked ?s)
-        (not (astar_checked ?s))
-        ; (exit_checked ?s)
-    =>
-        (printout t "control-astar turno " ?s crlf)
-        ; (retract ?e)
-		(focus ASTAR)
-)
-
 (defrule control-exit
-		(not (hurry))
         (status (step ?s))
-        (astar_checked ?s)
-        (not (exit_checked ?s))
-        (punteggi_checked ?s)
+	(punteggi_checked ?s)
+	(astar_checked ?s)
+        (time_checked ?s)        
+	(not (exit_checked ?s))
+	(not (hurry))
    =>
         (focus EXIT)
 )
 
-(defrule move
-		(not (hurry))
+(defrule control-move
         (status (step ?s))
-?f1 <-	(astar_checked ?s)
-; ?f2 <-	(exit_checked ?s)
-?f3 <-	(punteggi_checked ?s)
-;?f4 <-	(inform_checked ?s)
-;?f5 <-	(time_checked)
-?f6 <-	(path-star (id ?id) (oper ?oper))
-        (not (path-star (id ?id2&:(neq ?id ?id2)&:(< ?id2 ?id))))
-    =>
-        (printout t "Eseguo exec: "?id", azione: "?oper" " crlf)
-        (assert (exec (action ?oper) (step ?s)))
-        (retract ?f1)
-        ; (retract ?f2)
-        (retract ?f3)
-        ;(retract ?f4)
-        ;(retract ?f5)
-        (retract ?f6)
-)
-
-;se hurry matcha, vengono eseguiti tutti gli step fino al gate
-;in seguito si dovrà definire una regola che asserisca exec(done)
-(defrule move-to-finish
-		(declare (salience 1))
-		(hurry)
-		(status (step ?s))
-?f <-	(path-star (id ?id) (oper ?oper))
-        (not (path-star (id ?id2&:(neq ?id ?id2)&:(< ?id2 ?id))))
-		=>
-		(retract ?f)
-		(assert (exec (action ?oper) (step ?s)))
-)
-
-(defrule finish
-		(hurry)
-		(status (step ?s))
-		=>
-		(assert (exec (action done) (step ?s)))
+	(punteggi_checked ?s)
+	(astar_checked ?s)
+        (time_checked ?s)
+	(exit_checked ?s)
+	(not (move_checked ?s))
+   =>
+        (focus MOVE)
 )
