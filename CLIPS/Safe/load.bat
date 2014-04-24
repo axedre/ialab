@@ -9,6 +9,7 @@
 (load "03_punteggi.clp")
 (load "04_exit.clp")
 (load "05_astar.clp")
+(load "06_move.clp")
 (load "9_new.clp")
 (load "8_a_star.clp")
 (load "10_post-astar.clp")

@@ -14,9 +14,8 @@
     (status (step 0))
     (not (exec (step 0)))
     (initial_agentstatus (pos-r ?r) (pos-c ?c) (direction ?d))
-  =>
-    (assert (kagent (time 0) (step 0)
-                           (pos-r ?r) (pos-c ?c) (direction ?d)))
+=>
+    (assert (kagent (time 0) (step 0) (pos-r ?r) (pos-c ?c) (direction ?d)))
     (focus INIT_PUNTEGGI)
 )
 
@@ -88,14 +87,14 @@
     (slot id)
     (slot oper)
     (slot target-r)
-    (slot target-c)    
+    (slot target-c)
 )
 
 (deftemplate path-star
     (slot id)
     (slot oper)
     (slot target-r)
-    (slot target-c)    
+    (slot target-c)
 )
 
 (deftemplate invalid-target
@@ -116,116 +115,66 @@
     (declare (salience 10))
     (status (step ?i))
     (exec (step ?i))
- => (focus MAIN))
-
-
-; Nel seguito viene riportata una semplice sequenza di comandi che dovrebbe
-; servire a verificare il comportamento del modulo ENV nel dominio descritto
-; nel file precedente.
-; non tutte le azioni sono utili in vista di una esplorazione, ma sono state
-; inserite per verificare il comportamento del modulo ENV che deve segnalare
-; esito non nominale di alcune azioni
-
-;(assert (exec (action go-forward) (step 0)))
-;(assert (exec (action go-forward) (step 1)))
-;(assert (exec (action go-forward) (step 2)))
-;(assert (exec (action go-forward) (step  3)))
-;(assert (exec (action inform) (param1 6) (param2 6) (param3 flood) (step 4)))
-;(assert (exec (action go-left) (step 5)))
-;(assert (exec (action inform) (param1 4) (param2 3) (param3 flood) (step 6)))
-;(assert (exec (action inform) (param1 5) (param2 4) (param3 flood) (step 7)))
-;(assert (exec (action inform) (param1 4) (param2 4) (param3 flood) (step 8)))
-;(assert (exec (action inform) (param1 4) (param2 4) (param3 ok) (step 9)))
-;(assert (exec (action go-forward) (step 10)))
-;(assert (exec (action go-left) (step 11)))
-;(assert (exec (action loiter-monitoring) (step 12)))
-;(assert (exec (action inform) (param1 4) (param2 3) (param3 initial-flood) (step 13)))
-;(assert (exec (action go-forward) (step  14)))
-;(assert (exec (action loiter-monitoring) (step 15)))
-;(assert (exec (action inform) (param1 3) (param2 3) (param3 initial-flood) (step 16)))
-;(assert (exec (action go-right) (step 17)))
-;(assert (exec (action inform) (param1 2) (param2 3) (param3 flood) (step 18)))
-;(assert (exec (action inform) (param1 2) (param2 2) (param3 flood) (step 19)))
-;(assert (exec (action go-right) (step 20)))
-;(assert (exec (action go-forward) (step  21)))
-;(assert (exec (action go-forward) (step  22)))
-;(assert (exec (action inform) (param1 6) (param2 2) (param3 flood) (step 23)))
-;(assert (exec (action go-forward) (step  24)))
-;(assert (exec (action go-right) (step 25)))
-;(assert (exec (action inform) (param1 7) (param2 2) (param3 ok) (step 26)))
-;(assert (exec (action inform) (param1 8) (param2 2) (param3 ok) (step 27)))
-;(assert (exec (action inform) (param1 8) (param2 3) (param3 flood) (step 28)))
-;(assert (exec (action inform) (param1 7) (param2 3) (param3 flood) (step 29)))
-;(assert (exec (action inform) (param1 6) (param2 4) (param3 flood) (step 30)))
-;(assert (exec (action inform) (param1 7) (param2 4) (param3 flood) (step 31)))
-;(assert (exec (action inform) (param1 8) (param2 4) (param3 ok) (step 32)))
-;(assert (exec (action go-forward) (step  33)))
-;(assert (exec (action inform) (param1 8) (param2 5) (param3 flood) (step 34)))
-;(assert (exec (action inform) (param1 7) (param2 5) (param3 ok) (step 35)))
-;(assert (exec (action inform) (param1 6) (param2 5) (param3 ok) (step 36)))
-;(assert (exec (action go-forward) (step  37)))
-;(assert (exec (action inform) (param1 8) (param2 6) (param3 flood) (step 38)))
-;(assert (exec (action inform) (param1 7) (param2 6) (param3 flood) (step 39)))
-;(assert (exec (action go-forward) (step  40)))
-;(assert (exec (action loiter-monitoring) (step 41)))
-;(assert (exec (action inform) (param1 7) (param2 6) (param3 severe-flood) (step 42)))
+=>
+    (focus MAIN)
+)
 
 (defrule turno0
-	(declare (salience 5))
+    (declare (salience 5))
     (status (step 0))
-
-    =>
-	;Da cancellare dopo il completamento di PUNTEGGI
-	(assert (temporary_target (pos-x 2) (pos-y 5)))
-	(assert (dummy_target (pos-x 2) (pos-y 5)))
-	(assert (exec (action go-forward) (step 0)))
+=>
+    ;Da cancellare dopo il completamento di PUNTEGGI
+    (assert (temporary_target (pos-x 2) (pos-y 5)))
+    (assert (dummy_target (pos-x 2) (pos-y 5)))
+    (assert (exec (action go-forward) (step 0)))
     (focus INIT_PUNTEGGI)
 )
 
 (defrule control-punteggi
-	(status (step ?s))
-	(not (punteggi_checked ?s))
-    =>
-	(focus PUNTEGGI)
+    (status (step ?s))
+    (not (punteggi_checked ?s))
+=>
+    (focus PUNTEGGI)
 )
 
 (defrule control-astar
-        (status (step ?s))
-        (perc-vision (step ?s) (pos-r ?r) (pos-c ?c))
-	(punteggi_checked ?s)
-        (not (astar_checked ?s))        
-    =>        
-        (focus ASTAR)
+    (status (step ?s))
+    (perc-vision (step ?s) (pos-r ?r) (pos-c ?c))
+    (punteggi_checked ?s)
+    (not (astar_checked ?s))
+=>
+    (focus ASTAR)
 )
 
-(defrule control-time		
-	(status (step ?s))
-	(punteggi_checked ?s)
-	(astar_checked ?s)
-	(not (time_checked ?s))
-	(not (hurry))
-   =>
-       (focus TIME)
+(defrule control-time
+    (status (step ?s))
+    (punteggi_checked ?s)
+    (astar_checked ?s)
+    (not (time_checked ?s))
+    (not (hurry))
+=>
+    (focus TIME)
 )
 
 (defrule control-exit
-        (status (step ?s))
-	(punteggi_checked ?s)
-	(astar_checked ?s)
-        (time_checked ?s)        
-	(not (exit_checked ?s))
-	(not (hurry))
-   =>
-        (focus EXIT)
+    (status (step ?s))
+    (punteggi_checked ?s)
+    (astar_checked ?s)
+    (time_checked ?s)
+    (not (exit_checked ?s))
+    (not (hurry))
+=>
+    (focus EXIT)
 )
 
 (defrule control-move
-        (status (step ?s))
-	(punteggi_checked ?s)
-	(astar_checked ?s)
-        (time_checked ?s)
-	(exit_checked ?s)
-	(not (move_checked ?s))
-   =>
-        (focus MOVE)
+    (status (step ?s))
+    (punteggi_checked ?s)
+    (astar_checked ?s)
+    (time_checked ?s)
+    ;(exit_checked ?s)
+    (not (move_checked ?s))
+=>
+    (printout t "Focus move" crlf)
+    (focus MOVE)
 )

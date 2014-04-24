@@ -35,6 +35,7 @@ public class ClipsCore {
         clips.load("03_punteggi.clp");
         clips.load("04_exit.clp");
         clips.load("05_astar.clp");
+        clips.load("06_move.clp");
         clips.load("8_a_star.clp");
         clips.load("9_new.clp");
         clips.load("10_post-astar.clp");
