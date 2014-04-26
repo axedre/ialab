@@ -146,25 +146,25 @@
     (focus ASTAR)
 )
 
-(defrule control-time
-    (status (step ?s))
-    (punteggi_checked ?s)
-    (astar_checked ?s)
-    (not (time_checked ?s))
-    (not (hurry))
-=>
-    (focus TIME)
-)
-
 (defrule control-exit
     (status (step ?s))
     (punteggi_checked ?s)
-    (astar_checked ?s)
-    (time_checked ?s)
+    (astar_checked ?s)    
     (not (exit_checked ?s))
     (not (hurry))
 =>
     (focus EXIT)
+)
+
+(defrule control-time
+    (status (step ?s))
+    (punteggi_checked ?s)
+    (astar_checked ?s)
+    (exit_checked ?s)
+    (not (time_checked ?s))
+    (not (hurry))
+=>
+    (focus TIME)
 )
 
 (defrule control-move
