@@ -133,6 +133,7 @@
 (defrule control-punteggi
     (status (step ?s))
     (not (punteggi_checked ?s))
+    (not (hurry))
 =>
     (focus PUNTEGGI)
 )
