@@ -60,6 +60,11 @@
 
 (deftemplate last-direction (slot direction))
 
+(deftemplate last-direction-astar 
+	(slot direction)
+	(slot step)
+)
+
 ;template temporaneo
 (deftemplate visitata
     (slot pos-r)
@@ -70,6 +75,13 @@
     (slot pos-r)
     (slot pos-c)
     (slot cost)
+)
+
+(deftemplate costo-check-astar
+    (slot pos-r)
+    (slot pos-c)
+    (slot cost)
+	(slot step)
 )
 
 ;; ho incluso il type al solo scopo di debugging

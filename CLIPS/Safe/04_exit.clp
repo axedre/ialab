@@ -1,5 +1,14 @@
 (defmodule EXIT (import AGENT ?ALL) (export ?ALL))
 
+(defrule exit-clean1
+		(declare (salience 110))
+		(status (step ?s))
+?f <-	(costo-check (cost ?g) (pos-r ?x) (pos-c ?y))
+	=>
+		(assert (costo-check-astar (pos-r ?x) (pos-c ?y) (cost ?g) (step ?s)))
+		(retract ?f)
+)		
+
 ;Però non sappiamo in che direzione sarà l'UAV.
 ;Non possiamo inizializzare node con direction north
 (defrule exit-go
@@ -8,7 +17,7 @@
 		;(perc-vision (step ?s) (pos-r ?r) (pos-c ?c))
 		(prior_cell (pos-r ?x1) (pos-c ?y1) (type gate))
 		(temporary_target (pos-x ?r) (pos-y ?c))
-?f1 <-  	(dummy_target)
+?f1 <-  (dummy_target)
 		(not(costo-check))
 ?f2	<-	(last-direction (direction ?dir))
 	=>
@@ -32,7 +41,7 @@
 		(focus ASTAR-ALGORITHM)
 )
 
-(defrule exit-clean1
+(defrule exit-clean2
 		(declare (salience 50))
 ?f <-	(path)
 	=>

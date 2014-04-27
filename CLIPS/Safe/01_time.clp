@@ -1,21 +1,28 @@
 (defmodule TIME (import AGENT ?ALL) (export ?ALL))
 
-
+; (defrule time-clean1
+		; (declare (salience 150))
+; ?f <-	(last-direction)
+	; =>
+		; (retract ?f)
+; )
 
 (defrule time-clean1
 		(declare (salience 150))
-?f <-	(last-direction)
+		(status (step ?s))
+?f <-	(last-direction (direction ?dir))
 	=>
+		(assert (last-direction-astar (direction ?dir) (step ?s)))
 		(retract ?f)
 )
 
-(defrule time-clean2
-		(declare (salience 150))
-?f <-	(path (id ?id) (oper ?oper))
-	=>
-		(assert (path-star (id ?id) (oper ?oper)))
-		(retract ?f)
-)
+; (defrule time-clean2
+		; (declare (salience 150))
+; ?f <-	(path (id ?id) (oper ?oper))
+	; =>
+		; (assert (path-star (id ?id) (oper ?oper)))
+		; (retract ?f)
+; )
 
 (defrule time-clean3
 		(declare (salience 150))
@@ -31,18 +38,19 @@
     (declare (salience 100))
     (prior_cell (pos-r ?x) (pos-c ?y) (type gate))
     (status (step ?s))
-    (perc-vision (step ?s) (direction ?dir) (pos-r ?r) (pos-c ?c))
+    ; (perc-vision (step ?s) (direction ?dir) (pos-r ?r) (pos-c ?c))
+?f2	<-	(last-direction-astar (direction ?dir) (step ?s))
+	(temporary_target (pos-x ?r) (pos-y ?c))
     (not (costo-check (pos-r ?x) (pos-c ?y)))
-
 	(not (analizzato ?x ?y ?s))
 
-?f <- (dummy_target)
+?f1 <- (dummy_target)
     =>
 
 	(printout t "Time da ("?r","?c")" crlf)
 	(printout t "Time per ("?x","?y")" crlf)
 
-    (retract ?f)
+    (retract ?f1)
 
 	(assert (analizzato ?x ?y ?s))
 
@@ -64,14 +72,14 @@
     (focus ASTAR-ALGORITHM)
 )
 
-(defrule time-clean4
-		(declare (salience 90))
+; (defrule time-clean4
+		; (declare (salience 90))
 		; (not (costo-check))
-		(not (hurry))
-?f <-	(path-star)
-	=>
-		(retract ?f)
-)
+		; (not (hurry))
+; ?f <-	(path-star)
+	; =>
+		; (retract ?f)
+; )
 
 ;; Asserisco un fatto best-exit con le coordinate dell'uscita più conveniente
 (defrule check-exit-cost1
@@ -179,6 +187,13 @@
 (defrule time-clean7
 		(declare (salience 5))
 ?f <-	(costo-check)
+	=>
+		(retract ?f)
+)
+
+(defrule time-clean8
+		(declare (salience 5))
+?f <-	(last-direction)
 	=>
 		(retract ?f)
 )

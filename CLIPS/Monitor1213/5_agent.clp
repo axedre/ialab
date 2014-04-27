@@ -184,10 +184,10 @@
 
 (defrule control-time
 		(not (hurry))
-       (status (step ?s))
-       (not (time_checked ?s))
-   =>
-       (focus TIME)
+		(status (step ?s))
+		(not (time_checked ?s))
+	=>
+		(focus TIME)
 )
 
 (defrule control-inform
