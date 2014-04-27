@@ -5,11 +5,11 @@
 (defrule execute-exec-star
         (declare (salience 50))
 ?f1 <-  (last (id ?id))
-        (node (ident ?id) (father ?anc&~NA))  
+        (node (ident ?id) (father ?anc&~NA))
 ?f2 <-  (exec-star (anc ?anc) (id ?id) (op ?oper) (direction ?dir) (pos-x ?r) (pos-y ?c))
         ;(not (double-check))
-    =>  
-        (printout t " Eseguo azione " ?oper " da cella (" ?r "," ?c ") " crlf)
+    =>
+        ;(printout t " Eseguo azione " ?oper " da cella (" ?r "," ?c ") " crlf)
         (assert (path (id ?id) (oper ?oper)))
         (assert (last (id ?anc)))
         (retract ?f1)
@@ -37,11 +37,3 @@
 	=>
         (retract ?f)
 )
-
-;; Commentata perché già presente nel modulo ASTAR
-; (defrule clean-astar4
-        ; (declare (salience 25))
-; ?f <-	(lastnode)
-	; =>
-        ; (retract ?f)
-; )
