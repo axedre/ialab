@@ -133,7 +133,7 @@
 (defrule control-punteggi
     (status (step ?s))
     (not (punteggi_checked ?s))
-    (not (hurry))
+    (not (finished))
 =>
     (focus PUNTEGGI)
 )
@@ -152,7 +152,7 @@
     (punteggi_checked ?s)
     (astar_checked ?s)    
     (not (exit_checked ?s))
-    (not (hurry))
+    (not (finished))
 =>
     (focus EXIT)
 )
@@ -163,7 +163,7 @@
     (astar_checked ?s)
     (exit_checked ?s)
     (not (time_checked ?s))
-    (not (hurry))
+    (not (finished))
 =>
     (focus TIME)
 )

@@ -24,5 +24,5 @@
 (defrule informs-completed
 	(declare (salience 5))
     =>
-	(assert (hurry))	
+	(assert (finished))	
 )
