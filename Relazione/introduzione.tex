@@ -14,6 +14,7 @@ Verranno illustrati poco più avanti i moduli più nel dettaglio anche se, per u
 \section{Controllore} \label{sec:controllore}
 Entriamo ora più nello specifico nel comportamento del controllore. Il controllore si occupa, come detto, di dare il focus al modulo corretto. Quest'ultimo viene fatto identificando una determinata routine da svolgere per ogni passo (identificato dallo slot \texttt{step} del template status fornito nello scheletro iniziale del progetto):
 \begin{enumerate}
+	\item controllo che ci siano celle ancora da visitare (sezione \ref{sec:finish})
 	\item controllo del tempo rimanente (sezione \ref{sec:tempo})
 	\item inform delle celle visibili (sezione \ref{sec:inform})
 	\item individuazione della cella verso cui spostarsi (sezione \ref{sec:target})
@@ -21,6 +22,9 @@ Entriamo ora più nello specifico nel comportamento del controllore. Il controll
 	\item controllo che la cella individuata permetta di raggiungere un'uscita, ai fini di non finire in vicoli ciechi (sezione \ref{sec:uscita})
 	\item computazione effettiva di un passo calcolato e memorizzato dall'algoritmo A* (sezione \ref{sec:movimento})
 \end{enumerate}
+
+\section{Modulo: Controllo delle celle da visitare} \label{sec:finish}
+Questo modulo controlla che vi siano, sulla mappa, ancora delle celle che dovrebbero essere visitate. Se ne esistono allora si continua nel flusso dei controllori, altrimenti viene notificato che, al fine di non sprecare tempo, ci si deve dirigere verso una cella di tipo gate.
 
 \section{Modulo: Controllo del tempo rimanente} \label{sec:tempo}
 Questo modulo si occupa di controllare che il tempo rimasto a disposizione sia sufficiente. Generalmente questo significa controllare il tempo necessario a raggiungere l'uscita più vicina e confrontarlo con il tempo rimanente. Se il tempo rimanente è sufficiente si continua nel flusso normale delle azioni asserendo la condizione di successo per il modulo agent. Se, invece, il tempo scarseggia si intraprende un'azione che può variare a seconda delle varie strategie.

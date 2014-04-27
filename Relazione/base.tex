@@ -6,6 +6,7 @@ Per poter rendere sufficientemente interessante la strategia si è quindi dovuto
 \section{Controllore} \label{sec:base-controllore}
 Come detto, vi sono diverse differenze nella routine di controllo nel modulo AGENT rispetto alla strategia generica tratteggiata nel capitolo \ref{cap:intro}. Il modulo AGENT è composto dai seguenti controllori:
 \begin{itemize}
+	\item controllo che ci siano celle ancora da visitare (sezione \ref{sec:base-finish})
 	\item individuazione della cella verso cui spostarsi (sezione \ref{sec:base-target})
 	\item calcolo del percorso per raggiungere la cella individuata mediante l'algoritmo A* (sezione \ref{sec:base-astar})
 	\item controllo del tempo rimanente a partire dal raggiungimento della cella identificata come obiettivo (sezione \ref{sec:base-tempo})
@@ -13,6 +14,9 @@ Come detto, vi sono diverse differenze nella routine di controllo nel modulo AGE
 	\item computazione effettiva dei passi calcolati e memorizzati dall'algoritmo A* (sezione \ref{sec:base-movimento})
 \end{itemize}
 Si noti che il modulo \ref{sec:base-movimento}, come già accennato nell'introduzione di questo capitolo, computa (e consuma) tutti i fatti prodotti dal modulo \ref{sec:base-astar}. Entriamo ora più nel dettaglio dei vari moduli.
+
+\section{Modulo: Controllo delle celle da visitare} \label{sec:base-finish}
+Il controllo della presenza di celle da visitare viene fatto considerando i punteggi (vedere modulo \ref{sec:base-target}) delle celle sulla mappa. Se esistono celle con un punteggio superiore a {\color{red} SOGLIA} si asserisce un fatto di tipo \texttt{finish\_checked} e si prosegue con il prossimo controllore. Altrimenti, ovvero se non ci sono più celle da informare presenti sulla mappa, si asserisce un fatto di tipo \texttt{finished}: questo comporta che i successivi controllori vengano inibiti ({\color{red}a eccezione di \ref{sec:base-astar} e di \ref{sec:base-movimento}}) per far sì che l'UAV si diriga verso una cella di tipo gate senza sprecare ulteriore tempo.
 
 \section{Modulo: individuazione della cella target} \label{sec:base-target}
 L'individuazione della cella più appetibile nella strategia di base è molto semplice. Durante la fase di inizializzazione dell'ambiente viene assegnato un punteggio a ogni cella, in base alla propria tipologia, e salvato nello slot val del template score\_cell. Questo template serve a memorizzare i punteggi delle celle per individuare la più appetibile presente sulla mappa. I valori, che ricordo non vengono calcolati in questo modulo, bensì nella fase di inizializzazione dell'ambiente, vengono assegnati nel seguente modo: {\color{red}DA COMPLETARE UNA VOLTA STABILITI I PUNTEGGI ESATTI}
