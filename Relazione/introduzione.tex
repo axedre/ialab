@@ -4,7 +4,7 @@ Partiamo illustrando il modulo agent: questo modulo, concettualmente, si occupa 
 Ogni modulo, come detto, ha un compito particolare (verranno illustrati in seguito i vari moduli con i rispettivi compiti). La struttura di ogni modulo è abbastanza semplice ed è così composta con le azioni elencate in ordine cronologico: 
 \begin{enumerate}
 	\item riceve il focus dal modulo agent, il quale controlla che la condizione affinché sia svolto il compito assegnato al modulo specifico sia soddisfatta;
-	\item svolge le operazioni delle quali ha responsabilità di esecuzione;
+	\item svolge le operazioni cui è deputato;
 	\item asserisce una condizione per cui sia comprensibile, al modulo agent, che il compito richiesto è stato eseguito con successo;
 	\item rilascia il focus mediante una pop.
 \end{enumerate}
@@ -12,31 +12,31 @@ Ci sono poi, a seconda delle varie strategie, delle varianti a questo comportame
 Verranno illustrati poco più avanti i moduli più nel dettaglio anche se, per una spiegazione esaustiva, il rimando è alla sezione della strategia considerata.
 
 \section{Controllore} \label{sec:controllore}
-Entriamo ora più nello specifico nel comportamento del controllore. Il controllore si occupa, come detto, di dare il focus al modulo corretto. Quest'ultimo viene fatto identificando una determinata routine da svolgere per ogni passo (identificato dallo slot step del template status fornito nello scheletro iniziale del progetto):
-\begin{itemize}
+Entriamo ora più nello specifico nel comportamento del controllore. Il controllore si occupa, come detto, di dare il focus al modulo corretto. Quest'ultimo viene fatto identificando una determinata routine da svolgere per ogni passo (identificato dallo slot \texttt{step} del template status fornito nello scheletro iniziale del progetto):
+\begin{enumerate}
 	\item controllo del tempo rimanente (sezione \ref{sec:tempo})
 	\item inform delle celle visibili (sezione \ref{sec:inform})
 	\item individuazione della cella verso cui spostarsi (sezione \ref{sec:target})
 	\item calcolo del percorso per raggiungere la cella individuata mediante l'algoritmo A* (sezione \ref{sec:astar})
 	\item controllo che la cella individuata permetta di raggiungere un'uscita, ai fini di non finire in vicoli ciechi (sezione \ref{sec:uscita})
 	\item computazione effettiva di un passo calcolato e memorizzato dall'algoritmo A* (sezione \ref{sec:movimento})
-\end{itemize}
+\end{enumerate}
 
 \section{Modulo: Controllo del tempo rimanente} \label{sec:tempo}
 Questo modulo si occupa di controllare che il tempo rimasto a disposizione sia sufficiente. Generalmente questo significa controllare il tempo necessario a raggiungere l'uscita più vicina e confrontarlo con il tempo rimanente. Se il tempo rimanente è sufficiente si continua nel flusso normale delle azioni asserendo la condizione di successo per il modulo agent. Se, invece, il tempo scarseggia si intraprende un'azione che può variare a seconda delle varie strategie.
 
 \section{Modulo: Inform delle celle visibili} \label{sec:inform}
-Questo modulo ha la responsabilità di effettuare le inform di celle su cui non è ancora stata una inform secondo i criteri della strategia. Generalmente si è scelto di effettuare una inform base per ogni nuova cella avvistata, in quanto il costo dell'operazione di inform è irrisorio: tuttavia questo può dipendere dalle varie strategie.
+Questo modulo ha la responsabilità di effettuare azioni di tipo \texttt{inform} di celle sulle quali non è ancora stata effettuata tale azione secondo i criteri della strategia. Generalmente si è scelto di effettuare una \texttt{inform} base per ogni nuova cella avvistata, in quanto il costo dell'operazione di \texttt{inform} è basso: tuttavia questo può dipendere dalle varie strategie.
 
 \section{Modulo: Individuazione della cella target} \label{sec:target}
-In questo modulo viene scelta la cella verso cui dirigersi (target). {\color{red} Non in tutte le strategie viene utilizzato a ogni passo} e, i criteri con cui viene stabilita la cella target variano molto tra le varie strategie.
+In questo modulo viene scelta la cella verso cui dirigersi (target). {\color{red} Non in tutte le strategie viene utilizzato a ogni passo} e i criteri con cui viene stabilita la cella target variano molto a seconda della strategia adottata.
 
 \section{Modulo: Esecuzione dell'algoritmo A*} \label{sec:astar}
 Questo modulo, {\color{red}pressoché invariato in ogni strategia}, computa semplicemente l'algoritmo A* partendo dalla posizione attuale per arrivare al target. All'interno del modulo stesso vengono prodotti {\color{red} ... (COMPLETARE DESCRIZIONE DETTAGLIATA DEL MODULO}.
 
 \section{Modulo: Controllo di uscita} \label{sec:uscita}
-Questo modulo si occupa di verificare che, una volta che verrà raggiunto il target trovato, ci sia la possibilità di raggiungere un gate. Questa è un'escamotage studiata al fine di non ritrovarsi in situazioni che portino l'UAV a non poter concludere il suo lavoro (ad esempio finendo in un vicolo cieco dal quale non si possa uscire), con relativa penalità altissima.
-Nel caso in cui sia possibile raggiungere una cella di tipo gate dal target stabilito si prosegue normalmente nel flusso dei moduli, asserendo la condizione di successo. Viceversa, se non fosse possibile raggiungere alcun gate, si aggiunge un fatto che indichi la condizione di impossibilità di uscire da quella cella, in modo che non venga più presa in considerazione nella ricerca di nuovi target papabili; quindi si procede ritraendo il fatto di successo dei moduli \ref{sec:astar} e \ref{sec:target} così che il controllore (\ref{sec:controllore}), una volta effettuata la pop, dia nuovamente il focus al modulo \ref{sec:target} che si occuperà di trovare un nuovo target papabile (scartando la cella trovata precedentemente perché contrassegnata dal fatto che indica l'impossibilità di uscire da quella cella). Vale la pena spendere due parole sul meccanismo in cui questo viene fatto: una volta computato A* sappiamo la direzione verso cui l'UAV sarà rivolto una volta arrivato nella cella target. Se si scopre che l'UAV non ha la possibilità di uscire, una volta arrivato in quella cella, quella cella nella determinata direzione in cui l'UAV verrebbe a trovarsi viene contrassegnata come illegale con un fatto di tipo invalid-target. Il modulo \ref{sec:target} si occupa di escludere le celle così contrassegnate dalla ricerca della cella più appetibile verso cui dirigersi.
+Questo modulo si occupa di verificare che, una volta che verrà raggiunto il target trovato, ci sia la possibilità di raggiungere una cella di tipo \texttt{gate}. Questo è un'\emph{escamotage} studiato al fine di non ritrovarsi in situazioni che portino l'UAV a non poter concludere il suo lavoro (ad esempio finendo in un vicolo cieco dal quale non si possa uscire), con relativa penalità altissima.
+Nel caso in cui sia possibile raggiungere una cella di tipo \texttt{gate} dal target stabilito si prosegue normalmente nel flusso dei moduli, asserendo la condizione di successo. Viceversa, se non fosse possibile raggiungere alcun \texttt{gate}, si aggiunge un fatto che indica la condizione di impossibilità di uscire da quella cella, in modo che non venga più presa in considerazione nella ricerca di nuovi target candidati; quindi si procede ritraendo il fatto di successo dei moduli \ref{sec:astar} e \ref{sec:target} così che il controllore (\ref{sec:controllore}), una volta effettuata la pop, dia nuovamente il focus al modulo \ref{sec:target} che si occuperà di trovare un nuovo target papabile (scartando la cella trovata precedentemente perché contrassegnata dal fatto che indica l'impossibilità di uscire da quella cella). Vale la pena spendere due parole sul meccanismo con cui questo viene fatto: una volta computato A* sappiamo la direzione verso cui l'UAV sarà rivolto una volta arrivato nella cella target. Se si scopre che l'UAV non ha la possibilità di uscire, una volta arrivato in quella cella, quella cella nella determinata direzione in cui l'UAV verrebbe a trovarsi viene contrassegnata come illegale con un fatto di tipo invalid-target. Il modulo \ref{sec:target} si occupa di escludere le celle così contrassegnate dalla ricerca della cella più appetibile verso cui dirigersi.
 
 \section{Modulo: Movimento} \label{sec:movimento}
 Anche quest'ultimo modulo, che in realtà è stato scritto, per questioni di economia di codice, direttamente nel modulo agent, è invariato per ogni strategia scelta, infatti si occupa solamente di computare un passo dell'UAV mediante la regola, già fornita nello scheletro iniziale, exec. Per eseguire l'azione di movimento ci si basa sui fatti di tipo PATH prodotti nel modulo \ref{sec:astar}, già ordinati, che indicano i singoli movimenti che l'UAV deve compiere a ogni passo.
