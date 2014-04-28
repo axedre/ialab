@@ -4,6 +4,7 @@
 		(declare (salience 110))
 		(status (step ?s))
 ?f <-	(costo-check (cost ?g) (pos-r ?x) (pos-c ?y))
+		(not (costo-check-astar))
 	=>
 		(assert (costo-check-astar (pos-r ?x) (pos-c ?y) (cost ?g) (step ?s)))
 		(retract ?f)
