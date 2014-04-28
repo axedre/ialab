@@ -8,7 +8,7 @@
 	=>
 		(assert (costo-check-astar (pos-r ?x) (pos-c ?y) (cost ?g) (step ?s)))
 		(retract ?f)
-)		
+)	
 
 ;Però non sappiamo in che direzione sarà l'UAV.
 ;Non possiamo inizializzare node con direction north

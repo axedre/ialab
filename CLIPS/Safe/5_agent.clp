@@ -60,7 +60,7 @@
 
 (deftemplate last-direction (slot direction))
 
-(deftemplate last-direction-astar 
+(deftemplate last-direction-astar
 	(slot direction)
 	(slot step)
 )
@@ -81,7 +81,7 @@
     (slot pos-r)
     (slot pos-c)
     (slot cost)
-	(slot step)
+    (slot step)
 )
 
 ;; ho incluso il type al solo scopo di debugging
@@ -147,6 +147,7 @@
     (not (punteggi_checked ?s))
     (not (finished))
 =>
+    (printout t "--- Focus punteggi ---" crlf)
     (focus PUNTEGGI)
 )
 
@@ -156,16 +157,18 @@
     (punteggi_checked ?s)
     (not (astar_checked ?s))
 =>
+    (printout t "--- Focus a* ---" crlf)
     (focus ASTAR)
 )
 
 (defrule control-exit
     (status (step ?s))
     (punteggi_checked ?s)
-    (astar_checked ?s)    
+    (astar_checked ?s)
     (not (exit_checked ?s))
     (not (finished))
 =>
+    (printout t "--- Focus exit ---" crlf)
     (focus EXIT)
 )
 
@@ -177,6 +180,7 @@
     (not (time_checked ?s))
     (not (finished))
 =>
+    (printout t "--- Focus time ---" crlf)
     (focus TIME)
 )
 
@@ -188,6 +192,6 @@
     ;(exit_checked ?s)
     (not (move_checked ?s))
 =>
-    (printout t "Focus move" crlf)
+    (printout t "--- Focus move ---" crlf)
     (focus MOVE)
 )
