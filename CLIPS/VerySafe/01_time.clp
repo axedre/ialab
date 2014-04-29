@@ -11,6 +11,7 @@
 		(declare (salience 150))
 		(status (step ?s))
 ?f <-	(last-direction (direction ?dir))
+		(not (last-direction-astar (step ?s)))
 	=>
 		(assert (last-direction-astar (direction ?dir) (step ?s)))
 		(retract ?f)
@@ -194,6 +195,13 @@
 (defrule time-clean8
 		(declare (salience 5))
 ?f <-	(last-direction)
+	=>
+		(retract ?f)
+)
+
+(defrule time-clean9
+		(declare (salience 5))
+?f <-	(path)
 	=>
 		(retract ?f)
 )

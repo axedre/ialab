@@ -109,6 +109,11 @@
     (slot target-c)
 )
 
+(deftemplate move-path
+	(slot id) 
+	(slot oper)
+)
+
 (deftemplate invalid-target
     (slot pos-r)
     (slot pos-c)
@@ -129,6 +134,16 @@
     (exec (step ?i))
 =>
     (focus MAIN)
+)
+
+(defrule exec-move-path
+		(declare (salience 9))
+		(status (step ?s))
+?f1 <-	(move-path (id ?id) (oper ?oper))
+		(not (move-path (id ?id2&:(neq ?id ?id2)&:(< ?id2 ?id))))
+	=>
+		(assert (exec (step ?s) (action ?oper)))
+		(retract ?f1)
 )
 
 (defrule turno0
