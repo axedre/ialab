@@ -42,14 +42,14 @@
 ; )
 
 ;; contrassegno con un rel_score di -1000 le celle segnalate come invalide, nel caso non sia già stato fatto
-; (defrule invalid_target
-        ; (declare (salience 2))
-        ; (invalid-target (pos-r ?r) (pos-c ?c))
-; ?f <-   (score_cell (pos-r ?r) (pos-c ?c) (rel_score ?rel_score&:(neq ?rel_score -1000)))
-    ; =>
-        ; (retract ?f)
-        ; (assert (score_cell (pos-r ?r) (pos-c ?c) (rel_score -1000)))
-; )
+(defrule invalid_target
+        (declare (salience 2))
+        (invalid-target (pos-r ?r) (pos-c ?c))
+?f <-   (score_cell (pos-r ?r) (pos-c ?c) (abs_score ?abs_score&:(neq ?abs_score -1000)))
+    =>
+        (retract ?f)
+        (assert (score_cell (pos-r ?r) (pos-c ?c) (abs_score -1000)))
+)
 
 (defrule best-cell
 	(declare (salience 2))

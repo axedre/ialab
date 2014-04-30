@@ -30,6 +30,7 @@
 ; )
 
 (defrule move 
+		(not (hurry))
         (status (step ?s))
 ?f1 <-	(path-star (id ?id) (oper ?oper))
         (not (path-star (id ?id2&:(neq ?id ?id2)&:(< ?id2 ?id))))

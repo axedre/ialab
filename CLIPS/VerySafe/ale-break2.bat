@@ -44,6 +44,7 @@
 ; (set-break exit-clean1)
 ; (set-break exit-go)
 ; (set-break exit-clean2)
+(set-break exit-invalid)
 
 (focus MOVE)
 (set-break move)
