@@ -4,11 +4,21 @@
 		(declare (salience 110))
 		(status (step ?s))
 ?f <-	(costo-check (cost ?g) (pos-r ?x) (pos-c ?y))
-		(not (costo-check-astar))
+		(not (costo-check-astar (step ?s)))
 	=>
 		(assert (costo-check-astar (pos-r ?x) (pos-c ?y) (cost ?g) (step ?s)))
 		(retract ?f)
 )	
+
+(defrule exit-clean2
+		(declare (salience 110))
+		(status (step ?s))
+?f <-	(last-direction (direction ?dir))
+		(not (last-direction-astar (step ?s)))
+	=>
+		(assert (last-direction-astar (direction ?dir) (step ?s)))
+		(retract ?f)
+)
 
 ;Però non sappiamo in che direzione sarà l'UAV.
 ;Non possiamo inizializzare node con direction north
@@ -20,10 +30,10 @@
 		(temporary_target (pos-x ?r) (pos-y ?c))
 ?f1 <-  (dummy_target)
 		(not(costo-check))
-?f2	<-	(last-direction (direction ?dir))
+		(last-direction-astar (direction ?dir) (step ?s))
 	=>
 		(retract ?f1)
-		(retract ?f2)
+		; (retract ?f2)
         (assert (dummy_target (pos-x ?x1) (pos-y ?y1)))
         (assert 
             (node 
@@ -42,7 +52,7 @@
 		(focus ASTAR-ALGORITHM)
 )
 
-(defrule exit-clean2
+(defrule exit-clean3
 		(declare (salience 50))
 ?f <-	(path)
 	=>

@@ -62,6 +62,7 @@
 	(retract ?f)
 	(assert (temporary_target (pos-x ?r2) (pos-y ?c2)))
 	; (assert (analizzata ?r2 ?c2))
+	(printout t "TARGET: ("?r2", "?c2")" crlf)
 	;(printout t "rel ("?r1","?c1") "?rel" ---- best ("?r2","?c2") "?best" "crlf)
 	;(printout t "Best Cell: ("?r2", "?c2") - Rel Score: "?best" " crlf)
 	;(printout t (< ?rel ?best) " " crlf)
