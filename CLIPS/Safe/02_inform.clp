@@ -20,10 +20,10 @@
     (if (and (not (informed ?r ?c)) (interesting ?r ?c)) then
         (if (= (str-compare ?cell water) 0) then
             ;(printout t "Asserisco flood in " ?r ", " ?c crlf)
-            (assert (exec (step ?step) (action inform) (param1 ?r) (param2 ?c) (param3 flood)))
+            (assert (inform-act (r ?r) (c ?c) (status flood)))
         else
             ;(printout t "Asserisco ok in " ?r ", " ?c crlf)
-            (assert (exec (step ?step) (action inform) (param1 ?r) (param2 ?c) (param3 ok)))
+            (assert (inform-act (r ?r) (c ?c) (status ok)))
         )
         (assert (must-update-val ?r ?c))
     )

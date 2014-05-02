@@ -114,6 +114,12 @@
     (slot oper)
 )
 
+(deftemplate inform-act
+    (slot r)
+    (slot c)
+    (slot status)
+)
+
 (deftemplate invalid-target
     (slot pos-r)
     (slot pos-c)
@@ -139,13 +145,22 @@
 (defrule exec-move-path
         (declare (salience 9))
         (status (step ?s))
-?f1 <-	(move-path (id ?id) (oper ?oper))
+?f  <-	(move-path (id ?id) (oper ?oper))
         (not (move-path (id ?id2&:(neq ?id ?id2)&:(< ?id2 ?id))))
     =>
         (assert (exec (step ?s) (action ?oper)))
-        (retract ?f1)
+        (retract ?f)
         (focus INFORM)
         ;(focus FINISH)
+)
+
+(defrule exec-inform
+        (declare (salience 8))
+        (status (step ?s))
+?f  <-  (inform-act (r ?r) (c ?c) (status ?status))
+    =>
+        (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
+        (retract ?f)
 )
 
 (defrule turno0

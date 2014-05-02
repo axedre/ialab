@@ -15,8 +15,7 @@
     (not (exec (step 0)))
     (initial_agentstatus (pos-r ?r) (pos-c ?c) (direction ?d))
   =>
-    (assert (kagent (time 0) (step 0)
-                           (pos-r ?r) (pos-c ?c) (direction ?d)))
+    (assert (kagent (time 0) (step 0) (pos-r ?r) (pos-c ?c) (direction ?d)))
     (focus INIT_PUNTEGGI)
 )
 
@@ -88,14 +87,20 @@
     (slot id)
     (slot oper)
     (slot target-r)
-    (slot target-c)    
+    (slot target-c)
 )
 
 (deftemplate path-star
     (slot id)
     (slot oper)
     (slot target-r)
-    (slot target-c)    
+    (slot target-c)
+)
+
+(deftemplate inform-act
+    (slot r)
+    (slot c)
+    (slot status)
 )
 
 (deftemplate invalid-target
@@ -118,6 +123,14 @@
     (exec (step ?i))
  => (focus MAIN))
 
+(defrule exec-inform
+        (declare (salience 8))
+        (status (step ?s))
+?f  <-  (inform-act (r ?r) (c ?c) (status ?status))
+    =>
+        (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
+        (retract ?f)
+)
 
 ; Nel seguito viene riportata una semplice sequenza di comandi che dovrebbe
 ; servire a verificare il comportamento del modulo ENV nel dominio descritto
