@@ -9,7 +9,7 @@
     (node (ident ?curr) (pos-r ?x) (pos-c ?y) (gcost ?g) (direction ?dir))
     (not (costo-check (pos-r ?x) (pos-c ?y)))
     =>
-    (printout t " Esiste soluzione per goal (" ?x "," ?y ") con costo "  ?g crlf)
+    (printout t "Esiste soluzione per goal (" ?x "," ?y ") con costo "  ?g crlf)
     (assert (last (id ?curr)))
     (assert (costo-check (pos-r ?x) (pos-c ?y) (cost ?g)))
     (assert (last-direction (direction ?dir)))
@@ -458,7 +458,7 @@
     =>
     (retract ?f1)
     (modify ?f2 (open no))
-    (printout t "close-empty (last node expanded " ?curr ")" crlf)
+    ;(printout t "close-empty (last node expanded " ?curr ")" crlf)
     ;(halt)
     (focus POSTASTAR)
 )

@@ -19,10 +19,10 @@
 (deffunction inform (?r ?c ?cell ?step)
     (if (and (not (informed ?r ?c)) (interesting ?r ?c)) then
         (if (= (str-compare ?cell water) 0) then
-            (printout t "Asserisco flood in " ?r ", " ?c crlf)
+            ;(printout t "Asserisco flood in " ?r ", " ?c crlf)
             (assert (exec (step ?step) (action inform) (param1 ?r) (param2 ?c) (param3 flood)))
         else
-            (printout t "Asserisco ok in " ?r ", " ?c crlf)
+            ;(printout t "Asserisco ok in " ?r ", " ?c crlf)
             (assert (exec (step ?step) (action inform) (param1 ?r) (param2 ?c) (param3 ok)))
         )
         (assert (must-update-val ?r ?c))
@@ -139,7 +139,7 @@
 ?f <- (must-update-val ?x ?y)
 ?g <- (score_cell (pos-r ?x) (pos-c ?y) (val ?v) (type ?type))
 =>
-    (printout t "Update_val eseguita per cella " ?x ", " ?y crlf)
+    ;(printout t "Update_val eseguita per cella " ?x ", " ?y crlf)
     (retract ?f)
     (if (= (str-compare ?type urban) 0) then
         (modify ?g (val 50))
@@ -175,13 +175,13 @@
 =>
     (modify ?cella (abs_score (+ ?sw ?s ?se ?w ?v ?e ?nw ?n ?ne)))
     (retract ?f)
-    (printout t "Update_abs_score eseguita per cella " ?x ", " ?y crlf)
+    ;(printout t "Update_abs_score eseguita per cella " ?x ", " ?y crlf)
 )
 
 ; Regola che asserisce la fine di una sessione di inform
 (defrule inform-ok
     (declare (salience 0))
     (status (step ?s))
-=>    
+=>
     (assert (inform_checked ?s))
 )

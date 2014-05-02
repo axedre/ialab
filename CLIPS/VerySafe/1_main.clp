@@ -120,7 +120,7 @@
         (status (time ?t) (result disaster))
  => 
         (printout t crlf crlf)
-        (printout t "Sorry, UAV has been gone lost at time:" ?t)
+        (printout t "Sorry, UAV crashed at time:" ?t)
         (printout t crlf crlf)
         (halt))
 
