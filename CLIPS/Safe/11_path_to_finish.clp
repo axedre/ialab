@@ -117,7 +117,7 @@
 )
 
 (defrule control-bestexit
-		(bestexit ?x ?y ?z)
+		(best-exit ?x ?y ?z)
 	=>
 		(focus PATH-TO-BESTEXIT)
 )

@@ -1,4 +1,4 @@
-(defmodule PATH-TO-BESTEXIT (import TIME ?ALL) (export ?ALL))
+(defmodule PATH-TO-BESTEXIT (import PATH-TO-FINISH ?ALL) (export ?ALL))
 
 (defrule pathtofinish-clean8
 		(declare (salience 40))
@@ -21,6 +21,14 @@
 		(declare (salience 40))
 		(not (path-to-best-exit))
 ?f <-	(last-direction)
+	=>
+		(retract ?f)
+)
+
+(defrule pathtofinish-clean11
+		(declare (salience 40))
+		(not (path-to-best-exit))
+?f <-	(costo-check)
 	=>
 		(retract ?f)
 )
