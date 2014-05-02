@@ -14,5 +14,6 @@
 (load "8_a_star.clp")
 (load "10_post-astar.clp")
 (load "11_path_to_finish.clp")
+(load "12_path_to_bestexit.clp")
 (reset)
 
