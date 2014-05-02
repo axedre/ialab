@@ -152,7 +152,6 @@
     (declare (salience 5))
     (status (step 0))
 =>
-    ;Da cancellare dopo il completamento di PUNTEGGI
     (assert (temporary_target (pos-x 2) (pos-y 5)))
     (assert (dummy_target (pos-x 2) (pos-y 5)))
     (assert (exec (action go-forward) (step 0)))
