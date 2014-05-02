@@ -110,7 +110,7 @@
 )
 
 (deftemplate move-path
-	(slot id) 
+	(slot id)
 	(slot oper)
 )
 
@@ -137,13 +137,14 @@
 )
 
 (defrule exec-move-path
-		(declare (salience 9))
-		(status (step ?s))
+        (declare (salience 9))
+        (status (step ?s))
 ?f1 <-	(move-path (id ?id) (oper ?oper))
-		(not (move-path (id ?id2&:(neq ?id ?id2)&:(< ?id2 ?id))))
-	=>
-		(assert (exec (step ?s) (action ?oper)))
-		(retract ?f1)
+        (not (move-path (id ?id2&:(neq ?id ?id2)&:(< ?id2 ?id))))
+    =>
+        (assert (exec (step ?s) (action ?oper)))
+        (retract ?f1)
+        (focus INFORM)
 )
 
 (defrule turno0

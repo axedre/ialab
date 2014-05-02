@@ -109,6 +109,11 @@
     (slot target-c)
 )
 
+(deftemplate move-path
+    (slot id)
+    (slot oper)
+)
+
 (deftemplate invalid-target
     (slot pos-r)
     (slot pos-c)
@@ -131,6 +136,18 @@
     (focus MAIN)
 )
 
+(defrule exec-move-path
+        (declare (salience 9))
+        (status (step ?s))
+?f1 <-	(move-path (id ?id) (oper ?oper))
+        (not (move-path (id ?id2&:(neq ?id ?id2)&:(< ?id2 ?id))))
+    =>
+        (assert (exec (step ?s) (action ?oper)))
+        (retract ?f1)
+        (focus INFORM)
+        (focus FINISH)
+)
+
 (defrule turno0
     (declare (salience 5))
     (status (step 0))
@@ -145,6 +162,10 @@
 (defrule control-punteggi
     (status (step ?s))
     (not (punteggi_checked ?s))
+    (not (astar_checked ?s))
+    (not (exit_checked ?s))
+    (not (time_checked ?s))
+    (not (move_checked ?s))
     (not (finished))
 =>
     (printout t "--- Focus punteggi ---" crlf)
@@ -156,6 +177,10 @@
     (perc-vision (step ?s) (pos-r ?r) (pos-c ?c))
     (punteggi_checked ?s)
     (not (astar_checked ?s))
+    (not (exit_checked ?s))
+    (not (time_checked ?s))
+    (not (move_checked ?s))
+    (not (finished))
 =>
     (printout t "--- Focus a* ---" crlf)
     (focus ASTAR)
@@ -166,6 +191,8 @@
     (punteggi_checked ?s)
     (astar_checked ?s)
     (not (exit_checked ?s))
+    (not (time_checked ?s))
+    (not (move_checked ?s))
     (not (finished))
 =>
     (printout t "--- Focus exit ---" crlf)
@@ -178,6 +205,7 @@
     (astar_checked ?s)
     (exit_checked ?s)
     (not (time_checked ?s))
+    (not (move_checked ?s))
     (not (finished))
 =>
     (printout t "--- Focus time ---" crlf)
@@ -188,9 +216,10 @@
     (status (step ?s))
     (punteggi_checked ?s)
     (astar_checked ?s)
+    (exit_checked ?s)
     (time_checked ?s)
-    ;(exit_checked ?s)
     (not (move_checked ?s))
+    (not (finished))
 =>
     (printout t "--- Focus move ---" crlf)
     (focus MOVE)
