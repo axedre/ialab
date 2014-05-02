@@ -122,6 +122,9 @@
 		(test (< (+ ?g ?cost)
 				(- ?m ?t))
 		)
+		
+		(not (time_checked ?s))
+		
 	=>
 		(printout t "Tempo checked. Time: "?t crlf)
 		(assert (time_checked ?s))

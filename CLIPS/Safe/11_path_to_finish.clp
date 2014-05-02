@@ -24,15 +24,30 @@
 		(retract ?f)
 )
 
+(defrule pathtofinish-clean7
+		(declare (salience 90))
+		(not (path-to-finish))
+		(status (step ?s))
+?f <-	(analizzato ?x ?y ?s)
+	=>
+		(retract ?f)
+)
+
 (defrule pathtofinish-clean4
 		(declare (salience 90))
-?f1 <-	(lastnode)
-?f2 <-	(last-direction)
+?f <-	(lastnode)
 	=>
-		(retract ?f1 ?f2)
+		(retract ?f)
 )
 
 (defrule pathtofinish-clean5
+		(declare (salience 90))
+?f <-	(last-direction)
+	=>
+		(retract ?f)
+)
+
+(defrule pathtofinish-clean6
 		(declare (salience 90))
 ?f <-	(path)
 	=>
@@ -52,10 +67,15 @@
 		(status (step ?s))
 		(perc-vision (step ?s) (direction ?dir) (pos-r ?r) (pos-c ?c))
 		(prior_cell (pos-r ?x) (pos-c ?y) (type gate))
+?f <- 	(dummy_target)
+		(not (costo-check (pos-r ?x) (pos-c ?y)))
+		(not (analizzato ?x ?y ?s))
 		=>
-
+		(retract ?f)
 		(printout t "Uscita HURRY da ("?r","?c")" crlf)
 		(printout t "Uscita HURRY per ("?x","?y")" crlf)
+		(assert (dummy_target (pos-x ?x) (pos-y ?y)))
+		(assert (analizzato ?x ?y ?s))
 		(assert
 			(node
 				(ident 0)
@@ -94,4 +114,47 @@
    =>
 		(retract ?f)
 		(assert (best-exit ?x2 ?y2 ?best))
+)
+
+(defrule pathtofinish-clean8
+		(declare (salience 40))
+		(not (path-to-best-exit))
+		(status (step ?s))
+?f <-	(analizzato ?x ?y ?s)
+	=>
+		(retract ?f)
+)
+
+(defrule path-to-best-exit
+		(declare (salience 30))
+		(status (step ?s))
+		(perc-vision (step ?s) (direction ?dir) (pos-r ?r) (pos-c ?c))
+		(best-exit ?x ?y ?g)
+?f <- 	(dummy_target)
+		(not (analizzato ?x ?y ?s))
+		=>
+		
+		(assert(path-to-best-exit))
+		(assert(time_checked ?s))
+		
+		(retract ?f)
+		(printout t "Azioni HURRY da ("?r","?c")" crlf)
+		(printout t "Azioni HURRY per ("?x","?y")" crlf)
+		(assert (dummy_target (pos-x ?x) (pos-y ?y)))
+		(assert (analizzato ?x ?y ?s))
+		(assert
+			(node
+				(ident 0)
+				(gcost 0)
+				(fcost (+ (* (+ (abs (- ?x ?r)) (abs (- ?y ?c))) 10) 5))
+				(father NA)
+				(pos-r ?r)
+				(pos-c ?c)
+				(direction ?dir)
+				(open yes)
+			)
+		)
+		(assert (current (id 0)))
+		(assert (lastnode (id 0)))
+		(focus ASTAR-ALGORITHM)
 )
