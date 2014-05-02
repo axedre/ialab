@@ -38,8 +38,7 @@
 ?f1 <- (dummy_target)
     =>
 
-	(printout t "Time da ("?r","?c")" crlf)
-	(printout t "Time per ("?x","?y")" crlf)
+	(printout t "Time da ("?r","?c") per ("?x","?y")" crlf)
 
     (retract ?f1)
 
@@ -98,7 +97,7 @@
 =>
 	   (printout t "ATTENZIONE: tempo insufficiente" crlf)
 	   (printout t "Tempo: "?t" " crlf)
-	   
+
 	   (retract ?f)
 	   (assert (dummy_target (pos-x ?x) (pos-y ?y)))
 	   (assert (hurry))
@@ -122,9 +121,9 @@
 		(test (< (+ ?g ?cost)
 				(- ?m ?t))
 		)
-		
+
 		(not (time_checked ?s))
-		
+
 	=>
 		(printout t "Tempo checked. Time: "?t crlf)
 		(assert (time_checked ?s))
