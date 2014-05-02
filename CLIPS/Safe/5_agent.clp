@@ -145,7 +145,7 @@
         (assert (exec (step ?s) (action ?oper)))
         (retract ?f1)
         (focus INFORM)
-        (focus FINISH)
+        ; (focus FINISH)
 )
 
 (defrule turno0

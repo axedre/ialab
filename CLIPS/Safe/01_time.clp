@@ -34,6 +34,7 @@
 	(temporary_target (pos-x ?r) (pos-y ?c))
     (not (costo-check (pos-r ?x) (pos-c ?y)))
 	(not (analizzato ?x ?y ?s))
+	(not (hurry))
 
 ?f1 <- (dummy_target)
     =>

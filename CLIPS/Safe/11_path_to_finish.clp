@@ -116,45 +116,8 @@
 		(assert (best-exit ?x2 ?y2 ?best))
 )
 
-(defrule pathtofinish-clean8
-		(declare (salience 40))
-		(not (path-to-best-exit))
-		(status (step ?s))
-?f <-	(analizzato ?x ?y ?s)
+(defrule control-bestexit
+		(bestexit ?x ?y ?z)
 	=>
-		(retract ?f)
-)
-
-(defrule path-to-best-exit
-		(declare (salience 30))
-		(status (step ?s))
-		(perc-vision (step ?s) (direction ?dir) (pos-r ?r) (pos-c ?c))
-		(best-exit ?x ?y ?g)
-?f <- 	(dummy_target)
-		(not (analizzato ?x ?y ?s))
-		=>
-		
-		(assert(path-to-best-exit))
-		(assert(time_checked ?s))
-		
-		(retract ?f)
-		(printout t "Azioni HURRY da ("?r","?c")" crlf)
-		(printout t "Azioni HURRY per ("?x","?y")" crlf)
-		(assert (dummy_target (pos-x ?x) (pos-y ?y)))
-		(assert (analizzato ?x ?y ?s))
-		(assert
-			(node
-				(ident 0)
-				(gcost 0)
-				(fcost (+ (* (+ (abs (- ?x ?r)) (abs (- ?y ?c))) 10) 5))
-				(father NA)
-				(pos-r ?r)
-				(pos-c ?c)
-				(direction ?dir)
-				(open yes)
-			)
-		)
-		(assert (current (id 0)))
-		(assert (lastnode (id 0)))
-		(focus ASTAR-ALGORITHM)
+		(focus PATH-TO-BESTEXIT)
 )
