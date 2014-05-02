@@ -49,7 +49,15 @@
 
 (defrule pathtofinish-clean6
 		(declare (salience 90))
+		(not (path-to-best-exit))
 ?f <-	(path)
+	=>
+		(retract ?f)
+)
+
+(defrule pathtofinish-clean11
+		(declare (salience 90))
+?f <-	(path-star)
 	=>
 		(retract ?f)
 )
@@ -70,6 +78,7 @@
 ?f <- 	(dummy_target)
 		(not (costo-check (pos-r ?x) (pos-c ?y)))
 		(not (analizzato ?x ?y ?s))
+		(not (path-to-best-exit))
 		=>
 		(retract ?f)
 		(printout t "Uscita HURRY da ("?r","?c")" crlf)

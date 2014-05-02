@@ -1,7 +1,7 @@
 (defmodule MOVE (import AGENT ?ALL) (export ?ALL))
 
 (defrule move-path-star
-        (not (hurry))
+        ; (not (hurry))
         (status (step ?s))
 ?f1 <-	(path-star (id ?id) (oper ?oper))
         (not (path-star (id ?id2&:(neq ?id ?id2)&:(< ?id2 ?id))))
@@ -12,7 +12,7 @@
 )
 
 (defrule move-path
-        (hurry)
+        ; (hurry)
         (status (step ?s))
 ?f1 <-	(path (id ?id) (oper ?oper))
         (not (path (id ?id2&:(neq ?id ?id2)&:(< ?id2 ?id))))

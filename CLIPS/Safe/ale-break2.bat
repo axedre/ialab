@@ -47,6 +47,7 @@
 ; (set-break pathtofinish-clean4)
 ; (set-break check-exit-cost1)
 ; (set-break check-exit-cost2)
+(set-break path-to-best-exit)
 (set-break control-bestexit)
 
 ; (focus EXIT)
