@@ -48,3 +48,16 @@
 
 (focus MOVE)
 (set-break move)
+
+(focus INFORM)
+(set-break informed)
+(set-break interesting)
+(set-break inform)
+(set-break inspect)
+(set-break inspect-north)
+(set-break inspect-east)
+(set-break inspect-south)
+(set-break inspect-west)
+(set-break update_val)
+(set-break update_abs_score)
+(set-break inform-ok)

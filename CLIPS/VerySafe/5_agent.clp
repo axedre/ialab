@@ -144,6 +144,7 @@
 	=>
 		(assert (exec (step ?s) (action ?oper)))
 		(retract ?f1)
+		(focus INFORM)
 )
 
 (defrule turno0
