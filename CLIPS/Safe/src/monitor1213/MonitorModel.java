@@ -20,7 +20,6 @@ public class MonitorModel extends ClipsModel {
     private String result;
     private String communications;
     private int score;
-    private int rel_score;
 
     /**
      * Costruttore del modello per il progetto Monitor
@@ -47,9 +46,9 @@ public class MonitorModel extends ClipsModel {
             String[][] mp = core.findAllFacts("MAIN", "prior_cell", "TRUE", array);
             int maxr = 0;
             int maxc = 0;
-            for (int i = 0; i < mp.length; i++) {
-                int r = new Integer(mp[i][0]);
-                int c = new Integer(mp[i][1]);
+            for (String[] mp1 : mp) {
+                int r = new Integer(mp1[0]);
+                int c = new Integer(mp1[1]);
                 if (r > maxr) {
                     maxr = r;
                 }
@@ -83,6 +82,8 @@ public class MonitorModel extends ClipsModel {
         DebugFrame.appendText("AGGIORNAMENTO MAPPA IN CORSO...");
         String[] array = {"pos-r", "pos-c", "type", "actual"};
         String[][] mp = core.findAllFacts("ENV", "actual_cell", "TRUE", array);
+        String[] slots_temporary_target = {"pos-x", "pos-y"};
+        String temporary_target[] = core.findFact("AGENT", "temporary_target", "TRUE", slots_temporary_target);
 
         for (String[] mp_i : mp) {
             int r = new Integer(mp_i[0]);
@@ -97,7 +98,7 @@ public class MonitorModel extends ClipsModel {
                 relScore = Math.floor(Double.parseDouble(rs[2]) * 100) / 100;
             } catch (NumberFormatException e) {
             }
-            map[r - 1][c - 1] = mp_i[2] + "_" + mp_i[3] + "_" + relScore + "_" + (inf != null);
+            map[r - 1][c - 1] = mp_i[2] + "_" + mp_i[3] + "_" + relScore + "_" + (inf != null) + "_" + (temporary_target[0].equals(mp_i[0]) && temporary_target[1].equals(mp_i[1]));
         }
         DebugFrame.appendText("...RIEMPITA BASE...");
         String[] arrayRobot = {"pos-r", "pos-c", "direction", "dur-last-act", "time", "step"};

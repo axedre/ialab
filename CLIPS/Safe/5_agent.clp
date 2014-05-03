@@ -151,7 +151,7 @@
         (assert (exec (step ?s) (action ?oper)))
         (retract ?f)
         (focus INFORM)
-        ;(focus FINISH)
+        (focus FINISH)
 )
 
 (defrule exec-inform
