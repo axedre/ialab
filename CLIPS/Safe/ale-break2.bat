@@ -4,6 +4,8 @@
 ; (set-break exec_act)
 (set-break control-time)
 (set-break control-move)
+(set-break done)
+(set-break exec-move-path)
 
 ; (focus ASTAR)
 ; (set-break astar-go)
@@ -27,7 +29,7 @@
 ; (set-break best-cell)
 ; (set-break best-cell-clean)
 
-(focus TIME)
+; (focus TIME)
 ; (set-break target-dir)
 ; (set-break time-clean2)
 ; (set-break costo-astar)
@@ -37,9 +39,9 @@
 ; (set-break astar-find-exit)
 ; (set-break path-to-finish)
 ; (set-break time-clean6)
-(set-break not-in-time)
+; (set-break not-in-time)
 
-(focus PATH-TO-FINISH)
+; (focus PATH-TO-FINISH)
 ; (set-break notintime)
 ; (set-break path-to-finish)
 ; (set-break best-exit)
@@ -47,8 +49,8 @@
 ; (set-break pathtofinish-clean4)
 ; (set-break check-exit-cost1)
 ; (set-break check-exit-cost2)
-(set-break path-to-best-exit)
-(set-break control-bestexit)
+; (set-break path-to-best-exit)
+; (set-break control-bestexit)
 
 ; (focus EXIT)
 ; (set-break exit-ok)
@@ -56,9 +58,9 @@
 ; (set-break exit-go)
 ; (set-break exit-clean2)
 
-(focus MOVE)
-(set-break move-path-star)
-(set-break move-path)
+; (focus MOVE)
+; (set-break move-path-star)
+; (set-break move-path)
 
-(focus PATH-TO-BESTEXIT)
-(set-break path-to-best-exit)
+; (focus PATH-TO-BESTEXIT)
+; (set-break path-to-best-exit)

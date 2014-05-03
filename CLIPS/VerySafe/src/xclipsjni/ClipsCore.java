@@ -39,6 +39,8 @@ public class ClipsCore {
         clips.load("8_a_star.clp");
         clips.load("9_new.clp");
         clips.load("10_post-astar.clp");
+        clips.load("11_path_to_finish.clp");
+        clips.load("12_path_to_bestexit.clp");
         router = new RouterDialog("routerCore");
         clips.addRouter(router);
     }

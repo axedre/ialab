@@ -155,7 +155,7 @@
 )
 
 (defrule exec-inform
-        (declare (salience 8))
+        (declare (salience 9))
         (status (step ?s))
 ?f  <-  (inform-act (r ?r) (c ?c) (status ?status))
     =>
@@ -174,6 +174,7 @@
 )
 
 (defrule control-punteggi
+    (declare (salience 1))
     (status (step ?s))
     (not (punteggi_checked ?s))
     (not (astar_checked ?s))
@@ -187,6 +188,7 @@
 )
 
 (defrule control-astar
+    (declare (salience 1))
     (status (step ?s))
     (perc-vision (step ?s) (pos-r ?r) (pos-c ?c))
     (punteggi_checked ?s)
@@ -201,6 +203,7 @@
 )
 
 (defrule control-exit
+    (declare (salience 1))
     (status (step ?s))
     (punteggi_checked ?s)
     (astar_checked ?s)
@@ -214,6 +217,7 @@
 )
 
 (defrule control-time
+    (declare (salience 1))
     (status (step ?s))
     (punteggi_checked ?s)
     (astar_checked ?s)
@@ -227,6 +231,7 @@
 )
 
 (defrule control-move
+    (declare (salience 1))
     (status (step ?s))
     (punteggi_checked ?s)
     (astar_checked ?s)
@@ -237,4 +242,12 @@
 =>
     (printout t "--- Focus move ---" crlf)
     (focus MOVE)
+)
+
+(defrule done
+	(declare (salience 0))
+	(status (step ?s))
+	(not (exec (step ?s)))
+	=>
+	(assert (exec (action done) (step ?s)))
 )
