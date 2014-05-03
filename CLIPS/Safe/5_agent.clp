@@ -155,7 +155,7 @@
 )
 
 (defrule exec-inform
-        (declare (salience 8))
+        (declare (salience 9))
         (status (step ?s))
 ?f  <-  (inform-act (r ?r) (c ?c) (status ?status))
     =>
