@@ -142,6 +142,15 @@
     (focus MAIN)
 )
 
+(defrule exec-inform
+        (declare (salience 9))
+        (status (step ?s))
+?f  <-  (inform-act (r ?r) (c ?c) (status ?status))
+    =>
+        (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
+        (retract ?f)
+)
+
 (defrule exec-move-path
         (declare (salience 9))
         (status (step ?s))
@@ -154,20 +163,11 @@
         ;(focus FINISH)
 )
 
-(defrule exec-inform
-        (declare (salience 8))
-        (status (step ?s))
-?f  <-  (inform-act (r ?r) (c ?c) (status ?status))
-    =>
-        (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
-        (retract ?f)
-)
 
 (defrule turno0
     (declare (salience 5))
     (status (step 0))
 =>
-    ;Da cancellare dopo il completamento di PUNTEGGI
     (assert (temporary_target (pos-x 2) (pos-y 5)))
     (assert (dummy_target (pos-x 2) (pos-y 5)))
     (assert (exec (action go-forward) (step 0)))
@@ -175,8 +175,13 @@
 )
 
 (defrule control-punteggi
+	(declare (salience 1))
     (status (step ?s))
     (not (punteggi_checked ?s))
+    (not (astar_checked ?s))
+    (not (exit_checked ?s))
+    (not (time_checked ?s))
+    (not (move_checked ?s))
     (not (finished))
 =>
     (printout t "--- Focus punteggi ---" crlf)
@@ -184,20 +189,28 @@
 )
 
 (defrule control-astar
+	(declare (salience 1))
     (status (step ?s))
     (perc-vision (step ?s) (pos-r ?r) (pos-c ?c))
     (punteggi_checked ?s)
     (not (astar_checked ?s))
+    (not (exit_checked ?s))
+    (not (time_checked ?s))
+    (not (move_checked ?s))
+    (not (finished))
 =>
     (printout t "--- Focus a* ---" crlf)
     (focus ASTAR)
 )
 
 (defrule control-exit
+	(declare (salience 1))
     (status (step ?s))
     (punteggi_checked ?s)
     (astar_checked ?s)
     (not (exit_checked ?s))
+    (not (time_checked ?s))
+    (not (move_checked ?s))
     (not (finished))
 =>
     (printout t "--- Focus exit ---" crlf)
@@ -205,11 +218,13 @@
 )
 
 (defrule control-time
+	(declare (salience 1))
     (status (step ?s))
     (punteggi_checked ?s)
     (astar_checked ?s)
     (exit_checked ?s)
     (not (time_checked ?s))
+    (not (move_checked ?s))
     (not (finished))
 =>
     (printout t "--- Focus time ---" crlf)
@@ -217,13 +232,23 @@
 )
 
 (defrule control-move
+	(declare (salience 1))
     (status (step ?s))
     (punteggi_checked ?s)
     (astar_checked ?s)
+    (exit_checked ?s)
     (time_checked ?s)
-    ;(exit_checked ?s)
     (not (move_checked ?s))
+    (not (finished))
 =>
     (printout t "--- Focus move ---" crlf)
     (focus MOVE)
+)
+
+(defrule done
+	(declare (salience 0))
+	(status (step ?s))
+	(not (exec (step ?s)))
+	=>
+	(assert (exec (action done) (step ?s)))
 )

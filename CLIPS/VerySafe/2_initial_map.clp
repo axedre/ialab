@@ -1,7 +1,7 @@
 ; questa asserzione va ovviamente cambiata a seconda del tipo di ambiente che
 ; si utilizza
 (deffacts init (create)
-	(maxduration 1000)
+	(maxduration 100)
 	(initial_agentstatus
 		(pos-r 1) (pos-c 5)
 		(direction north)
