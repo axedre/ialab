@@ -68,3 +68,17 @@
 		(assert (exit_checked ?s))
 		(pop-focus)
 )
+
+(defrule exit-invalid
+		(declare (salience 1))
+		(status (step ?S))
+		(not (costo-check))
+?f1 <- 	(punteggi_checked ?s)
+?f2 <- 	(astar_checked ?s)
+		(temporary_target (pos-x ?r) (pos-y ?c))
+	=>
+		(retract ?f1)
+		(retract ?f2)
+		(assert (invalid-target (pos-r ?r) (pos-c ?c)))
+		(pop-focus)
+)

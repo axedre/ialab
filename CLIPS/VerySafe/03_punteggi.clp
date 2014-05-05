@@ -1,5 +1,19 @@
 (defmodule PUNTEGGI (import AGENT ?ALL) (export ?ALL))
 
+(defrule update_rel_score_current_cell
+    (declare (salience 3))
+    (status (step ?s))
+    (perc-vision (step ?s) (pos-r ?r) (pos-c ?c))
+    ?cella <- (score_cell (pos-r ?r) (pos-c ?c) (abs_step ?as&:(neq ?as ?s)))
+    (not (invalid-target (pos-r ?r) (pos-c ?c)))
+    =>
+    ;; ASSEGNO UN PUNTEGGIO RELATIVO MOLTO BASSO ALLA CELLA SU CUI SONO
+    (modify ?cella
+        (abs_score -1000)
+        (abs_step ?s)
+    )
+)
+
 ;; contrassegno con un rel_score di -1000 le celle segnalate come invalide, nel caso non sia già stato fatto
 (defrule invalid_target
         (declare (salience 2))

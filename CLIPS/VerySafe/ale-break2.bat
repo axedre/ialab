@@ -2,12 +2,13 @@
 ; (set-break exec_act)
 ; (set-break control-astar)
 ; (set-break control-exit)
-; (set-break control-time)
 ; (set-break control-move)
 ; (set-break control-punteggi)
+; (set-break exec-move-path)
+; (set-break exec-inform)
+; (set-break control-time)
+; (set-break control-finish)
 (set-break done)
-(set-break exec-move-path)
-(set-break exec-inform)
 
 ; (focus ASTAR)
 ; (set-break astar-go)
@@ -31,7 +32,7 @@
 ; (set-break best-cell)
 ; (set-break best-cell-clean)
 
-; (focus TIME)
+(focus TIME)
 ; (set-break target-dir)
 ; (set-break time-clean2)
 ; (set-break costo-astar)
@@ -41,7 +42,7 @@
 ; (set-break astar-find-exit)
 ; (set-break path-to-finish)
 ; (set-break time-clean6)
-; (set-break not-in-time)
+(set-break not-in-time)
 
 ; (focus PATH-TO-FINISH)
 ; (set-break notintime)
@@ -64,6 +65,9 @@
 ; (set-break move-path-star)
 ; (set-break move-path)
 
-; (focus AGENT)
-; (focus PATH-TO-BESTEXIT)
-; (set-break path-to-best-exit)
+(focus PATH-TO-BESTEXIT)
+(set-break path-to-best-exit)
+
+(focus FINISH)
+(set-break informs-not-completed)
+(set-break informs-completed)
