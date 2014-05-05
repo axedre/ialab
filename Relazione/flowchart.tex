@@ -1,0 +1,61 @@
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non dolor vel mauris consequat venenatis. Praesent ornare dui a lectus sodales varius. Sed euismod pulvinar ante. Nulla ac velit luctus, lacinia massa a, fermentum eros. Sed lobortis sollicitudin lectus, accumsan gravida nibh. Suspendisse viverra erat sit amet risus lobortis, non dignissim est varius. Fusce et mollis nisl.
+
+Mauris at sem in ante consequat aliquam ac id neque. Fusce ullamcorper laoreet aliquet. Proin ultrices quam id risus condimentum, sed luctus erat volutpat. Quisque a mauris ipsum. Nulla facilisi. Cras nulla elit, cursus id tellus eu, suscipit aliquam mauris. Phasellus eu tincidunt sem, ac adipiscing neque. Curabitur egestas erat adipiscing molestie viverra. Curabitur lobortis vel mi eu egestas. Fusce mi nunc, malesuada eu dapibus ac, accumsan non tortor. In suscipit ante ac tempus pretium. Aenean rhoncus nunc non dolor consectetur ornare. In vel malesuada enim. Donec eu nisi nunc.
+
+\begin{tikzpicture}[scale=0.8]%[node distance=1.5cm]
+
+% Start
+\node (start) [startstop] {Start};
+
+% Input 1
+% \node (in1) [io, below of=start] {Input 1};
+
+% Init_punteggi
+\node (inst1) [process, below of=start] {init\_punteggi};
+
+% Init_punteggi
+\node (inst2) [process, below of=inst1] {control\_punteggi};
+
+% A* (best_cell)
+\node (inst3) [process, below of=inst2] {A*(best\_cell)};
+
+% Control_exit
+\node (control_exit) [decision, below of=inst3, yshift=-1cm] {control\_exit};
+    % Control_exit_true
+    \node (control_time) [decision, below of=control_exit, yshift=-2cm] {control\_time};
+        % Control_time_true
+        % move-path(-star)
+        \node (inst4) [process, below of=control_time, yshift=-1cm] {(assert (move-path))};
+        % move
+        \node (inst5) [process, below of=inst4] {move + inform};
+        % finish
+        \node (finish) [decision, below of=inst5, yshift=-0.5cm] {finish};
+            % finish_true
+            % finished
+            \node (inst6) [process, below of=finish, yshift=-0.5cm] {(assert (finished))};
+            % A* (uscita)
+            \node (inst7) [process, below of=inst6] {A*(uscita)};
+            % finish_false
+        % Control_time_false
+        % hurry
+        \node (inst8) [process, right of=control_time, xshift=2.5cm] {(assert (hurry))};
+        % A* (uscita)
+        \node (inst9) [process, below of=inst8] {A*(uscita)};
+    % Control_exit_false
+
+% Output
+%\node (out1) [io, below of=if1t] {Output};
+% End
+%\node (stop) [startstop, below of=out1] {Stop};
+
+% Arrows
+%\draw [arrow] (start) -- (in1);
+%\draw [arrow] (in1) -- (inst1);
+%\draw [arrow] (inst1) -- (if1);
+%\draw [arrow] (if1) -- node[anchor=east] {true} (if1t);
+%\draw [arrow] (if1) -- node[anchor=south] {false} (if1f);
+%\draw [arrow] (if1f) |- (inst1);
+%\draw [arrow] (if1t) -- (out1);
+%\draw [arrow] (out1) -- (stop);
+
+\end{tikzpicture}

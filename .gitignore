@@ -11,6 +11,15 @@
 /CLIPS/Safe/build/
 /CLIPS/Safe/dist/
 /CLIPS/Safe/andy.bat
+
+## VerySafe
+/CLIPS/VerySafe/nbproject/
+/CLIPS/VerySafe/*build.xml
+/CLIPS/VerySafe/build/
+/CLIPS/VerySafe/dist/
+/CLIPS/VerySafe/andy.bat
+
+## Backup files
 *~
 
 ## Core latex/pdflatex auxiliary files:

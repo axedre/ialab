@@ -169,8 +169,9 @@ public class MonitorView extends ClipsView implements Observer {
                 Image image;
                 BufferedImage background;
                 BufferedImage robot;
-                BufferedImage combined;
-                Graphics g;
+                BufferedImage target = ImageIO.read(new File("img" + File.separator + "target.png"));
+                BufferedImage combined = new BufferedImage(85, 85, BufferedImage.TYPE_INT_ARGB);
+                Graphics g = combined.getGraphics();
                 String text = "";
 
                 String[] parts = mapString[i][j].split("_");
@@ -181,20 +182,17 @@ public class MonitorView extends ClipsView implements Observer {
                     background = ImageIO.read(new File("img" + File.separator + parts[1] + "_" + parts[2] + ".jpg"));
                     robot = ImageIO.read(new File("img" + File.separator + "robot_" + direction + ".png"));
 
-                    // crea una nuova immagine, la dimensione è quella più grande tra le 2 img
-                    int w = Math.max(background.getWidth(), robot.getWidth());
-                    int h = Math.max(background.getHeight(), robot.getHeight());
-                    combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-
                     // disegna le immagini, preservando i canali alpha per le trasparenze
-                    g = combined.getGraphics();
                     g.drawImage(background, 0, 0, null);
                     g.drawImage(robot, 0, 0, null);
-                    icon = new ImageIcon(combined);
                 } else {
-                    icon = new ImageIcon("img" + File.separator + parts[0] + "_" + parts[1] + ".jpg");
+                    g.drawImage(ImageIO.read(new File("img" + File.separator + parts[0] + "_" + parts[1] + ".jpg")), 0, 0, null);
+                    if (Boolean.parseBoolean(parts[4])) {
+                        g.drawImage(target, 0, 0, null);
+                    }
                     text = parts[2];
                 }
+                icon = new ImageIcon(combined);
                 image = icon.getImage().getScaledInstance(cellDimension, cellDimension, Image.SCALE_SMOOTH);
                 icon = new ImageIcon(image);
                 map[i][j].setIcon(icon);
