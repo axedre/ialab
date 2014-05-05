@@ -16,7 +16,6 @@ Entriamo ora più nello specifico nel comportamento del controllore. Il controll
 \begin{enumerate}
 	\item controllo che ci siano celle ancora da visitare (sezione \ref{sec:finish})
 	\item controllo del tempo rimanente (sezione \ref{sec:tempo})
-	\item inform delle celle visibili (sezione \ref{sec:inform})
 	\item individuazione della cella verso cui spostarsi (sezione \ref{sec:target})
 	\item calcolo del percorso per raggiungere la cella individuata mediante l'algoritmo A* (sezione \ref{sec:astar})
 	\item controllo che la cella individuata permetta di raggiungere un'uscita, ai fini di non finire in vicoli ciechi (sezione \ref{sec:uscita})
@@ -28,9 +27,6 @@ Questo modulo controlla che vi siano, sulla mappa, ancora delle celle che dovreb
 
 \section{Modulo: Controllo del tempo rimanente} \label{sec:tempo}
 Questo modulo si occupa di controllare che il tempo rimasto a disposizione sia sufficiente. Generalmente questo significa controllare il tempo necessario a raggiungere l'uscita più vicina e confrontarlo con il tempo rimanente. Se il tempo rimanente è sufficiente si continua nel flusso normale delle azioni asserendo la condizione di successo per il modulo agent. Se, invece, il tempo scarseggia si intraprende un'azione che può variare a seconda delle varie strategie.
-
-\section{Modulo: Inform delle celle visibili} \label{sec:inform}
-Questo modulo ha la responsabilità di effettuare azioni di tipo \texttt{inform} di celle sulle quali non è ancora stata effettuata tale azione secondo i criteri della strategia. Generalmente si è scelto di effettuare una \texttt{inform} base per ogni nuova cella avvistata, in quanto il costo dell'operazione di \texttt{inform} è basso: tuttavia questo può dipendere dalle varie strategie.
 
 \section{Modulo: Individuazione della cella target} \label{sec:target}
 In questo modulo viene scelta la cella verso cui dirigersi (target). {\color{red} Non in tutte le strategie viene utilizzato a ogni passo} e i criteri con cui viene stabilita la cella target variano molto a seconda della strategia adottata.
@@ -44,3 +40,7 @@ Nel caso in cui sia possibile raggiungere una cella di tipo \texttt{gate} dal ta
 
 \section{Modulo: Movimento} \label{sec:movimento}
 Anche quest'ultimo modulo, che in realtà è stato scritto, per questioni di economia di codice, direttamente nel modulo agent, è invariato per ogni strategia scelta, infatti si occupa solamente di computare un passo dell'UAV mediante la regola, già fornita nello scheletro iniziale, exec. Per eseguire l'azione di movimento ci si basa sui fatti di tipo PATH prodotti nel modulo \ref{sec:astar}, già ordinati, che indicano i singoli movimenti che l'UAV deve compiere a ogni passo.
+
+\section{Inform delle celle visibili} \label{sec:inform}
+A ogni esecuzione di un movimento dell'UAV viene dato il focus a un modulo di inform. Questo modulo ha la responsabilità di effettuare azioni di tipo \texttt{inform} di celle sulle quali non è ancora stata effettuata tale azione secondo i criteri della strategia. Generalmente si è scelto di effettuare una \texttt{inform} base per ogni nuova cella avvistata, in quanto il costo dell'operazione di \texttt{inform} è basso: tuttavia questo può dipendere dalle varie strategie.
+Si è scelto di non dare il focus a questo modulo da un proprio controllore, questo perché a ogni movimento dell'UAV si possono avere, potenzialmente, fino a tre nuove celle da informare: è quindi un'azione da fare ogni qualvolta venga effettuata una \texttt{exec-move-path}. È da notare che in questo modulo non vengono effettuate direttamente le inform, bensì vengono asseriti dei fatti di tipo \texttt{inform-act} con tutti i parametri necessari della inform. È stata implementata una regola chiamata \texttt{exec-inform} nel modulo \texttt{AGENT} che si occupa di fare le inform previste dai fatti \texttt{inform-act} e di cancellare questi ultimi. Questo si è reso necessario al fine di una corretta segnalazione delle inform, che comportano un cambio dello slot \texttt{step} del template \texttt{status}. Questo comporta che, al fine di una corretta inform, è necessario delegare quest'operazione al modulo agent in cui vengono effettuate le exec.
