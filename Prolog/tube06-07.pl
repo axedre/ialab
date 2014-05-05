@@ -1,6 +1,6 @@
 % stato: [at(Stazione), Location]
 % Location può essere in(NomeLinea, Dir) o
-%  'ground' se l'agente non è su nessun treno
+% 'ground' se l'agente non e' su nessun treno
 % Dir può esere 0 o 1
 
 
