@@ -125,6 +125,16 @@
 		(assert (best-exit ?x2 ?y2 ?best))
 )
 
+(defrule check-exit-cost3
+		(declare (salience 50))
+		(not (best-exit ?a ?b ?c))
+		(prior_cell (pos-r ?x) (pos-c ?y) (type gate))
+		(costo-check (pos-r ?r1) (pos-c ?c1) (cost ?cost))
+		(not (costo-check (pos-r ?r2&:(neq ?r2 ?r1)) (pos-c ?c2&:(neq ?c2 ?c1))))
+	=>
+		(assert (best-exit ?x ?y ?cost))
+)
+
 (defrule control-bestexit
 		(best-exit ?x ?y ?z)
 	=>
