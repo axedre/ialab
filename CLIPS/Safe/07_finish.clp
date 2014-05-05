@@ -11,22 +11,21 @@
 ;; con salience minore. A questo punto asserisco semplicemente un fatto di tipo
 ;; (finished) che indica che posso dirigermi verso un'uscita.
 
-;(defrule informs-not-completed
-;	(declare (salience 10))
-;	(status (step ?s))
-;	(score_cell (abs_score ?as&~nil))
-;       (test (< ?as 0))
-;    =>
-;       (printout t "abs_score vale: " ?as crlf)
-;	(assert (finish_checked ?s))
-;	(pop-focus)
-;)
-;
+(defrule informs-not-completed
+        (declare (salience 10))
+        (status (step ?s))
+        (score_cell (abs_score ?as&~nil))
+        (test (> ?as 0))
+    =>
+        (printout t "abs_score vale: " ?as crlf)
+        (assert (finish_checked ?s))
+        (pop-focus)
+)
+
 (defrule informs-completed
         (declare (salience 5))
-        (temporary_target (pos-x ?r) (pos-y ?c))
-        (exec (action inform) (param1 ?r) (param2 ?c))
+        (status (step ?s))
     =>
-        (printout t "Informs-completed RHS for temporary target (" ?r "," ?c ")" crlf)
-	;(assert (finished))
+        (assert (finished))
+        (focus PATH-TO-FINISH)
 )

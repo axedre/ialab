@@ -173,6 +173,20 @@
     (focus INIT_PUNTEGGI)
 )
 
+(defrule control-finish
+    (declare (salience 1))
+    (not (finish_checked ?s))
+    (not (finished))
+    (not (punteggi_checked ?s))
+    (not (astar_checked ?s))
+    (not (exit_checked ?s))
+    (not (time_checked ?s))
+    (not (move_checked ?s))
+=>
+    (printout t "--- Focus punteggi ---" crlf)
+    (focus FINISH)
+)
+
 (defrule control-punteggi
     (declare (salience 1))
     (status (step ?s))
@@ -238,7 +252,6 @@
     (exit_checked ?s)
     (time_checked ?s)
     (not (move_checked ?s))
-    (not (finished))
 =>
     (printout t "--- Focus move ---" crlf)
     (focus MOVE)
