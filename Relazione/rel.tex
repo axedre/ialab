@@ -1,0 +1,19 @@
+Questa seconda strategia è molto simile alla precedente, perciò non ci inoltreremo in una disamina dettagliata di ogni caso, mentre ci limiteremo a enfatizzare le sole differenze, allo scopo di una lettura più fluida e comprensibile. L'unica differenza, anche se piuttosto corposa, è relativa al modulo che si occupa del calcolo della cella target (\ref{sec:safe-target}).
+
+\section{Modulo: individuazione della cella target} \label{sec:safe-target}
+L'individuazione della cella più appetibile nella strategia safe a punteggi relativi è un raffinamento di quella illustrata nel capitolo \ref{cap:base}, sezione \ref{sec:base-target}. Durante la fase di inizializzazione dell'ambiente viene assegnato un punteggio a ogni cella, in base alla propria tipologia, e salvato nello slot val del template \texttt{score\_cell}. Questo template serve a memorizzare i punteggi delle celle per individuare la più appetibile presente sulla mappa. I valori, che ricordiamo non essere calcolati in questo modulo, bensì nella fase di inizializzazione dell'ambiente, vengono assegnati nel seguente modo: {\color{red}DA COMPLETARE UNA VOLTA STABILITI I PUNTEGGI ESATTI}
+\begin{itemize}
+	\item Rural: 
+	\item Urban: 
+	\item Hill: 
+	\item Lake: 
+	\item Border: 
+	\item Gate: 	
+\end{itemize}
+Il modulo in questione, come prima cosa, si occupa di assegnare, nello slot \texttt{abs\_score} del template \texttt{score\_cell}, un punteggio, per ogni cella, che tenga conto delle tipologie della cella in questione e di quelle limitrofe. Per fare ciò, semplicemente, vengono sommati i valori del campo val delle celle disposte a nord-ovest, nord, nord-est, ovest, est, sud-ovest, sud, sud-est e il campo val della cella in questione, ottenendo un valore che verrà appunto salvato nel campo \texttt{abs\_score}. Viene chiamato \texttt{abs\_score} che sta per "punteggio assoluto", risulterà chiaro in questo contesto, a differenza della precedente strategia, il perché.
+In questo modulo ci si occupa di raffinare i punteggi presenti nel campo \texttt{abs\_score} di ogni cella inserendolo nel campo \texttt{rel\_score} della cella stessa. Per ogni cella, infatti, viene calcalolata la distanza di Manhattan (i due cateti del triangolo rettangolo la cui ipotenusa è la distanza "aerea" tra la cella su cui è l'UAV e la cella considerata). Con questa distanza viene calcolato un nuovo punteggio, \texttt{rel\_score} appunto, che consiste nel rapporto tra il valore del campo \texttt{abs\_score} e la distanza di Manhattan.
+Questo procedimento serve a dare un grado di interesse alle celle non solo in base alla "densità" di tipologie di celle interessanti nelle celle limitrofe a quella interessata, come avveniva nella strategia illustrata nel capitolo \ref{cap:base}, bensì, il grado di interesse, sarà inversamente proporzionale anche alla distanza della cella dall'UAV. L'idea è di favorire un'esplorazione più intelligente della mappa, cercando di procedere in maniera omogenea limitando il più possibile gli spostamenti da un estremo all'altro della mappa.
+Come nella strategia precedente vengono escluse automaticamente le celle di tipo Hill, Border e Gate (a cui, in effetti, non è nemmeno stato assegnato un valore al campo \texttt{abs\_score}): le prime due per impossibilità di muoversi su celle di quel tipo, l'ultima perché non è desiderabile dirigersi verso una cella di questo tipo fino a quando non si è concluso il compito.
+Vengono altresì escluse le celle che sono già state contrassegnate come \texttt{invalid-target} nei corrispettivi moduli \ref{sec:base-uscita} e \ref{sec:base-tempo} per questa strategia.
+Al termine dei calcoli viene scelta la cella con \texttt{rel\_score} maggiore e impostata come target, quindi il focus viene rilasciato asserendo la condizione di controllo \texttt{punteggi\_checked}.
+
