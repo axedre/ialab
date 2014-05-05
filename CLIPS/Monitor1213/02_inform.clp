@@ -146,7 +146,6 @@
     else
         (modify ?g (val 40))
     )
-    ;(modify ?g (val (/ ?v 2)))
     (loop-for-count (?i (- ?x 1) (+ ?x 1)) do
         (loop-for-count (?j (- ?y 1) (+ ?y 1)) do
             (assert (must-update-abs-score ?i ?j))
