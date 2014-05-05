@@ -22,6 +22,13 @@
         (pop-focus)
 )
 
+(defrule clean-finish1
+		(declare (salience 6))
+?f <-	(move-path)
+	=>
+		(retract ?f)
+)
+
 (defrule informs-completed
         (declare (salience 5))
         (status (step ?s))

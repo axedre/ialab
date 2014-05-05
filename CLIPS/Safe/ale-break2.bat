@@ -2,10 +2,13 @@
 ; (set-break control-astar)
 ; (set-break control-exit)
 ; (set-break exec_act)
-(set-break control-time)
-(set-break control-move)
-(set-break done)
-(set-break exec-move-path)
+; (set-break control-time)	
+; (set-break control-move)
+; (set-break done)
+; (set-break exec-move-path)
+(set-break control-move-finished)
+(set-break control-finish)
+(set-break turno0)
 
 ; (focus ASTAR)
 ; (set-break astar-go)
@@ -61,6 +64,10 @@
 ; (focus MOVE)
 ; (set-break move-path-star)
 ; (set-break move-path)
+
+; (focus FINISH)
+; (set-break informs-not-completed)
+; (set-break informs-completed)
 
 ; (focus PATH-TO-BESTEXIT)
 ; (set-break path-to-best-exit)

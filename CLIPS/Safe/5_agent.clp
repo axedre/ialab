@@ -142,6 +142,15 @@
     (focus MAIN)
 )
 
+(defrule exec-inform
+        (declare (salience 9))
+        (status (step ?s))
+?f  <-  (inform-act (r ?r) (c ?c) (status ?status))
+    =>
+        (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
+        (retract ?f)
+)
+
 (defrule exec-move-path
         (declare (salience 9))
         (status (step ?s))
@@ -151,16 +160,6 @@
         (assert (exec (step ?s) (action ?oper)))
         (retract ?f)
         (focus INFORM)
-        (focus FINISH)
-)
-
-(defrule exec-inform
-        (declare (salience 9))
-        (status (step ?s))
-?f  <-  (inform-act (r ?r) (c ?c) (status ?status))
-    =>
-        (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
-        (retract ?f)
 )
 
 (defrule turno0
@@ -175,6 +174,7 @@
 
 (defrule control-finish
     (declare (salience 1))
+	(status (step ?s))
     (not (finish_checked ?s))
     (not (finished))
     (not (punteggi_checked ?s))
@@ -252,6 +252,16 @@
     (exit_checked ?s)
     (time_checked ?s)
     (not (move_checked ?s))
+	(not (finished))
+=>
+    (printout t "--- Focus move ---" crlf)
+    (focus MOVE)
+)
+
+(defrule control-move-finished
+    (declare (salience 1))
+    (status (step ?s))
+    (finished)
 =>
     (printout t "--- Focus move ---" crlf)
     (focus MOVE)
