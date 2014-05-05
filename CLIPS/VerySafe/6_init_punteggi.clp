@@ -13,7 +13,7 @@
     (prior_cell (pos-r ?x) (pos-c ?y) (type border))
     ?cella <- (score_cell (pos-r ?x) (pos-c ?y) (val nil))
     =>
-    (modify ?cella (val 0) (abs_score -1000))
+    (modify ?cella (val -100) (abs_score -1000))
 )
 
 (defrule init_gate_cell
@@ -21,7 +21,7 @@
     (prior_cell (pos-r ?x) (pos-c ?y) (type gate))
     ?cella <- (score_cell (pos-r ?x) (pos-c ?y) (val nil))
     =>
-    (modify ?cella (val 20) (abs_score -500))
+    (modify ?cella (val -100) (abs_score -1000))
 )
 
 (defrule init_lake_cell
@@ -29,7 +29,7 @@
     (prior_cell (pos-r ?x) (pos-c ?y) (type lake))
     ?cella <- (score_cell (pos-r ?x) (pos-c ?y) (val nil))
     =>
-    (modify ?cella (val 20))
+    (modify ?cella (val -5))
 )
 
 (defrule init_hill_cell
@@ -37,7 +37,7 @@
     (prior_cell (pos-r ?x) (pos-c ?y) (type hill))
     ?cella <- (score_cell (pos-r ?x) (pos-c ?y) (val nil))
     =>
-    (modify ?cella (val 0) (abs_score -1000))
+    (modify ?cella (val -100) (abs_score -1000))
 )
 
 (defrule init_urban_cell
@@ -45,7 +45,7 @@
     (prior_cell (pos-r ?x) (pos-c ?y) (type urban))
     ?cella <- (score_cell (pos-r ?x) (pos-c ?y) (val nil))
     =>
-    (modify ?cella (val 400))
+    (modify ?cella (val 1000))
 )
 
 (defrule init_rural_cell
@@ -53,7 +53,7 @@
     (prior_cell (pos-r ?x) (pos-c ?y) (type rural))
     ?cella <- (score_cell (pos-r ?x) (pos-c ?y) (val nil))
     =>
-    (modify ?cella (val 300))
+    (modify ?cella (val 900))
 )
 
 ;;CALCOLO DEI VALORI ASSOLUTI
@@ -70,8 +70,8 @@
     (score_cell (pos-r ?x) (pos-c =(+ ?y 1)) (val ?e))
     (score_cell (pos-r =(+ ?x 1)) (pos-c =(- ?y 1)) (val ?nw))
     (score_cell (pos-r =(+ ?x 1)) (pos-c ?y) (val ?n))
-    (score_cell (pos-r =(+ ?x 1)) (pos-c =(+ ?y 1)) (val ?ne))    
+    (score_cell (pos-r =(+ ?x 1)) (pos-c =(+ ?y 1)) (val ?ne))
     =>
-    ;;sommo i valori e li salvo in abs_score. NON HO ANCORA USATO I COEFFICIENTI POSIZIONALI    
+    ;;sommo i valori e li salvo in abs_score. NON HO ANCORA USATO I COEFFICIENTI POSIZIONALI
     (modify ?cella (abs_score (+ ?sw ?s ?se ?w ?v ?e ?nw ?n ?ne)))
 )
