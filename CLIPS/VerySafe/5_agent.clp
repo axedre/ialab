@@ -160,7 +160,6 @@
         (assert (exec (step ?s) (action ?oper)))
         (retract ?f)
         (focus INFORM)
-        ;(focus FINISH)
 )
 
 
@@ -172,6 +171,21 @@
     (assert (dummy_target (pos-x 2) (pos-y 5)))
     (assert (exec (action go-forward) (step 0)))
     (focus INIT_PUNTEGGI)
+)
+
+(defrule control-finish
+    (declare (salience 1))
+	(status (step ?s))
+    (not (finish_checked ?s))
+    (not (finished))
+    (not (punteggi_checked ?s))
+    (not (astar_checked ?s))
+    (not (exit_checked ?s))
+    (not (time_checked ?s))
+    (not (move_checked ?s))
+=>
+    (printout t "--- Focus punteggi ---" crlf)
+    (focus FINISH)
 )
 
 (defrule control-punteggi
@@ -240,6 +254,15 @@
     (time_checked ?s)
     (not (move_checked ?s))
     (not (finished))
+=>
+    (printout t "--- Focus move ---" crlf)
+    (focus MOVE)
+)
+
+(defrule control-move-finished
+    (declare (salience 1))
+    (status (step ?s))
+    (finished)
 =>
     (printout t "--- Focus move ---" crlf)
     (focus MOVE)
