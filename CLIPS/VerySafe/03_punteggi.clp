@@ -34,7 +34,7 @@
     =>
 	(retract ?f)
 	(assert (temporary_target (pos-x ?r2) (pos-y ?c2)))
-	(printout t "Best Cell: ("?r2", "?c2") - Rel Score: "?best" " crlf)
+	(printout t "Best Cell: ("?r2", "?c2") - Abs Score: "?best" " crlf)
 )
 
 (defrule punteggi-ok
