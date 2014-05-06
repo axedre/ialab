@@ -1,14 +1,14 @@
 Questa strategia risulta essere una leggera variante di quella illustrata nel capitolo \ref{cap:safe}. Ciò che varia, rispetto alla precedente, è il sistema di calcolo dei punteggi al fine di individuare la cella più promettente da esplorare verso cui dirigersi. Verranno enfatizzate solo le differenze rispetto alla strategia Safe.
 
 \section{Modulo: individuazione della cella target} \label{sec:base-target}
-L'individuazione della cella più appetibile nella strategia di base è molto semplice. Durante la fase di inizializzazione dell'ambiente viene assegnato un punteggio a ogni cella, in base alla propria tipologia, e salvato nello slot \texttt{val} del template \texttt{score\_cell}. Questo template serve a memorizzare i punteggi delle celle per individuare la più appetibile presente sulla mappa. I valori, che ricordo non vengono calcolati in questo modulo, bensì nella fase di inizializzazione dell'ambiente, vengono assegnati nel seguente modo: {\color{red}DA COMPLETARE UNA VOLTA STABILITI I PUNTEGGI ESATTI}
+L'individuazione della cella più appetibile nella strategia di base è molto semplice. Durante la fase di inizializzazione dell'ambiente viene assegnato un punteggio a ogni cella, in base alla propria tipologia, e salvato nello slot \texttt{val} del template \texttt{score\_cell}. Questo template serve a memorizzare i punteggi delle celle per individuare la più appetibile presente sulla mappa. I valori, che ricordo non vengono calcolati in questo modulo, bensì nella fase di inizializzazione dell'ambiente, vengono assegnati nel seguente modo: 
 \begin{itemize}
-	\item Rural: 
-	\item Urban: 
-	\item Hill: 
-	\item Lake: 
-	\item Border: 
-	\item Gate: 	
+	\item Rural: 900\footnote{il valore viene abbassato a -5 una volta informata}
+	\item Urban: 1000\footnote{il valore viene abbassato a -5 una volta informata}
+	\item Hill: -100
+	\item Lake: -5
+	\item Border: -100
+	\item Gate: -100
 \end{itemize}
 Il modulo in questione, come prima cosa, si occupa di assegnare, nello slot \texttt{abs\_score} del template \texttt{score\_cell}, un punteggio, per ogni cella, che tenga conto delle tipologie della cella in questione e di quelle limitrofe. Per fare ciò, semplicemente, vengono sommati i valori del campo val delle celle disposte a nord-ovest, nord, nord-est, ovest, est, sud-ovest, sud, sud-est e il campo val della cella in questione, ottenendo un valore che verrà appunto salvato nel campo \texttt{abs\_score}. Viene chiamato \texttt{abs\_score} che sta per "punteggio assoluto", vedremo nell'illustrazione delle altre strategie il perché di questa nomenclatura: in effetti è superfluo l'aggettivo "assoluto" in questa strategia ma, tuttavia, per consistenza nella nomenclatura, si è scelto di mantenere questo nome anche in questo contesto.
 Ciò che viene fatto in questo modulo è semplicemente trovare la cella con il punteggio più alto presente in \texttt{abs\_score} e impostarla come target per l'algoritmo A* che verrà computato nel modulo corrispettivo di quello illustrato nella sezione \ref{sec:safe-astar}. È importante notare che, in questo procedimento, vengono escluse automaticamente le celle di tipo Hill, Border e Gate (a cui, in effetti, non è nemmeno stato assegnato un valore al campo \texttt{abs\_score}): le prime due per impossibilità di muoversi su celle di quel tipo, l'ultima perché non è desiderabile dirigersi verso una cella di questo tipo fino a quando non si è concluso il compito.

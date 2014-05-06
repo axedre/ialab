@@ -1,0 +1,67 @@
+La prima strategia illustrata è quella più semplice, che useremo come metro di paragone. Ha la proprietà desiderabile di essere Safe, ovvero intraprende sempre un procedimento che porta a un risultato per cui l'UAV riesce a uscire entro il tempo stabilito anche se non è detto che, necessariamente, riesca a massimizzare le inform effettuate nel tempo a disposizione.
+La strategia è molto semplice: ci si basa sempre sui controllori implementati nel modulo AGENT, tuttavia non a tutti viene dato il focus a ogni passo dell'UAV, a differenza di quanto detto nella descrizione generica delle strategie nel capitolo \ref{cap:intro}.
+In effetti, la principale differenza dalla maggior parte delle altre strategie implementate (e da quanto descritto precedentemente), è che il modulo che si occupa della computazione dei passi non rilascia il focus fino a quando non vengono computati tutti i passi calcolati da A*: questo comporta che i vari controllori vengano azionati solo una volta eseguiti tutti i passi previsti, rendendo la strategia meno adattativa alla variazione di punteggi conseguente alle inform effettuate nel percorso.
+Un'altra peculiarità di questa strategia è che viene completamente ignorata la possibilità di effettuare una loiter monitoring per poi compiere una inform precisa sullo stato delle celle. Questo è dovuto al fatto che si volesse implementare una strategia il più possibile semplice da poter poi usare come metro di paragone e confronto con le altre strategia e che avesse, come unica condizione realmente necessaria, la proprietà di essere Safe.
+Per poter rendere sufficientemente interessante la strategia si è quindi dovuto ristrutturare la routine di AGENT che, in effetti, si discosta abbastanza da quella basilare illustrata nel capitolo \ref{cap:intro}. Entriamo più nei dettagli illustrando, modulo per modulo, il funzionamento della strategia.
+\section{Controllore} \label{sec:safe-controllore}
+Come detto, vi sono diverse differenze nella routine di controllo nel modulo AGENT rispetto alla strategia generica tratteggiata nel capitolo \ref{cap:intro}. Il modulo AGENT è composto dai seguenti controllori:
+\begin{itemize}
+	\item controllo che ci siano celle ancora da visitare (sezione \ref{sec:safe-finish})
+	\item individuazione della cella verso cui spostarsi (sezione \ref{sec:safe-target})
+	\item calcolo del percorso per raggiungere la cella individuata mediante l'algoritmo A* (sezione \ref{sec:safe-astar})
+	\item controllo del tempo rimanente a partire dal raggiungimento della cella identificata come obiettivo (sezione \ref{sec:safe-tempo})
+	\item controllo che la cella individuata permetta di raggiungere un'uscita, ai fini di non finire in vicoli ciechi (sezione \ref{sec:safe-uscita})
+	\item computazione effettiva dei passi calcolati e memorizzati dall'algoritmo A* (sezione \ref{sec:safe-movimento})
+\end{itemize}
+Si noti che il modulo \ref{sec:safe-movimento}, come già accennato nell'introduzione di questo capitolo, computa (e consuma) tutti i fatti prodotti dal modulo \ref{sec:safe-astar}. Entriamo ora più nel dettaglio dei vari moduli.
+
+\section{Modulo: Controllo delle celle da visitare} \label{sec:safe-finish}
+Il controllo della presenza di celle da visitare viene fatto considerando i punteggi (vedere modulo \ref{sec:safe-target}) delle celle sulla mappa. Se esistono celle con un punteggio superiore a zero\footnote{le celle con punteggi negativi sono celle di tipo hill, border, gate o lake, oppure celle di tipo Urban o Rural su cui è già stata effettuata una inform} si asserisce un fatto di tipo \texttt{finish\_checked} e si prosegue con il prossimo controllore. Altrimenti, ovvero se non ci sono più celle da informare presenti sulla mappa, si calcola il percorso verso l'uscita più vicina e si asserisce un fatto di tipo \texttt{finished}: questo comporta che i successivi controllori vengano inibiti\footnote{a eccezione di \ref{sec:safe-movimento}} per far sì che l'UAV si diriga verso una cella di tipo gate senza sprecare ulteriore tempo.
+
+\section{Modulo: individuazione della cella target} \label{sec:safe-target}
+L'individuazione della cella più appetibile nella strategia di base è molto semplice. Durante la fase di inizializzazione dell'ambiente viene assegnato un punteggio a ogni cella, in base alla propria tipologia, e salvato nello slot \texttt{val} del template \texttt{score\_cell}. Questo template serve a memorizzare i punteggi delle celle per individuare la più appetibile presente sulla mappa. I valori, che ricordo non vengono calcolati in questo modulo, bensì nella fase di inizializzazione dell'ambiente, vengono assegnati nel seguente modo: {\color{red}DA COMPLETARE UNA VOLTA STABILITI I PUNTEGGI ESATTI}
+\begin{itemize}
+	\item Rural: 900\footnote{il valore viene abbassato a -5 una volta informata}
+	\item Urban: 1000\footnote{il valore viene abbassato a -5 una volta informata}
+	\item Hill: -100
+	\item Lake: -5
+	\item Border: -100
+	\item Gate: -100
+\end{itemize}
+Ciò che viene fatto in questo modulo è semplicemente trovare la cella con il punteggio più alto presente in \texttt{val} e impostarla come target per l'algoritmo A* che verrà computato nel modulo \ref{sec:safe-astar}. È importante notare che, in questo procedimento, vengono escluse automaticamente le celle di tipo Hill, Border e Gate: le prime due per impossibilità di muoversi su celle di quel tipo, l'ultima perché non è desiderabile dirigersi verso una cella di questo tipo fino a quando non si è concluso il compito.
+Vengono altresì escluse le celle che sono già state contrassegnate come invalid-target nei moduli \ref{sec:safe-uscita} e \ref{sec:safe-tempo}.
+Nel modulo viene quindi scelta la cella con \texttt{val} maggiore e impostata come target, quindi il focus viene rilasciato asserendo la condizione di controllo \texttt{punteggi\_checked}.
+
+\section{Modulo: Esecuzione dell'algoritmo A*} \label{sec:safe-astar}
+Il modulo A* calcola il percorso dalla posizione dell'UAV alla posizione desiderata contrassegnata dal fatto di tipo target, ricalcando l'algoritmo illustrato a lezione.
+L'esecuzione dell'algoritmo parte dal nodo 0, corrispondente alla posizione dell'UAV, nonché il nodo corrente all'inizio dell'esecuzione. Da questo nodo saranno individuati tutti gli spostamenti applicabili\footnote{ovvero quelli che non portano a collisioni da parte dell'UAV}, tramite le regole aventi un template del tipo \texttt{nome\_azione\footnote{può essere go-forward, left o right}-apply-direzione\footnote{north, east, south, west}}. I fatti prodotti da queste regole sono di tipo \texttt{(id ?curr) (op ?op) (direction ?dir) (pos-x ?r) (pos-y ?c)))}. Questi ultimi servono alle regole del tipo \texttt{nome\_azione-exec-direzione} che, dato un fatto di tipo \texttt{apply}, ne asseriscono un fatto di tipo:\\ \texttt{(newnode\\
+            (ident (+ ?n 11))\\
+            (pos-r ?r)\\
+            (pos-c (- ?c 1))\\
+            (direction ?dir)\\
+            (gcost (+ ?g 15))\footnote{rappresenta il costo effettivo per arrivare al nodo}\\
+            (fcost (+ (+(*(+(abs (- ?x ?r)) (abs (- ?y (- ?c 1)))) 10) 5) ?g 15))\footnote{rappresenta il costo complessivo, calcolato con l'euristica distanza di Manhattan, per arrivare al target}\\
+            (father ?curr))
+)}\\
+Ogni \texttt{newnode} viene controllato da alcune regole:
+\begin{itemize}
+	\item \texttt{check-closed}: se un newnode ha già un nodo "chiuso" corrispondente, ma il suo costo è minore, esso viene aggiornato;
+	\item \texttt{check-open-better}: se un newnode ha già un nodo aperto corrispondente, ma il suo costo è minore, il nodo viene aggiornato;
+	\item \texttt{check-open-worse}: se un newnode ha già un nodo aperto corrispondente, ma il suo costo è maggiore, il nwnode viene retratto;
+	\item \texttt{add-open}: se non esiste un nodo corrispondente, il newnode diventa un node aperto.
+\end{itemize}
+Infine, vi è una regola chiamata \texttt{changecurrent} che si occupa di impostare come nodo corrente il nodo aperto con costo minore.
+
+\section{Modulo: Controllo del tempo rimanente} \label{sec:safe-tempo}
+La principale differenza in questo modulo, rispetto al normale funzionamento in altre strategie, è che il tempo viene calcolato a partire dalla cella che si sta cercando di raggiungere. È noto il tempo rimanente disponibile (dallo slot time del template perc-vision), mediante il modulo \ref{sec:safe-astar} è noto anche il tempo che verrà consumato una volta raggiunta la cella desiderata: ad esso viene aggiunto un delta di tempo che tiene in considerazione la possibilità di fare una inform a ogni passo (in questa strategia, quindi, il delta sarà pari a 3 per ogni passo che computerà A*, visto che è necessario fare al più 3 inform a ogni passo dell'UAV). Si detrae, dal tempo rimanente, questo ammontare di tempo necessario a spostarsi verso il target, ottenendo il tempo che rimarrà una volta raggiunto il target. A questo punto viene calcolato il tempo, a partire da quel target, per raggiungere ogni uscita. L'uscita più vicina avrà il tempo inferiore per essere raggiunta quindi si confronta questo tempo con il tempo rimanente una volta raggiunto il target. Se il tempo sarà sufficiente per uscire verrà asserita la condizione di successo del modulo, altrimenti la cella target verrà contrassegnata come \texttt{invalid-target} e, ritraendo i fatti opportuni (\texttt{astar\_checked} e \texttt{punteggi\_checked}, il focus, una volta tornato a \texttt{AGENT}, verrà assegnato nuovamente al modulo \ref{sec:safe-target} che questa volta escluderà la cella appena contrassegnata come \texttt{invalid-target} dalle sue computazioni.
+
+\section{Modulo: Controllo di uscita} \label{sec:safe-uscita}
+Questo modulo si occupa di verificare che, una volta che verrà raggiunto il target trovato, ci sia la possibilità di raggiungere un gate. Questa è un'escamotage studiata al fine di non ritrovarsi in situazioni che portino l'UAV a non poter concludere il suo lavoro (ad esempio finendo in un vicolo cieco dal quale non si possa uscire), con relativa penalità altissima.
+Nel caso in cui sia possibile raggiungere una cella di tipo gate dal target stabilito si prosegue normalmente nel flusso dei moduli, asserendo la condizione di successo (\texttt{exit\_checked}). Viceversa, se non fosse possibile raggiungere alcun gate, si aggiunge un fatto che indichi la condizione di impossibilità di uscire da quella cella, in modo che non venga più presa in considerazione nella ricerca di nuovi target papabili; quindi si procede ritraendo il fatto di successo dei moduli \ref{sec:safe-tempo}, \ref{sec:safe-astar} e \ref{sec:safe-target} così che il controllore (\ref{sec:safe-controllore}), una volta effettuata la pop, dia nuovamente il focus al modulo \ref{sec:safe-target} che si occuperà di trovare un nuovo target papabile (scartando la cella trovata precedentemente perché contrassegnata dal fatto che indica l'impossibilità di uscire da quella cella). Come già illustrato nel capitolo \ref{cap:intro} una volta computato A* sappiamo la direzione verso cui l'UAV sarà rivolto una volta arrivato nella cella target: se si scopre che l'UAV non ha la possibilità di uscire, una volta arrivato in quella cella, quella cella nella determinata direzione in cui l'UAV verrebbe a trovarsi viene contrassegnata come illegale con un fatto di tipo \texttt{invalid-target}. Il modulo \ref{sec:safe-target} si occupa di escludere le celle così contrassegnate dalla ricerca della cella più appetibile verso cui dirigersi.
+
+\section{Modulo: Movimento} \label{sec:safe-movimento}
+In questo contesto vengono semplicemente computati i passi dell'UAV prodotti dall'algoritmo A* del modulo \ref{sec:safe-astar} o dal modulo \texttt{sec:safe-finish}. L'algoritmo, come detto, produce fatti di tipo path. In questo modulo essi vengono computati in passi effettivi per l'UAV e ritratti, in modo da mantenere il più pulita possibile la Knowledge Base.
+In questa sede vengono analizzati fatti di tipo \texttt{path} (prodotti dal modulo \ref{sec:safe-finish}) e fatti di tipo \texttt{path-star} (prodotti dal modulo \ref{sec:safe-astar}) e vengono asseriti fatti di tipo \texttt{move-path}. Questi ultimi vengono poi computati effettivamente dalla regola \texttt{exec-move-path} presente nel modulo \texttt{AGENT}, che si occupa di far muovere effettivamente l'UAV e di consumare i fatti precedentemente creati, al fine di mantenere la Knowledge Base il più pulita possibile.
+
+\section{Inform delle celle visibili} \label{sec:inform}
+A ogni esecuzione di un movimento dell'UAV viene dato il focus a un modulo di inform. Questo modulo ha la responsabilità di effettuare azioni di tipo \texttt{inform} di celle sulle quali non è ancora stata effettuata tale azione secondo i criteri della strategia. Viene effettuata una \texttt{inform} base per ogni nuova cella avvistata, in quanto il costo dell'operazione di \texttt{inform} è basso. Una volta effettuata una inform viene abbassato il punteggio della cella informata.

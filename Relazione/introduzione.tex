@@ -1,5 +1,5 @@
 Tutte le strategie illustrate in questo documento hanno in comune la struttura.
-Il codice è strutturato in maniera gerarchica, in modo tale che ogni modulo si occupi di un compito particolare da svolgere, il tutto coordinato da una serie di controllori inseriti nel file {\color{red}agent.clp}, fornito nello scheletro iniziale del progetto.
+Il codice è strutturato in maniera gerarchica, in modo tale che ogni modulo si occupi di un compito particolare da svolgere, il tutto coordinato da una serie di controllori inseriti nel file \texttt{5\_agent.clp}, fornito nello scheletro iniziale del progetto.
 Partiamo illustrando il modulo agent: questo modulo, concettualmente, si occupa solo di gestire e coordinare i vari moduli a cui è assegnato un compito specifico. Agent controlla che la condizione di entrata per un modulo sia soddisfatta, quindi dà il focus al modulo in questione attendendo che il lavoro sia svolto. Quando questo modulo rilascerà il focus attraverso una pop, agent avrà a questo punto la possibilità di dare il focus a un altro modulo che svolgerà un altro sottocompito.
 Ogni modulo, come detto, ha un compito particolare (verranno illustrati in seguito i vari moduli con i rispettivi compiti). La struttura di ogni modulo è abbastanza semplice ed è così composta con le azioni elencate in ordine cronologico: 
 \begin{enumerate}
@@ -9,7 +9,7 @@ Ogni modulo, come detto, ha un compito particolare (verranno illustrati in segui
 	\item rilascia il focus mediante una pop.
 \end{enumerate}
 Ci sono poi, a seconda delle varie strategie, delle varianti a questo comportamento, ma generalmente il flusso di esecuzione è quello illustrato. Alcune eccezioni possono essere la necessità di spezzare la routine di ogni turno, ad esempio quando il modulo del tempo inferisce che il tempo rimanente per dirigersi verso un gate scarseggia, ma entreremo nel dettaglio durante l'illustrazione specifica delle varie strategie.
-Verranno illustrati poco più avanti i moduli più nel dettaglio anche se, per una spiegazione esaustiva, il rimando è alla sezione della strategia considerata.
+Verranno approfonditi poco più avanti i moduli più nel dettaglio anche se, per una spiegazione esaustiva, il rimando è alla sezione della strategia considerata.
 
 \section{Controllore} \label{sec:controllore}
 Entriamo ora più nello specifico nel comportamento del controllore. Il controllore si occupa, come detto, di dare il focus al modulo corretto. Quest'ultimo viene fatto identificando una determinata routine da svolgere per ogni passo (identificato dallo slot \texttt{step} del template status fornito nello scheletro iniziale del progetto):
@@ -19,20 +19,20 @@ Entriamo ora più nello specifico nel comportamento del controllore. Il controll
 	\item individuazione della cella verso cui spostarsi (sezione \ref{sec:target})
 	\item calcolo del percorso per raggiungere la cella individuata mediante l'algoritmo A* (sezione \ref{sec:astar})
 	\item controllo che la cella individuata permetta di raggiungere un'uscita, ai fini di non finire in vicoli ciechi (sezione \ref{sec:uscita})
-	\item computazione effettiva di un passo calcolato e memorizzato dall'algoritmo A* (sezione \ref{sec:movimento})
+	\item computazione effettiva dei passi calcolati e memorizzati dall'algoritmo A* (sezione \ref{sec:movimento})
 \end{enumerate}
 
 \section{Modulo: Controllo delle celle da visitare} \label{sec:finish}
-Questo modulo controlla che vi siano, sulla mappa, ancora delle celle che dovrebbero essere visitate. Se ne esistono allora si continua nel flusso dei controllori, altrimenti viene notificato che, al fine di non sprecare tempo, ci si deve dirigere verso una cella di tipo gate.
+Questo modulo controlla che vi siano, sulla mappa, ancora delle celle che dovrebbero essere visitate. Se ne esistono allora si continua nel flusso dei controllori, altrimenti viene notificato che, al fine di non sprecare tempo, ci si deve dirigere verso la più vicina cella di tipo gate, il cui percorso viene calcolato in questo modulo.
 
 \section{Modulo: Controllo del tempo rimanente} \label{sec:tempo}
 Questo modulo si occupa di controllare che il tempo rimasto a disposizione sia sufficiente. Generalmente questo significa controllare il tempo necessario a raggiungere l'uscita più vicina e confrontarlo con il tempo rimanente. Se il tempo rimanente è sufficiente si continua nel flusso normale delle azioni asserendo la condizione di successo per il modulo agent. Se, invece, il tempo scarseggia si intraprende un'azione che può variare a seconda delle varie strategie.
 
 \section{Modulo: Individuazione della cella target} \label{sec:target}
-In questo modulo viene scelta la cella verso cui dirigersi (target). {\color{red} Non in tutte le strategie viene utilizzato a ogni passo} e i criteri con cui viene stabilita la cella target variano molto a seconda della strategia adottata.
+In questo modulo viene scelta la cella verso cui dirigersi (target). I criteri con cui viene stabilita la cella target variano molto a seconda della strategia adottata.
 
 \section{Modulo: Esecuzione dell'algoritmo A*} \label{sec:astar}
-Questo modulo, {\color{red}pressoché invariato in ogni strategia}, computa semplicemente l'algoritmo A* partendo dalla posizione attuale per arrivare al target. All'interno del modulo stesso vengono prodotti {\color{red} ... (COMPLETARE DESCRIZIONE DETTAGLIATA DEL MODULO}.
+Questo modulo, pressoché invariato in ogni strategia, computa semplicemente l'algoritmo A* partendo dalla posizione attuale per arrivare al target. All'interno del modulo stesso vengono prodotti fatti che serviranno poi al modulo \ref{sec:movimento}.
 
 \section{Modulo: Controllo di uscita} \label{sec:uscita}
 Questo modulo si occupa di verificare che, una volta che verrà raggiunto il target trovato, ci sia la possibilità di raggiungere una cella di tipo \texttt{gate}. Questo è un'\emph{escamotage} studiato al fine di non ritrovarsi in situazioni che portino l'UAV a non poter concludere il suo lavoro (ad esempio finendo in un vicolo cieco dal quale non si possa uscire), con relativa penalità altissima.
