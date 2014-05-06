@@ -162,7 +162,7 @@
     (score_cell (pos-r =(+ ?x 1)) (pos-c ?y) (val ?n))
     (score_cell (pos-r =(+ ?x 1)) (pos-c =(+ ?y 1)) (val ?ne))
     (score_cell (pos-r ?x) (pos-c =(- ?y 1)) (val ?w))
-?cella <- (score_cell (pos-r ?x) (pos-c ?y) (val ?v))
+?cella <- (score_cell (pos-r ?x) (pos-c ?y) (val ?v) (type ?t&:(neq ?t hill)))
     (score_cell (pos-r ?x) (pos-c =(+ ?y 1)) (val ?e))
     (score_cell (pos-r =(- ?x 1)) (pos-c =(- ?y 1)) (val ?sw))
     (score_cell (pos-r =(- ?x 1)) (pos-c ?y) (val ?s))
