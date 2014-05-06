@@ -124,6 +124,15 @@
     (slot pos-r)
     (slot pos-c)
 )
+
+(deffunction count-facts (?template)
+    (bind ?count 0)
+    (do-for-all-facts ((?fct ?template)) TRUE
+        (bind ?count (+ ?count 1))
+    )
+    ?count
+)
+
 ;------------------ Fine delle nostre modifiche --------------------
 
 ;; COMMENTATO PER VEDERLO NELL'INTERFACCIA
@@ -199,6 +208,7 @@
 =>
     (printout t "--- Focus punteggi ---" crlf)
     (focus PUNTEGGI)
+    (printout t "Fatti di tipo score_cell: " (count-facts score_cell) crlf)
 )
 
 (defrule control-astar
