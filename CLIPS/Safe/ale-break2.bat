@@ -6,9 +6,9 @@
 ; (set-break exec-move-path)
 ; (set-break control-time)
 ; (set-break control-finish)
-(set-break control-astar)
-(set-break done)
-(set-break control-exit)
+; (set-break control-astar)
+; (set-break done)
+; (set-break control-exit)
 
 ; (focus ASTAR)
 ; (set-break astar-go)
@@ -28,12 +28,12 @@
 ; (set-break go-forward-apply-south)
 ; (set-break go-forward-exec-south)
 
-(focus PUNTEGGI)
+; (focus PUNTEGGI)
 ; (set-break best-cell-clean)
-(set-break best-cell)
-(set-break punteggi-ok)
+; (set-break best-cell)
+; (set-break punteggi-ok)
 
-; (focus TIME)
+(focus TIME)
 ; (set-break target-dir)
 ; (set-break time-clean2)
 ; (set-break costo-astar)
@@ -45,6 +45,7 @@
 ; (set-break check-exit-cost1)
 ; (set-break check-exit-cost2)
 ; (set-break check-exit-cost3)
+(set-break stop-loiter)
 
 ; (focus PATH-TO-FINISH)
 ; (set-break notintime)

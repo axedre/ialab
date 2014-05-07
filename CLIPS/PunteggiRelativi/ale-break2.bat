@@ -6,9 +6,9 @@
 ; (set-break control-move)
 ; (set-break done)
 ; (set-break exec-move-path)
+; (set-break turno0)
 (set-break control-move-finished)
 (set-break control-finish)
-(set-break turno0)
 
 ; (focus ASTAR)
 ; (set-break astar-go)
@@ -28,9 +28,12 @@
 ; (set-break go-forward-apply-south)
 ; (set-break go-forward-exec-south)
 
-; (focus PUNTEGGI)
+(focus PUNTEGGI)
 ; (set-break best-cell)
 ; (set-break best-cell-clean)
+(set-break update_rel_score_current_cell)
+(set-break update_rel_score)
+(set-break punteggi-ok)
 
 ; (focus TIME)
 ; (set-break target-dir)
@@ -65,9 +68,9 @@
 ; (set-break move-path-star)
 ; (set-break move-path)
 
-; (focus FINISH)
-; (set-break informs-not-completed)
-; (set-break informs-completed)
+(focus FINISH)
+(set-break informs-not-completed)
+(set-break informs-completed)
 
 ; (focus PATH-TO-BESTEXIT)
 ; (set-break path-to-best-exit)
