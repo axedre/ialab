@@ -14,10 +14,10 @@
 (defrule informs-not-completed
         (declare (salience 10))
         (status (step ?s))
-        (score_cell (abs_score ?as&~nil))
-        (test (> ?as 0))
+        (score_cell (rel_score ?rs&~nil))
+        (test (> ?rs 0))
     =>
-        (printout t "abs_score vale: " ?as crlf)
+        (printout t "rel_score vale: " ?rs crlf)
         (assert (finish_checked ?s))
         (pop-focus)
 )
