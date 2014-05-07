@@ -76,6 +76,7 @@
 		(status (step ?s))
 ?f1 <-	(costo-check)
 ?f2	<-	(exit-run)
+	(temporary_target (pos-x ?r1) (pos-y ?c1))
     =>
 		(retract ?f1)
 		(retract ?f2)

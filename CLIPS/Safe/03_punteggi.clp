@@ -39,6 +39,7 @@
 (defrule punteggi-ok
     (declare (salience 0))
     (status (step ?s))
+    (temporary_target (pos-x ?r1) (pos-y ?c1))
     =>
     (printout t "Concluso aggiornamento punteggi turno " ?s crlf)
     (assert (punteggi_checked ?s))
