@@ -142,6 +142,7 @@
     ;(printout t "Update_val eseguita per cella " ?x ", " ?y crlf)
     (retract ?f)
     (modify ?g (val -5))
+)
     
 ; Regola che asserisce la fine di una sessione di inform
 (defrule inform-ok
