@@ -192,13 +192,14 @@
     (not (time_checked ?s))
     (not (move_checked ?s))
 =>
-    (printout t "--- Focus punteggi ---" crlf)
+    (printout t "--- Focus finish ---" crlf)
     (focus FINISH)
 )
 
 (defrule control-punteggi
     (declare (salience 1))
     (status (step ?s))
+    (finish_checked ?s)
     (not (punteggi_checked ?s))
     (not (astar_checked ?s))
     (not (exit_checked ?s))
@@ -215,6 +216,7 @@
     (declare (salience 1))
     (status (step ?s))
     (perc-vision (step ?s) (pos-r ?r) (pos-c ?c))
+    (finish_checked ?s)
     (punteggi_checked ?s)
     (not (astar_checked ?s))
     (not (exit_checked ?s))
@@ -229,6 +231,7 @@
 (defrule control-exit
     (declare (salience 1))
     (status (step ?s))
+    (finish_checked ?s)
     (punteggi_checked ?s)
     (astar_checked ?s)
     (not (exit_checked ?s))
@@ -243,6 +246,7 @@
 (defrule control-time
     (declare (salience 1))
     (status (step ?s))
+    (finish_checked ?s)
     (punteggi_checked ?s)
     (astar_checked ?s)
     (exit_checked ?s)
@@ -257,6 +261,7 @@
 (defrule control-move
     (declare (salience 1))
     (status (step ?s))
+    (finish_checked ?s)
     (punteggi_checked ?s)
     (astar_checked ?s)
     (exit_checked ?s)

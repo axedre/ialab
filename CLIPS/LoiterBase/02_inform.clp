@@ -149,11 +149,7 @@
     )
 )
 
-; Regola che aggiorna il valore di una cella dopo la "FULL" inform
-;(defrule update_full_val
-;)
-
-; Regola che aggiorna il punteggio assoluo di una cella quando cambiano il suo valore
+; Regola che aggiorna il punteggio assoluto di una cella quando cambiano il suo valore
 ; ed eventualmente quello delle celle circostanti a seguito di esecuzioni di update_val o update_full_val
 (defrule update_abs_score
     (declare (salience 1))
