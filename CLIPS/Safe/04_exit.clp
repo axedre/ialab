@@ -31,6 +31,7 @@
 ?f1 <-  (dummy_target)
 		(not(costo-check))
 		(last-direction-astar (direction ?dir) (step ?s))
+		(not (exit-analizzato ?x1 ?y1 ?s))
 	=>
 		(retract ?f1)
 		; (retract ?f2)
@@ -49,6 +50,7 @@
         )
     	(assert (current (id 0)))
     	(assert (lastnode (id 0)))
+		(assert (exit-analizzato ?x1 ?y1 ?s))
 		(focus ASTAR-ALGORITHM)
 )
 
