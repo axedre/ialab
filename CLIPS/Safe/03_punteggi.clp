@@ -7,34 +7,33 @@
     ?cella <- (score_cell (pos-r ?r) (pos-c ?c) (abs_step ?as&:(neq ?as ?s)))
     (not (invalid-target (pos-r ?r) (pos-c ?c)))
     =>
-    ;; ASSEGNO UN PUNTEGGIO RELATIVO MOLTO BASSO ALLA CELLA SU CUI SONO
+    ;; ASSEGNO UN PUNTEGGIO MOLTO BASSO ALLA CELLA SU CUI SONO
     (modify ?cella
-        (abs_score -1000)
+        (val -1000)
         (abs_step ?s)
     )
 )
 
-;; contrassegno con un rel_score di -1000 le celle segnalate come invalide, nel caso non sia già stato fatto
+;; contrassegno con un val di -1000 le celle segnalate come invalide, nel caso non sia già stato fatto
 (defrule invalid_target
         (declare (salience 2))
         (invalid-target (pos-r ?r) (pos-c ?c))
-?f <-   (score_cell (pos-r ?r) (pos-c ?c) (abs_score ?abs_score&:(neq ?abs_score -1000)))
+?f <-   (score_cell (pos-r ?r) (pos-c ?c) (val ?val&:(neq ?val -1000)))
     =>
         (retract ?f)
-        (assert (score_cell (pos-r ?r) (pos-c ?c) (abs_score -1000)))
+        (assert (score_cell (pos-r ?r) (pos-c ?c) (val -1000)))
 )
 
 (defrule best-cell
 	(declare (salience 2))
 ?f <-	(temporary_target (pos-x ?r1) (pos-y ?c1))
-	(score_cell (pos-r ?r1) (pos-c ?c1) (abs_score ?abs&:(neq ?abs nil)))
-	(score_cell (pos-r ?r2) (pos-c ?c2) (abs_score ?best&:(neq ?best nil)))
-	(test (< ?abs ?best))
-	;(not (analizzata ?r2 ?c2))
+	(score_cell (pos-r ?r1) (pos-c ?c1) (val ?v&:(neq ?v nil)))
+	(score_cell (pos-r ?r2) (pos-c ?c2) (val ?best&:(neq ?best nil)))
+	(test (< ?v ?best))	
     =>
 	(retract ?f)
 	(assert (temporary_target (pos-x ?r2) (pos-y ?c2)))
-	(printout t "Best Cell: ("?r2", "?c2") - Abs Score: "?best" " crlf)
+	(printout t "Best Cell: ("?r2", "?c2") - Val: "?best" " crlf)
 )
 
 (defrule punteggi-ok
