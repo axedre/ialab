@@ -22,6 +22,23 @@
 		(retract ?f)
 )
 
+; (defrule stop-loiter
+		; (declare (salience 150))
+		; (status (step ?s) (time ?t))
+		; (maxduration ?m)
+		; (test 
+			; (>
+				; ?t
+				; ( * 
+					; (/ ?t (count-facts score_cell))
+					; 50
+				; )
+			; )
+		; )
+	; =>
+		; (assert (stop-loiter))
+; )
+
 ;; Eseguo questa regola per ogni gate. Intendo valutare il costo di
 ;; raggiungimento dello stesso a partire dalla posizione attuale
 ;; PROBLEMA: calcola il percorso solo per il primo gate che matcha
