@@ -1,12 +1,12 @@
 (focus AGENT)
 ; (set-break exec_act)
 ; (set-break exec-inform)
-; (set-break control-astar)
 ; (set-break control-move)
 ; (set-break control-punteggi)
 ; (set-break exec-move-path)
 ; (set-break control-time)
 ; (set-break control-finish)
+(set-break control-astar)
 (set-break done)
 (set-break control-exit)
 
@@ -28,9 +28,10 @@
 ; (set-break go-forward-apply-south)
 ; (set-break go-forward-exec-south)
 
-; (focus PUNTEGGI)
-; (set-break best-cell)
+(focus PUNTEGGI)
 ; (set-break best-cell-clean)
+(set-break best-cell)
+(set-break punteggi-ok)
 
 ; (focus TIME)
 ; (set-break target-dir)
