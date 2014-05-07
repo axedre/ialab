@@ -142,37 +142,7 @@
     ;(printout t "Update_val eseguita per cella " ?x ", " ?y crlf)
     (retract ?f)
     (modify ?g (val -5))
-    (loop-for-count (?i (- ?x 1) (+ ?x 1)) do
-        (loop-for-count (?j (- ?y 1) (+ ?y 1)) do
-            (assert (must-update-abs-score ?i ?j))
-        )
-    )
-)
-
-; Regola che aggiorna il valore di una cella dopo la "FULL" inform
-;(defrule update_full_val
-;)
-
-; Regola che aggiorna il punteggio assoluo di una cella quando cambiano il suo valore
-; ed eventualmente quello delle celle circostanti a seguito di esecuzioni di update_val o update_full_val
-(defrule update_abs_score
-    (declare (salience 1))
-?f <- (must-update-abs-score ?x ?y)
-    (score_cell (pos-r =(+ ?x 1)) (pos-c =(- ?y 1)) (val ?nw))
-    (score_cell (pos-r =(+ ?x 1)) (pos-c ?y) (val ?n))
-    (score_cell (pos-r =(+ ?x 1)) (pos-c =(+ ?y 1)) (val ?ne))
-    (score_cell (pos-r ?x) (pos-c =(- ?y 1)) (val ?w))
-?cella <- (score_cell (pos-r ?x) (pos-c ?y) (val ?v) (type ?t&:(neq ?t hill)))
-    (score_cell (pos-r ?x) (pos-c =(+ ?y 1)) (val ?e))
-    (score_cell (pos-r =(- ?x 1)) (pos-c =(- ?y 1)) (val ?sw))
-    (score_cell (pos-r =(- ?x 1)) (pos-c ?y) (val ?s))
-    (score_cell (pos-r =(- ?x 1)) (pos-c =(+ ?y 1)) (val ?se))
-=>
-    (modify ?cella (abs_score (+ ?sw ?s ?se ?w ?v ?e ?nw ?n ?ne)))
-    (retract ?f)
-    ;(printout t "Update_abs_score eseguita per cella " ?x ", " ?y crlf)
-)
-
+    
 ; Regola che asserisce la fine di una sessione di inform
 (defrule inform-ok
     (declare (salience 0))
