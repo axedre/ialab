@@ -192,7 +192,7 @@
     (not (time_checked ?s))
     (not (move_checked ?s))
 =>
-    (printout t "--- Focus punteggi ---" crlf)
+    (printout t "--- Focus finish ---" crlf)
     (focus FINISH)
 )
 

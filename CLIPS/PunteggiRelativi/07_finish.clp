@@ -33,6 +33,7 @@
         (declare (salience 5))
         (status (step ?s))
     =>
+	(printout t "INFORM COMPLETATE" crlf)
         (assert (finished))
         (focus PATH-TO-FINISH)
 )
