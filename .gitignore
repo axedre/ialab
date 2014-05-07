@@ -1,23 +1,23 @@
-## Monitor1213
-/CLIPS/Monitor1213/nbproject/
-/CLIPS/Monitor1213/*build.xml
-/CLIPS/Monitor1213/build/
-/CLIPS/Monitor1213/dist/
-/CLIPS/Monitor1213/andy.bat
+## Strategie
+/CLIPS/*/nbproject/
+/CLIPS/*/*build.xml
+/CLIPS/*/build/
+/CLIPS/*/dist/
+/CLIPS/*/andy.bat
 
 ## Safe
-/CLIPS/Safe/nbproject/
-/CLIPS/Safe/*build.xml
-/CLIPS/Safe/build/
-/CLIPS/Safe/dist/
-/CLIPS/Safe/andy.bat
+#/CLIPS/Safe/nbproject/
+#/CLIPS/Safe/*build.xml
+#/CLIPS/Safe/build/
+#/CLIPS/Safe/dist/
+#/CLIPS/Safe/andy.bat
 
 ## VerySafe
-/CLIPS/VerySafe/nbproject/
-/CLIPS/VerySafe/*build.xml
-/CLIPS/VerySafe/build/
-/CLIPS/VerySafe/dist/
-/CLIPS/VerySafe/andy.bat
+#/CLIPS/VerySafe/nbproject/
+#/CLIPS/VerySafe/*build.xml
+#/CLIPS/VerySafe/build/
+#/CLIPS/VerySafe/dist/
+#/CLIPS/VerySafe/andy.bat
 
 ## Backup files
 *~
@@ -111,3 +111,10 @@ sympy-plots-for-*.tex/
 
 # xindy
 *.xdy
+/CLIPS/PunteggiRelativi/nbproject/private/
+/CLIPS/Base/nbproject/private/
+/CLIPS/Base (copy)/nbproject/private/
+/CLIPS/Base (another copy)/nbproject/private/
+/CLIPS/PunteggiRelativi (copy)/nbproject/private/
+/CLIPS/LoiterBase/nbproject/private/
+/CLIPS/LoiterRelativi/nbproject/private/
