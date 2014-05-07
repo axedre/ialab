@@ -38,7 +38,6 @@
 		(prior_cell (pos-r ?x1) (pos-c ?y1) (type gate))
 		(temporary_target (pos-x ?r) (pos-y ?c))
 ?f1 <-  (dummy_target)
-		(not(costo-check))
 		(last-direction-astar (direction ?dir) (step ?s))
 		(not (exit-analizzato ?x1 ?y1 ?s))
 		(not(exit-run))
