@@ -20,6 +20,15 @@
 		(retract ?f)
 )
 
+(defrule exit-clean4
+		(declare (salience 110))
+		(not (exit-run))
+		(status (step ?s))
+?f <-	(exit-analizzato ?x1 ?y1 ?s)
+	=>
+		(retract ?f)
+)
+
 ;Però non sappiamo in che direzione sarà l'UAV.
 ;Non possiamo inizializzare node con direction north
 (defrule exit-go
@@ -51,6 +60,7 @@
     	(assert (current (id 0)))
     	(assert (lastnode (id 0)))
 		(assert (exit-analizzato ?x1 ?y1 ?s))
+		(assert (exit-run))
 		(focus ASTAR-ALGORITHM)
 )
 
@@ -65,22 +75,26 @@
 		(declare (salience 0))
 		(status (step ?s))
 ?f1 <-	(costo-check)
+?f2	<-	(exit-run)
     =>
 		(retract ?f1)
+		(retract ?f2)
 		(assert (exit_checked ?s))
 		(pop-focus)
 )
 
 (defrule exit-invalid
 		(declare (salience 1))
-		(status (step ?S))
+		(status (step ?s))
 		(not (costo-check))
 ?f1 <- 	(punteggi_checked ?s)
 ?f2 <- 	(astar_checked ?s)
+?f3	<-	(exit-run)
 		(temporary_target (pos-x ?r) (pos-y ?c))
 	=>
 		(retract ?f1)
 		(retract ?f2)
+		(retract ?f3)
 		(assert (invalid-target (pos-r ?r) (pos-c ?c)))
 		(pop-focus)
 )
