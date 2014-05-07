@@ -29,7 +29,7 @@
     (prior_cell (pos-r ?x) (pos-c ?y) (type lake))
     ?cella <- (score_cell (pos-r ?x) (pos-c ?y) (val nil))
     =>
-    (modify ?cella (val -5))
+    (modify ?cella (val -5) (rel_score 1))
 )
 
 (defrule init_hill_cell
@@ -45,7 +45,7 @@
     (prior_cell (pos-r ?x) (pos-c ?y) (type urban))
     ?cella <- (score_cell (pos-r ?x) (pos-c ?y) (val nil))
     =>
-    (modify ?cella (val 1000))
+    (modify ?cella (val 1000) (rel_score 1))
 )
 
 (defrule init_rural_cell
@@ -53,7 +53,7 @@
     (prior_cell (pos-r ?x) (pos-c ?y) (type rural))
     ?cella <- (score_cell (pos-r ?x) (pos-c ?y) (val nil))
     =>
-    (modify ?cella (val 900))
+    (modify ?cella (val 900) (rel_score 1))
 )
 
 ;;CALCOLO DEI VALORI ASSOLUTI
