@@ -119,7 +119,11 @@
 		(status (step ?s) (time ?t))
 		(costo-check-astar (cost ?g)(step ?s))
 		(maxduration ?m)
-		(test (> (+ ?g ?cost) (- ?m ?t)))
+		(test (> 
+				(/(*(+ ?g ?cost) 3) 15)
+				(- ?m ?t)
+			)
+		)
 ?f <-	(dummy_target)
 		(not (hurry))
 =>
