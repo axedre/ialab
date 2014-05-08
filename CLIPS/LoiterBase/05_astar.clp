@@ -50,6 +50,7 @@
     (temporary_target (pos-x ?x1) (pos-y ?y1))
     ?f <- (dummy_target)
     (not (costo-check (pos-r ?x1) (pos-c ?y1)))
+	(not (astar-go))
     =>
     ;(printout t "Da: ("?r", "?c") " crlf)
     ;(printout t "A: ("?x1", "?y1") " crlf)
@@ -67,16 +68,33 @@
     )
     (assert (current (id 0)))
     (assert (lastnode (id 0)))
+	(assert (astar-go))
     (focus ASTAR-ALGORITHM)
 )
 
 ;Regola che asserisce il fatto (astar_checked ?s) se A* è andato a buon fine
 ;quindi se è presente nella kb un fatto di tipo (costo-check (pos-r ?x) (pos-c ?y))
 (defrule astar-ok
-    (declare (salience 0))
-    (status (step ?s))
-    (dummy_target (pos-x ?x1) (pos-y ?y1))
-    (costo-check (pos-r ?x1) (pos-c ?y1))
+		(declare (salience 0))
+		(status (step ?s))
+		(dummy_target (pos-x ?x1) (pos-y ?y1))
+		(costo-check (pos-r ?x1) (pos-c ?y1))
+?f <- 	(astar-go)
 =>
-    (assert (astar_checked ?s))
+		(assert (astar_checked ?s))
+		(retract ?f)
+)
+
+(defrule astar-invalid
+		(declare (salience 1))
+		(status (step ?s))
+		(not (costo-check))
+?f1 <- 	(punteggi_checked ?s)
+?f2 <- 	(astar-go)
+		(temporary_target (pos-x ?r) (pos-y ?c))
+	=>
+		(retract ?f1)
+		(retract ?f2)
+		(assert (invalid-target (pos-r ?r) (pos-c ?c)))
+		(pop-focus)
 )

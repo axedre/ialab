@@ -22,6 +22,7 @@
 		(retract ?f)
 )
 
+
 ;; Eseguo questa regola per ogni gate. Intendo valutare il costo di
 ;; raggiungimento dello stesso a partire dalla posizione attuale
 ;; PROBLEMA: calcola il percorso solo per il primo gate che matcha
@@ -101,7 +102,11 @@
 		(status (step ?s) (time ?t))
 		(costo-check-astar (cost ?g)(step ?s))
 		(maxduration ?m)
-		(test (> (+ ?g ?cost) (- ?m ?t)))
+		(test (> 
+				(+ ?g ?cost) 
+				(- ?m ?t)
+				)
+		)
 ?f <-	(dummy_target)
 		(not (hurry))
 =>
