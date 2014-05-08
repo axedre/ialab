@@ -163,6 +163,7 @@
 (defrule exec-move-path
         (declare (salience 9))
         (status (step ?s))
+		(not (inform-act))
 ?f  <-	(move-path (id ?id) (oper ?oper))
         (not (move-path (id ?id2&:(neq ?id ?id2)&:(< ?id2 ?id))))
     =>
