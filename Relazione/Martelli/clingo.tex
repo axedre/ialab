@@ -1,0 +1,186 @@
+In questa parte verrà descritto lo svolgimento dell'esercizio delle Cinque Case.
+Il problema viene così enunciato:
+\small{\begin{quote}
+    Cinque persone di nazionalità diverse vivono in cinque case allineate lungo una
+    strada, esercitano cinque professioni distinte, e ciascuna persona ha un animale favorito e una
+    bevanda favorita, tutti diversi fra loro. Le cinque case sono dipinte con colori diversi. Sono noti i
+    seguenti fatti:
+    \begin{enumerate}
+        \item{L’inglese vive nella casa rossa.}
+        \item{Lo spagnolo possiede un cane.}
+        \item{Il giapponese è un pittore.}
+        \item{L’italiano beve tè.}
+        \item{Il norvegese vive nella prima casa a sinistra.}
+        \item{Il proprietario della casa verde beve caffè.}
+        \item{La casa verde è immediatamente sulla destra di quella bianca.}
+        \item{Lo scultore alleva lumache.}
+        \item{Il diplomatico vive nella casa gialla.}
+        \item{Nella casa di mezzo si beve latte.}
+        \item{La casa del norvegese è adiacente a quella blu.}
+        \item{Il violinista beve succo di frutta.}
+        \item{La volpe è nella casa adiacente a quella del dottore.}
+        \item{Il cavallo è nella casa adiacente a quella del diplomatico.}
+    \end{enumerate}
+    Trovare chi possiede una zebra.
+\end{quote}}
+Il file che formalizza e risolve il problema si chiama \texttt{houses.cl} ed è suddiviso in 6 sezioni.
+\paragraph{Dominio}
+In questa sezione vengono elencate le entità che figurano nel problema e i valori che queste assumono.
+L'entità \texttt{casa} è stata semplicemente codificata con un numero da 1 a 5 (usando il costrutto \emph{Interval} di \texttt{clingo}) poiché le nazionalità dei suoi inquilini, le loro professioni e i loro animali e bevande preferiti sono stati implementati come predicati binari delle istanze di \texttt{casa}. Seguono quindi le entità \texttt{colore}, \texttt{nazionalita}, \texttt{animale}, \texttt{professione} e \texttt{bevanda}. L'uso del carattere \texttt{;} è una sintassi abbreviata per non dover enunciare più volte lo stesso \emph{atomo} con valori diversi. Ad es: \texttt{a(x;y;z)} equivale a: \texttt{a(x). a(y). a(z).}
+\clearpage{}
+\begin{lstlisting}[frame=tb]
+%% Dominio
+
+% Casa
+casa(1..5).
+
+% Colore
+colore(rossa;verde;bianca;gialla;blu).
+
+% Nazionalita`
+nazionalita(inglese;spagnolo;giapponese;italiano;norvegese).
+
+% Animale
+animale(cane;lumache;volpe;cavallo;zebra).
+
+% Professione
+professione(pittore;scultore;diplomatico;violinista;dottore).
+
+% Bevanda
+bevanda(te;caffe;latte;succo_di_frutta;altro).
+\end{lstlisting}
+\paragraph{Vincoli impliciti}
+In questa sezione vengono espressi quelli che sono vincoli "naturali", non espressamente descritti nell'enunciato del problema, ma che è più che ragionevole supporre. Vengono inoltre introdotti i predicati binari \texttt{coloreDi}, \texttt{nazionalitaDi}, \texttt{animaleDi}, \texttt{prefessioneDi} e \texttt{bevandaDi} precedentementi accennati. Ciascuno associa alla casa (passata come primo argomento) una proprietà (secondo argomento) avente un valore apparetenente al relativo dominio.
+\begin{lstlisting}[frame=tb]
+%% Vincoli impliciti
+
+% Ogni casa ha uno ed un solo colore...
+1 {coloreDi(X,C) : colore(C)} 1 :- casa(X).
+% ...e due case con lo stesso colore sono la stessa casa
+:- casa(X), casa(Y), coloreDi(X,C), coloreDi(Y,C), X != Y.
+
+% In ogni casa abita una persona di una ed una sola nazionalita`...
+1 {nazionalitaDi(X,N) : nazionalita(N)} 1 :- casa(X).
+% ...e due case con la persona della stessa nazionalita` sono la stessa casa
+:- casa(X), casa(Y), nazionalitaDi(X,N), nazionalitaDi(Y,N), X != Y.
+
+% In ogni casa abita una persona che ama uno ed un solo animale...
+1 {animaleDi(X,A) : animale(A)} 1 :- casa(X).
+% ...e due case con la persona che ama lo stesso animale sono la stessa casa
+:- casa(X), casa(Y), animaleDi(X,A), animaleDi(Y,A), X != Y.
+
+% In ogni casa abita una persona che svolge una ed una sola professione...
+1 {professioneDi(X,P) : professione(P)} 1 :- casa(X).
+% ...e due case con la persona che svolge la stessa preofessione sono la stessa casa
+:- casa(X), casa(Y), professioneDi(X,P), professioneDi(Y,P), X != Y.
+
+% In ogni casa abita una persona che predilige una ed una sola bevanda...
+1 {bevandaDi(X,B) : bevanda(B)} 1 :- casa(X).
+% ...e due case con la persona che predilige la stessa bevanda sono la stessa casa
+:- casa(X), casa(Y), bevandaDi(X,B), bevandaDi(Y,B), X != Y.
+\end{lstlisting}
+\paragraph{Convenzioni e funzione di adiacenza}
+Queste due sezioni trattano il posizionamento, assoluto e reciproco, delle case; hanno gli scopi rispettivamente di: \begin{enumerate} \item{esprimere - soltanto attraverso commenti - quello che consideriamo essere ancora una volta una convenzione "a buon senso" circa la disposizione delle case lungo la via} \item{definire una funzione di utilità, \texttt{adj}, che, dati due inter rappresentanti le case, restituisce un valore di verità se queste sono adiacenti, ossia se il valore assoluto della loro differenza è esattamente uguale a 1; questo predicato tornerà utile nella sezione successiva} \end{enumerate}
+\begin{lstlisting}[frame=tb]
+%% Convenzioni
+
+% casa(1) e` quella posta piu` a sinistra
+% casa(5) e` quella posta piu` a destra
+% casa(X) e` a destra di casa(Y) <=> X > Y
+% casa(X) e` a sinistra di casa(Y) <=> X < Y
+
+%% Funzione di adiacenza
+
+adj(X,Y) :- casa(X), casa(Y), |X-Y|==1.
+\end{lstlisting}
+\paragraph{Vincoli espliciti}
+Questa sezione costituisce il cuore del problema, poiché codifica i 14 vincoli espressi nell'enunciato che restringono man mano i possibili risultati ($5!^5 = 3125$, inizialmente) fino a giungere alla soluzione desiderata. Viene riportato il codice e i relativi commenti. Ogni vincolo è espresso nella forma $$\text{:- } A_1, ..., A_n, B$$ dove le regole $A_1, ..., A_n$ (solitamente $n = 2$) descrivono una o due proprietà di una stessa casa, mentre nella condizione $B$ si \emph{nega} quello che è il vincolo, poiché tutta la riga del vincolo è da considerarsi negata. Ad esempio, il primo vincolo afferma che \emph{non può} esserci una casa in cui abita la persona di nazionalità inglese e che abbia il colore $C$, e che questo colore $C$ sia diverso dal valore "rosso". Nei vincoli 11, 13 e 14 compare la funzione di adiacenza descritta in precedenza, anch'essa negata.
+\clearpage{}
+\begin{lstlisting}[frame=tb]
+%% Vincoli espliciti
+
+% 1. L'inglese vive nella casa rossa
+:- nazionalitaDi(X,inglese), coloreDi(X,C), C!=rossa.
+
+% 2. Lo spagnolo possiede un cane
+:- nazionalitaDi(X,spagnolo), animaleDi(X,A), A!=cane.
+
+% 3. Il giapponese e` un pittore
+:- nazionalitaDi(X,giapponese), professioneDi(X,P), P!=pittore.
+
+% 4. L'italiano beve te`
+:- nazionalitaDi(X,italiano), bevandaDi(X,B), B!=te.
+
+% 5. Il norvegese vive nella prima casa a sinistra
+:- nazionalitaDi(X,norvegese), X!=1.
+
+% 6. Il proprietario della casa verde beve caffe`
+:- bevandaDi(X,caffe), coloreDi(X,C), C!=verde.
+
+% 7. La casa verde e` immediatamente sulla destra di quella bianca
+:- coloreDi(X,verde), coloreDi(Y,bianca), X!=Y+1.
+
+% 8. Lo scultore alleva lumache
+:- professioneDi(X,scultore), animaleDi(X,A), A!=lumache.
+
+% 9.  Il diplomatico vive nella casa gialla
+:- professioneDi(X,diplomatico), coloreDi(X,C), C!=gialla.
+
+% 10. Nella casa di mezzo si beve latte
+:- bevandaDi(3,B), B!=latte.
+
+% 11. La casa del norvegese e` adiacente a quella blu
+:- nazionalitaDi(X,norvegese), coloreDi(Y,blu), not adj(X,Y).
+
+% 12. Il violinista beve succo di frutta
+:- professioneDi(X,violinista), bevandaDi(X,B), B!=succo_di_frutta.
+
+% 13. La volpe e` nella casa adiacente a quella del dottore
+:- animaleDi(X,volpe), professioneDi(Y,dottore), not adj(X,Y).
+
+% 14. Il cavallo e` nella casa adiacente a quella del diplomatico
+:- animaleDi(X,cavallo), professioneDi(Y,diplomatico), not adj(X,Y).
+\end{lstlisting}
+\paragraph{Output}
+Infine, mediante i predicati \texttt{hide\#} e \texttt{show\#}, nascondiamo inizialmente tutti i predicati per poi selettivamente mostrare \texttt{coloreDi}, \texttt{nazionalitaDi}, \texttt{animaleDi}, \texttt{prefessioneDi} e \texttt{bevandaDi}, tutti con \emph{arità} 2. Senza invocare \texttt{hide\#}, avremmo ottenuto anche i predicati del dominio e la funzione di adiacenza.
+\begin{lstlisting}[frame=tb]
+%% Output
+
+#hide.
+#show coloreDi/2.
+#show nazionalitaDi/2.
+#show animaleDi/2.
+#show professioneDi/2.
+#show bevandaDi/2.
+\end{lstlisting}
+L'output prodotto dall'esecuzione del nostro codice, invocando da terminale il comando \texttt{clingo 0 houses.cl}, è il seguente:
+\footnotesize{\begin{verbatim}
+Answer: 1
+coloreDi(5,verde) coloreDi(4,bianca) coloreDi(3,rossa) coloreDi(2,blu)
+coloreDi(1,gialla) nazionalitaDi(5,giapponese) nazionalitaDi(4,spagnolo)
+nazionalitaDi(3,inglese) nazionalitaDi(2,italiano) nazionalitaDi(1,norvegese)
+animaleDi(5,zebra) animaleDi(4,cane) animaleDi(3,lumache) animaleDi(2,cavallo)
+animaleDi(1,volpe) professioneDi(5,pittore) professioneDi(4,violinista)
+professioneDi(3,scultore) professioneDi(2,dottore) professioneDi(1,diplomatico)
+bevandaDi(5,caffe) bevandaDi(4,succo_di_frutta) bevandaDi(3,latte)
+bevandaDi(2,te) bevandaDi(1,altro) 
+SATISFIABLE
+
+Models      : 1    
+Time        : 0.000
+  Prepare   : 0.000
+  Prepro.   : 0.000
+  Solving   : 0.000
+\end{verbatim}}
+che ci consente di formulare il risultato finale:
+\begin{center}
+    \begin{tabular}{| l | l | l | l | l | l |} \hline
+    \textbf{Casa} & \textbf{Colore} & \textbf{Nazionalità} & \textbf{Animale} & \textbf{Professione} & \textbf{Bevanda}\\ \hline
+    1       & gialla    & norvegese     & volpe     & diplomatico   & altro             \\ \hline
+    2       & blu       & italiano      & cavallo   & dottore       & te                \\ \hline
+    3       & rossa     & inglese       & lumache   & scultore      & latte             \\ \hline
+    4       & bianca    & spagnolo      & cane      & violinista    & succo di frutta   \\ \hline
+    5       & verde     & giapponese    & zebra     & pittore       & caffe             \\ \hline
+    \end{tabular}
+\end{center}
+E scoprire così che il proprietario della zebra è il pittore giapponese che vive nella casa verde (l'ultima) e beve caffé.

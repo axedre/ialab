@@ -1,6 +1,7 @@
 \documentclass[a4paper,12pt, twoside]{report}
  
 \usepackage[italian]{babel}
+\usepackage{amsmath}
 % Adatta LaTeX alle convenzioni tipografiche italiane,
 % e ridefinisce alcuni titoli in italiano, come "Capitolo" al posto di "Chapter",
 % se il vostro documento è in italiano
@@ -19,6 +20,18 @@
 \tikzstyle{process} = [rectangle, minimum width=3cm, text centered, draw=black, fill=orange!30]
 \tikzstyle{decision} = [diamond, minimum width=3cm, text centered, draw=black, fill=green!30]
 \tikzstyle{arrow} = [thick,->,>=stealth]
+
+% Per includere porzioni di codice
+\usepackage{listings}
+\lstset{
+language=Prolog,
+basicstyle=\scriptsize\sffamily,
+numbers=left,
+numberstyle=\scriptsize,
+frame=tb,
+columns=fullflexible,
+showstringspaces=false
+}
 
 \makeindex
 \linespread{1}
@@ -50,4 +63,5 @@
 \input{./prof}
 
 \part{CLINGO}
+\input{./clingo}
 \end{document}
