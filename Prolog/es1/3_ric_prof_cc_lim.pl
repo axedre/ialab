@@ -1,5 +1,5 @@
 
-%Ricerca a profonLità limitata
+%Ricerca a profondità limitata
 
 ric_prof_cc_lim(S,_,_,[]) :- finale(S),!.
 ric_prof_cc_lim(S,L,Visitati,[Az|Resto]) :-
