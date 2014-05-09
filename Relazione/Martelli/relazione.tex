@@ -1,0 +1,67 @@
+\documentclass[a4paper,12pt, twoside]{report}
+ 
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+% Adatta LaTeX alle convenzioni tipografiche italiane,
+% e ridefinisce alcuni titoli in italiano, come "Capitolo" al posto di "Chapter",
+% se il vostro documento è in italiano
+
+\usepackage[utf8]{inputenc} % Consente l'uso caratteri accentati italiani
+\usepackage{fancyhdr, color}
+
+\usepackage{graphicx} % Consente l'uso di immagini
+\usepackage{caption}
+\usepackage{subcaption}
+
+% Per disegnare flowchart
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, text centered, draw=black, fill=red!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, text centered, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+% Per includere porzioni di codice
+\usepackage{listings}
+\lstset{
+language=Prolog,
+basicstyle=\scriptsize\sffamily,
+numbers=left,
+numberstyle=\scriptsize,
+frame=tb,
+columns=fullflexible,
+showstringspaces=false
+}
+
+\makeindex
+\linespread{1}
+
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{\chaptername}\  \thechapter.\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection.\ \ #1}{}}
+\fancyhead{}
+\fancyhead[LE]{\slshape \leftmark}
+\fancyhead[RO]{\slshape \rightmark}
+\fancyfoot[EC,OC]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+ 
+\title{Relazione esercizi PROLOG e CLINGO}
+\author{Maurizio Dominici, Alessandro Serra, Andrea Aloi}
+\date{\today}
+ 
+\begin{document}
+\pagenumbering{Roman}
+\maketitle
+ 
+\tableofcontents
+
+\pagenumbering{arabic}
+\part{PROLOG}
+\chapter{Domini}
+\input{./domini}
+\chapter{Ricerche in profondità}
+\input{./prof}
+
+\part{CLINGO}
+\input{./clingo}
+\end{document}
