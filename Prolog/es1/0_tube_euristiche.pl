@@ -10,6 +10,9 @@ dist_eucl([at(F1)|_], [at(F2)|_], Dist) :-
 	writeln(Dist).
 	
 h(N,DIST) :- finale(S), dist_eucl(N,S,DIST).
-g(G,NUOVA_G) :- NUOVA_G is G + 1.
+g(G,SP,SA,NUOVA_G) :-
+	dist_eucl(SP,SA,Dist),
+	Distanza is Dist,
+	NUOVA_G is G + Distanza.
 
 eur_start :- iniziale(I), finale(F), dist_eucl(I, F, X), writeln(X).
