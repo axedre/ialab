@@ -10,5 +10,3 @@ ric_prof_cc_lim(S,L,Visitati,[Az|Resto]) :-
 	L1 is L-1,
 	ric_prof_cc_lim(Nuovo_S,L1,[S|Visitati],Resto).
 	
-ric_prof_cc_lim_start :- Iniziale(I), ric_prof_cc_lim(I,10,[],X), writeln(X).
-	
