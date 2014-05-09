@@ -1,24 +1,65 @@
+In questo capitolo utilizzeremo strategie di ricerca informate quali A* (\ref{sec:astar}) e ID A* (\ref{sec:idastar}). Per illustrare nel dettaglio gli esiti ottenuti e poter fare tutte le considerazioni del caso, partiremo con una carrellata delle euristiche utilizzate per i vari domini, al fine di una più chiara comprensione delle future considerazioni.
+
 \section{Euristiche utilizzate}
 
 \subsection{Euristica dei cammini}
+Per il dominio dei cammini (sia \ref{sec:cammini:10x10} che \ref{sec:cammini:20x20}), l'euristica utilizzata è la Distanza di Manhattan. La scelta è ricaduta su questa euristica perché è sembrata quella che meglio aderisse ai movimenti consentiti tra le varie posizioni (in effetti non è presente lo spostamente in diagonale) presenti nel dominio.
 
 \subsection{Euristica del mondo dei blocchi}
+Le considerazioni fatte per trovare l'euristica da utilizzare nel mondo dei blocchi sono state di natura più complessa rispetto a quelle effettuate per il dominio dei cammini. L'idea che ha guidato la creazione dell'euristica è stata considerare stato iniziale, attuale e finale come insiemi di condizioni. L'avvicinarsi dello stato attuale a quello finale è stato, quindi, il rendere l'insieme dello stato attuale mano a mano più simile a quello dello stato finale, finendo poi per farli coincidere una volta trovata la soluzione. L'euristica utilizzata è stata quindi la differenza insiemistica tra l'insieme degli elementi (ovvero le condizioni) dell'insieme dello stato attuale e l'insieme degli elementi dello stato finale\footnote{si noti che la differenza insiemistica non è commutativa, quindi l'ordine di minuendo (insieme degli stati attuali) e sottraendo (insieme degli stati finali) risulta determinante.}.
+Il motivo di questa scelta è appunto cercare di trovare la mossa che più assottilia la differenza tra i due insiemi, fino al raggiungimento della parificazione degli stessi. Una caratteristica necessaria per il concetto di euristica è che la stessa non sovrastimi mai il numero di mosse. Questo è stato verificato in diversi esempi che vengono illustrati qui di seguito.
+\begin{lstlisting}[frame=tb]
+	S1 = {clear(a), on(a,b), clear(d), clear(e), ontable(b), ontable(e), ontable(d)}
+	S2 = {ontable(e), on(d,e), on(b,d), on(a,b), clear(a)}
+	|S1 - S2| = 4
+\end{lstlisting}
+Come si può vedere la cardinalità della differenza (riga 3) tra i due insiemi è 4 e le mosse necessarie per il passaggio dallo stato rappresentato dell'insieme \texttt{S1} (riga 1) allo stato rappresentato dall'insieme \texttt{S2} (riga 2) sono invece 8\footnote{Le mosse necessarie sono, nell'ordine: prendere A, appoggiare A, prendere D, appoggiare D sopra E, prendere B, appoggiare B sopra a D, prendere A, appoggiare A sopra a B.}. Il numero di mosse non risulta sovrastimato. Si noti che potrebbe sembrare che, al fine di una stima più precisa dell'euristica, l'idea di moltiplicare per 2\footnote{questo perché sembrerebbe che le mosse necessarie per portare un elemento in una posizione differente siano due: prendere l'elemento e riporlo} il risultato possa essere vincente. Purtroppo questo non è sempre verificato come dimostra quest'altro esempio:
+\begin{lstlisting}
+	S1 = {ontable(a), ontable(b), ontable (d), ontable (e), clear(a), clear(b), clear(d), clear(e)}
+	S2 = {ontable(e), on(d,e), on(b,d), on(a,b), clear(a)}
+	|S1 - S2| = 6
+\end{lstlisting}
+In questo particolare esempio, in cui i blocchi sono tutti disposti sul tavolo senza altri blocchi sopra di essi, la cardinalità della differenza tra i due insiemi è 6, ma anche le mosse necessarie sono 6\footnote{nell'ordine: prendere D, appoggiare D su E, prendere B, appoggiare B su D, prendere A, appoggiare A su B.}.
 
-\subsection{Euristica della Metropolitana di Londra}
+Di seguito altri esempi:
+\begin{lstlisting}
+	S1 = {ontable (a), on(e,a), on(d,e), on(b,d), clear(b)}
+	S2 = {ontable(e), on(d,e), on(b,d), on(a,b), clear(a)}
+	|S1 - S2| = 3
+\end{lstlisting}
+
+\begin{lstlisting}
+	S1 = {ontable(e), ontable(a), (ontable(d), on(b,d), clear(e), clear(a), clear(b)}
+	S2 = {ontable(e), on(d,e), on(b,d), on(a,b), clear(a)}
+	|S1 - S2| = 4
+\end{lstlisting}
+
+\subsection{Euristica della Metropolitana di Londra} \label{sec:eur-tube}
+L'euristica utilizzata per il dominio della metropolitana di Londra è la distanza euclidea. La scelta è ricaduta su questa euristica perché ci sembrava molto aderente al concetto di distanza tra due fermate della metropolitana in quanto, si presume, che per quanto possibile le linee della metropolitana tendono a limitare le curve. Affinché fosse possibile utilizzare questa euristica con A* (e conseguentemente, quindi, con IDA*) è stata necessaria una modifica all'implementazione dell'algoritmo di A* rispetto a quella degli altri domini. La modifica è avvenuta, nella fattispecie, per la funzione $g$ che ha bisogno, per essere calcolata, della stazione attuale e della prossima stazione in input al fine di calcolarne la distanza effettuata. A questo punto il calcolo della funzione $g$ avviene aggiungendo la distanza euclidea alla $g$ precedentemente calcolata (laddove, in presenza di domini senza pesi su ogni movimento, veniva semplicemente incrementata di 1\footnote{l'incremento di 1 rappresenta l'incremento del conto di un passo in più}).
+
 
 %-----------------------------------------------------------------------------------------------------------
-\section{A-star}
+\section{A-star} \label{sec:astar}
+L'algoritmo A* è noto in letteratura, si rimanda ad essa per una spiegazione esaustiva dello stesso.
 
-\subsection{Cammini}
+\subsection{Cammini} \label{sec:astar-cammini}
+In entrambi i domini dei cammini, la soluzione viene trovata in un tempo quasi istantaneo, enfatizzando la differenza e l'importanza dell'uso di ricerche informate su questa tipologia di problemi rispetto ai risultati ottenuti in \ref{sec:10-prof}, \ref{sec:20-prof}, \ref{sec:10-amp} e \ref{sec:20-amp}.
 
-\subsection{Mondo dei Blocchi}
+\subsection{Mondo dei Blocchi} \label{sec:astar-blocchi}
+Il mondo dei blocchi, in queste particolari configurazioni proposte, presenta qualche problematica in più. Sebbene nella prima configurazione non si incontrino particolari controindicazioni nell'uso di A*, per quanto riguarda la seconda configurazione vengono evidenziati tutti i limiti precedentemente riscontrati in \ref{sec:2-blocchi-amp}. In effetti, questo particolare dominio piuttosto vasto, porta all'esplorazione di una quantità enorme di stati, causando un errore di \texttt{Out of global stack}.
 
 \subsection{Metropolitana di Londra}
+Il funzionamento di A* (opportunamente modificato come mostrato nella sezione \ref{sec:eur-tube}) in questo contesto è piuttosto proficuo, portando al conseguimento del goal in tempo relativamente breve. Si noti che la soluzione (ottima per natura stessa dell'algoritmo A*) è ovviamente differente dalle soluzioni trovate in \ref{sub:tube-prof} e in \ref{sec:tube-amp}, in quanto il costo di un passo, in questo contesto, non è più costante.
 %-----------------------------------------------------------------------------------------------------------
-\section{IDA-star}
+\section{Iterative Deepening A-star} \label{sec:idastar}
+L'algoritmo ID-A* è una variante di A* implementata, come suggerisce il nome, con un approfondimento iterativo. I cammini creati da A* vengono espansi per livelli di profondità, come spiegato precedentemente nella sezione \ref{sub:10-prof-it}, riducendo la memoria stack utilizzata (quindi riducendo la complessità spaziale). Esaminiamo ora, caso per caso, i risultati ottenuti.
 
 \subsection{Cammini}
+In questo dominio non vi sono sostanziali differenze con l'uso di A* e di IDA*. Teniamo buono, quindi, quanto detto nella sezione \ref{sec:astar-cammini}.
 
 \subsection{Mondo dei Blocchi}
+Nel mondo dei blocchi la differenza è invece più interessante. La prima configurazione non denota differenze nel raggiungimento della soluzione; è invece nella seconda configurazione che le differenze diventano apprezzabili. In effetti, laddove con A* si raggiungeva l'errore \texttt{Out of global stack}, la desiderabile proprietà dell'Iterative Deepening di ridurre la complessità spaziale, porta al raggiungimento del goal senza incappare in errori dovuti alla scarsità di memoria disponibile.
+L'arrivo alla soluzione avviene in tempistiche lunghe ma, come già ampiamente commentato, questo è dovuto alla particolare complessità di questa configurazione in questo dominio.
 
 \subsection{Metropolitana di Londra}
+Concludiamo con il dominio della metropolitana di Londra. Qui non vi sono apprezzabili differenze rispetto all'utilizzo di A*, che forniva già ottimi risultati. Vale ancora la pena di rimarcare che la soluzione ottima trovata differisce da quelle ottenute con ricerche in profondità e in ampiezza. Questo è ovviamente dovuto all'"appiattimento" del dominio in quei contesti (come spiegato nella sezione \ref{sub:tube-prof}).

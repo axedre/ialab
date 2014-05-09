@@ -1,15 +1,24 @@
 In questa parte verranno illustrati gli esercizi inerenti la ricerca in ampiezza sui vari domini.
 
-\section{Dominio dei Cammini (10x10)}
+\section{Dominio dei Cammini (10x10)}\label{sec:10-amp}
+\subsection{Ricerca in ampiezza semplice}\label{sec:10-amp-semplice}
+Con la ricerca in ampiezza, teoricamente, si dovrebbe trovare una soluzione anche in presenza di cicli infiniti, proprietà non garantita, invece, con la ricerca in profondità. Tuttavia, senza escludere gli stati precedentemente visitati, lo spazio a disposizione dello stack viene esaurito rapidamente, causando un errore di \texttt{Out of global stack}. Questo, come detto, è comprensibile in quanto la ricerca in ampiezza espande ogni cammino possibile, compresi i cicli. Prima del raggiungimento del goal è possibile, quindi, che l'espansione continua di cammini che andrebbero idealmente "potati" (ovvero i cicli), occupi un tale spazio in memoria da compromettere il funzionamento desiderato dell'algoritmo.
+
+\subsection{Ricerca in ampiezza con stati visitati}
+Questo raffinamento risolve il problema esposto nella sezione precedente (\ref{sec:10-amp-semplice}), consentendo il raggiungimento della soluzione in un tempo più che accettabile.
 
 %-----------------------------------------------------------------------------------------------------------
-\section{Dominio dei Cammini (20x20)}
+\section{Dominio dei Cammini (20x20)} \label{sec:20-amp}
+In questo dominio, a differenza di quanto accadeva per la ricerca in profondità, non si vedono sostanziali differenze di tempo con il dominio precedente (\ref{sec:10-amp}) per quanto riguarda la Ricerca in ampiezza con stati visitati\footnote{continua a presentare l'errore \texttt{Out of global stack}, invece, la Ricerca in ampiezza semplice}. Questa è una caratteristica sicuramente positiva, che rende la ricerca in ampiezza preferibile sulla ricerca in profondità per questa tipologia di problemi; oltretutto, la prima soluzione trovata, ha anche la proprietà di essere ottimale.
 
 %-----------------------------------------------------------------------------------------------------------
 \section{Dominio del mondo dei blocchi - prima configurazione}
+Questa prima configurazione del dominio del mondo dei blocchi non presenta particolari problematiche, trovando le soluzioni in tempo accetabile.
 
 %-----------------------------------------------------------------------------------------------------------
-\section{Dominio del mondo dei blocchi - seconda configurazione}
+\section{Dominio del mondo dei blocchi - seconda configurazione} \label{sec:2-blocchi-amp}
+Questa seconda configurazione risulta, invece, molto più interessante della prima. La maggiore complessità porta a un accrescimento notevole delle configurazioni di stati e, conseguenza di ciò, è il raggiungimento dell'errore \texttt{Out of global stack}. La memoria viene quindi rapidamente esaurita, permettendo di apprezzare la caratteristica principale che si aveva, invece, nell'iterative deepening (come illustrato nella sezione \ref{sub:blocchi-prof-id}) dove, seppur in tempo ampio, veniva trovata una soluzione.
 
 %-----------------------------------------------------------------------------------------------------------
-\section{Dominio della metropolitana di Londra}
+\section{Dominio della metropolitana di Londra} \label{sec:tube-amp}
+La ricerca in ampiezza si adatta molto bene a questo dominio che, non presentando una complessità ampia come il dominio \ref{sec:blocchi}, permette il raggiungimento del goal in un tempo particolarmente vantaggioso. Anche in questa sede ci sarebbero da fare le considerazioni fatte nella sezione \ref{sub:tube-prof} sull'appiattimento del dominio.
