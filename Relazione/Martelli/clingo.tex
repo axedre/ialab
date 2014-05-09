@@ -1,3 +1,4 @@
+\chapter{Enunciato del problema delle Cinque Case}
 In questa parte verrà descritto lo svolgimento dell'esercizio delle Cinque Case.
 Il problema viene così enunciato:
 \small{\begin{quote}
@@ -23,8 +24,10 @@ Il problema viene così enunciato:
     \end{enumerate}
     Trovare chi possiede una zebra.
 \end{quote}}
+
+\chapter{Formulazione della soluzione}
 Il file che formalizza e risolve il problema si chiama \texttt{houses.cl} ed è suddiviso in 6 sezioni.
-\paragraph{Dominio}
+\section{Dominio}
 In questa sezione vengono elencate le entità che figurano nel problema e i valori che queste assumono.
 L'entità \texttt{casa} è stata semplicemente codificata con un numero da 1 a 5 (usando il costrutto \emph{Interval} di \texttt{clingo}) poiché le nazionalità dei suoi inquilini, le loro professioni e i loro animali e bevande preferiti sono stati implementati come predicati binari delle istanze di \texttt{casa}. Seguono quindi le entità \texttt{colore}, \texttt{nazionalita}, \texttt{animale}, \texttt{professione} e \texttt{bevanda}. L'uso del carattere \texttt{;} è una sintassi abbreviata per non dover enunciare più volte lo stesso \emph{atomo} con valori diversi. Ad es: \texttt{a(x;y;z)} equivale a: \texttt{a(x). a(y). a(z).}
 \clearpage{}
@@ -49,8 +52,8 @@ professione(pittore;scultore;diplomatico;violinista;dottore).
 % Bevanda
 bevanda(te;caffe;latte;succo_di_frutta;altro).
 \end{lstlisting}
-\paragraph{Vincoli impliciti}
-In questa sezione vengono espressi quelli che sono vincoli "naturali", non espressamente descritti nell'enunciato del problema, ma che è più che ragionevole supporre. Vengono inoltre introdotti i predicati binari \texttt{coloreDi}, \texttt{nazionalitaDi}, \texttt{animaleDi}, \texttt{prefessioneDi} e \texttt{bevandaDi} precedentementi accennati. Ciascuno associa alla casa (passata come primo argomento) una proprietà (secondo argomento) avente un valore apparetenente al relativo dominio.
+\section{Vincoli impliciti}
+In questa sezione vengono espressi quelli che sono vincoli "naturali", non espressamente descritti nell'enunciato del problema, ma che è più che ragionevole supporre. Vengono inoltre introdotti i predicati binari \texttt{coloreDi}, \texttt{nazionalitaDi}, \texttt{animaleDi}, \texttt{prefessioneDi} e \texttt{bevandaDi} precedentementi accennati. Ciascuno associa alla casa (passata come primo argomento) una proprietà (secondo argomento) avente un valore appartenente al relativo dominio.
 \begin{lstlisting}[frame=tb]
 %% Vincoli impliciti
 
@@ -79,7 +82,7 @@ In questa sezione vengono espressi quelli che sono vincoli "naturali", non espre
 % ...e due case con la persona che predilige la stessa bevanda sono la stessa casa
 :- casa(X), casa(Y), bevandaDi(X,B), bevandaDi(Y,B), X != Y.
 \end{lstlisting}
-\paragraph{Convenzioni e funzione di adiacenza}
+\section{Convenzioni e funzione di adiacenza}
 Queste due sezioni trattano il posizionamento, assoluto e reciproco, delle case; hanno gli scopi rispettivamente di: \begin{enumerate} \item{esprimere - soltanto attraverso commenti - quello che consideriamo essere ancora una volta una convenzione "a buon senso" circa la disposizione delle case lungo la via} \item{definire una funzione di utilità, \texttt{adj}, che, dati due inter rappresentanti le case, restituisce un valore di verità se queste sono adiacenti, ossia se il valore assoluto della loro differenza è esattamente uguale a 1; questo predicato tornerà utile nella sezione successiva} \end{enumerate}
 \begin{lstlisting}[frame=tb]
 %% Convenzioni
@@ -93,7 +96,7 @@ Queste due sezioni trattano il posizionamento, assoluto e reciproco, delle case;
 
 adj(X,Y) :- casa(X), casa(Y), |X-Y|==1.
 \end{lstlisting}
-\paragraph{Vincoli espliciti}
+\section{Vincoli espliciti}
 Questa sezione costituisce il cuore del problema, poiché codifica i 14 vincoli espressi nell'enunciato che restringono man mano i possibili risultati ($5!^5 = 3125$, inizialmente) fino a giungere alla soluzione desiderata. Viene riportato il codice e i relativi commenti. Ogni vincolo è espresso nella forma $$\text{:- } A_1, ..., A_n, B$$ dove le regole $A_1, ..., A_n$ (solitamente $n = 2$) descrivono una o due proprietà di una stessa casa, mentre nella condizione $B$ si \emph{nega} quello che è il vincolo, poiché tutta la riga del vincolo è da considerarsi negata. Ad esempio, il primo vincolo afferma che \emph{non può} esserci una casa in cui abita la persona di nazionalità inglese e che abbia il colore $C$, e che questo colore $C$ sia diverso dal valore "rosso". Nei vincoli 11, 13 e 14 compare la funzione di adiacenza descritta in precedenza, anch'essa negata.
 \clearpage{}
 \begin{lstlisting}[frame=tb]
@@ -141,7 +144,7 @@ Questa sezione costituisce il cuore del problema, poiché codifica i 14 vincoli 
 % 14. Il cavallo e` nella casa adiacente a quella del diplomatico
 :- animaleDi(X,cavallo), professioneDi(Y,diplomatico), not adj(X,Y).
 \end{lstlisting}
-\paragraph{Output}
+\section{Output}
 Infine, mediante i predicati \texttt{hide\#} e \texttt{show\#}, nascondiamo inizialmente tutti i predicati per poi selettivamente mostrare \texttt{coloreDi}, \texttt{nazionalitaDi}, \texttt{animaleDi}, \texttt{prefessioneDi} e \texttt{bevandaDi}, tutti con \emph{arità} 2. Senza invocare \texttt{hide\#}, avremmo ottenuto anche i predicati del dominio e la funzione di adiacenza.
 \begin{lstlisting}[frame=tb]
 %% Output
