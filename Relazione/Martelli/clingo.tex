@@ -82,8 +82,15 @@ In questa sezione vengono espressi quelli che sono vincoli "naturali", non espre
 % ...e due case con la persona che predilige la stessa bevanda sono la stessa casa
 :- casa(X), casa(Y), bevandaDi(X,B), bevandaDi(Y,B), X != Y.
 \end{lstlisting}
+
 \section{Convenzioni e funzione di adiacenza}
-Queste due sezioni trattano il posizionamento, assoluto e reciproco, delle case; hanno gli scopi rispettivamente di: \begin{enumerate} \item{esprimere - soltanto attraverso commenti - quello che consideriamo essere ancora una volta una convenzione "a buon senso" circa la disposizione delle case lungo la via} \item{definire una funzione di utilità, \texttt{adj}, che, dati due inter rappresentanti le case, restituisce un valore di verità se queste sono adiacenti, ossia se il valore assoluto della loro differenza è esattamente uguale a 1; questo predicato tornerà utile nella sezione successiva} \end{enumerate}
+Queste due sezioni trattano il posizionamento, assoluto e reciproco, delle case; hanno gli scopi rispettivamente di: 
+
+\begin{enumerate} 
+	\item{esprimere - soltanto attraverso commenti - quello che consideriamo essere ancora una volta una convenzione "a buon senso" circa la disposizione delle case lungo la via} 
+	\item{definire una funzione di utilità, \texttt{adj}, che, dati due interi rappresentanti le case, restituisca un valore di verità se queste sono adiacenti, ossia se il valore assoluto della loro differenza è esattamente uguale a 1: questo predicato tornerà utile nella sezione successiva} 
+\end{enumerate}
+
 \begin{lstlisting}[frame=tb]
 %% Convenzioni
 
