@@ -101,8 +101,8 @@
 		(status (step ?s) (time ?t))
 		(costo-check-astar (cost ?g)(step ?s))
 		(maxduration ?m)
-		(test (> 
-				(/(*(+ ?g ?cost) 3) 15)
+		(test (>=
+				(+ ?g ?cost (/(*(+ ?g ?cost) 3) 15))
 				(- ?m ?t)
 			)
 		)
@@ -132,7 +132,8 @@
 		(status (step ?s) (time ?t))
 		(costo-check-astar (cost ?g)(step ?s))
 		(maxduration ?m)
-		(test (< (+ ?g ?cost)
+		(test (< 
+				(+ ?g ?cost (/(*(+ ?g ?cost) 3) 15))
 				(- ?m ?t))
 		)
 
