@@ -130,8 +130,8 @@ public class MonitorModel extends ClipsModel {
         String[] exec = core.findFact("MAIN", "exec", "= ?f:step " + step, arrayExec);
         // N.B.: la stampa di "inform..." è effettuata prima di eseguire
         // l'azione di inform vera e propria
-        if (exec[0] != null && exec[0].equalsIgnoreCase("inform")) {
-            communications = "step: " + step + ", inform about (" + exec[1] + "," + exec[2] + "," + exec[3] + ")";
+        if (exec[0] != null) {// && exec[0].equalsIgnoreCase("inform")) {
+            communications = "step: " + step + ", " + exec[0] + " with params (" + exec[1] + "," + exec[2] + "," + exec[3] + ")";
         } else {
             communications = null;
         }

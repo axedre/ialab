@@ -14,7 +14,7 @@
     )
 )
 
-;; contrassegno con un rel_score di -1000 le celle segnalate come invalide, nel caso non sia già stato fatto
+;; contrassegno con un abs_score di -1000 le celle segnalate come invalide, nel caso non sia già stato fatto
 (defrule invalid_target
         (declare (salience 2))
         (invalid-target (pos-r ?r) (pos-c ?c))
@@ -30,7 +30,6 @@
 	(score_cell (pos-r ?r1) (pos-c ?c1) (abs_score ?abs&:(neq ?abs nil)))
 	(score_cell (pos-r ?r2) (pos-c ?c2) (abs_score ?best&:(neq ?best nil)))
 	(test (< ?abs ?best))
-	;(not (analizzata ?r2 ?c2))
     =>
 	(retract ?f)
 	(assert (temporary_target (pos-x ?r2) (pos-y ?c2)))
@@ -39,9 +38,7 @@
 
 (defrule punteggi-ok
     (declare (salience 0))
-    (status (step ?s))
     (temporary_target (pos-x ?r1) (pos-y ?c1))
-    =>
-    (printout t "Concluso aggiornamento punteggi turno " ?s crlf)
-    (assert (punteggi_checked ?s))
+=>
+    (assert (punteggi_checked))
 )

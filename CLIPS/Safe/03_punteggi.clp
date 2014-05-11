@@ -29,7 +29,7 @@
 ?f <-	(temporary_target (pos-x ?r1) (pos-y ?c1))
 	(score_cell (pos-r ?r1) (pos-c ?c1) (val ?v&:(neq ?v nil)))
 	(score_cell (pos-r ?r2) (pos-c ?c2) (val ?best&:(neq ?best nil)))
-	(test (< ?v ?best))	
+	(test (< ?v ?best))
     =>
 	(retract ?f)
 	(assert (temporary_target (pos-x ?r2) (pos-y ?c2)))
@@ -38,9 +38,8 @@
 
 (defrule punteggi-ok
     (declare (salience 0))
-    (status (step ?s))
     (temporary_target (pos-x ?r1) (pos-y ?c1))
-    =>
-    (printout t "Concluso aggiornamento punteggi turno " ?s crlf)
-    (assert (punteggi_checked ?s))
+=>
+    (printout t "Concluso aggiornamento punteggi" crlf)
+    (assert (punteggi_checked))
 )

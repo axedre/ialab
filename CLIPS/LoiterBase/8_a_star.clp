@@ -458,7 +458,7 @@
     =>
     (retract ?f1)
     (modify ?f2 (open no))
-    ;(printout t "close-empty (last node expanded " ?curr ")" crlf)
+    (printout t "close-empty (last node expanded " ?curr ")" crlf)
     ;(halt)
     (focus POSTASTAR)
 )

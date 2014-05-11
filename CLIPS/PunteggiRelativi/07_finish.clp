@@ -13,25 +13,23 @@
 
 (defrule informs-not-completed
         (declare (salience 10))
-        (status (step ?s))
         (score_cell (rel_score ?rs&~nil))
         (test (> ?rs 0))
     =>
         (printout t "rel_score vale: " ?rs crlf)
-        (assert (finish_checked ?s))
+        (assert (finish_checked))
         (pop-focus)
 )
 
 (defrule clean-finish1
-		(declare (salience 6))
+        (declare (salience 6))
 ?f <-	(move-path)
-	=>
-		(retract ?f)
+    =>
+        (retract ?f)
 )
 
 (defrule informs-completed
         (declare (salience 5))
-        (status (step ?s))
     =>
 	(printout t "INFORM COMPLETATE" crlf)
         (assert (finished))

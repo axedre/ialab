@@ -1,14 +1,16 @@
+;; FIXARE L'INDENTAZIONE!!!
+
 (defmodule EXIT (import AGENT ?ALL) (export ?ALL))
 
 (defrule exit-clean1
-		(declare (salience 110))
-		(status (step ?s))
+        (declare (salience 110))
+        (status (step ?s))
 ?f <-	(costo-check (cost ?g) (pos-r ?x) (pos-c ?y))
-		(not (costo-check-astar (step ?s)))
-	=>
-		(assert (costo-check-astar (pos-r ?x) (pos-c ?y) (cost ?g) (step ?s)))
-		(retract ?f)
-)	
+        (not (costo-check-astar (step ?s)))
+    =>
+        (assert (costo-check-astar (pos-r ?x) (pos-c ?y) (cost ?g) (step ?s)))
+        (retract ?f)
+)
 
 (defrule exit-clean2
 		(declare (salience 110))
@@ -17,6 +19,13 @@
 		(not (last-direction-astar (step ?s)))
 	=>
 		(assert (last-direction-astar (direction ?dir) (step ?s)))
+		(retract ?f)
+)
+
+(defrule exit-clean3
+		(declare (salience 50))
+?f <-	(path)
+	=>
 		(retract ?f)
 )
 
@@ -45,15 +54,15 @@
 		(retract ?f1)
 		; (retract ?f2)
         (assert (dummy_target (pos-x ?x1) (pos-y ?y1)))
-        (assert 
-            (node 
-                (ident 0) 
-                (gcost 0) 
+        (assert
+            (node
+                (ident 0)
+                (gcost 0)
                 (fcost (+ (* (+ (abs (- ?x1 ?r)) (abs (- ?y1 ?c))) 10) 5))
-                (father NA) 
-                (pos-r ?r) 
+                (father NA)
+                (pos-r ?r)
                 (pos-c ?c)
-                (direction ?dir) 
+                (direction ?dir)
                 (open yes)
             )
         )
@@ -79,15 +88,15 @@
 		(retract ?f1)
 		; (retract ?f2)
         (assert (dummy_target (pos-x ?x1) (pos-y ?y1)))
-        (assert 
-            (node 
-                (ident 0) 
-                (gcost 0) 
+        (assert
+            (node
+                (ident 0)
+                (gcost 0)
                 (fcost (+ (* (+ (abs (- ?x1 ?r)) (abs (- ?y1 ?c))) 10) 5))
-                (father NA) 
-                (pos-r ?r) 
+                (father NA)
+                (pos-r ?r)
                 (pos-c ?c)
-                (direction ?dir) 
+                (direction ?dir)
                 (open yes)
             )
         )
@@ -97,38 +106,29 @@
 		(focus ASTAR-ALGORITHM)
 )
 
-(defrule exit-clean3
-		(declare (salience 50))
-?f <-	(path)
-	=>
-		(retract ?f)
+(defrule exit-invalid
+        (declare (salience 1))
+        (not (costo-check))
+?f1 <- 	(punteggi_checked)
+?f2 <- 	(astar_checked)
+?f3 <-	(exit-run)
+        (temporary_target (pos-x ?r) (pos-y ?c))
+    =>
+        (retract ?f1)
+        (retract ?f2)
+        (retract ?f3)
+        (assert (invalid-target (pos-r ?r) (pos-c ?c)))
+        (pop-focus)
 )
 
 (defrule exit-ok
-		(declare (salience 0))
-		(status (step ?s))
+        (declare (salience 0))
 ?f1 <-	(costo-check)
-?f2	<-	(exit-run)
+?f2 <-	(exit-run)
 	(temporary_target (pos-x ?r1) (pos-y ?c1))
     =>
-		(retract ?f1)
-		(retract ?f2)
-		(assert (exit_checked ?s))
-		(pop-focus)
-)
-
-(defrule exit-invalid
-		(declare (salience 1))
-		(status (step ?s))
-		(not (costo-check))
-?f1 <- 	(punteggi_checked ?s)
-?f2 <- 	(astar_checked ?s)
-?f3	<-	(exit-run)
-		(temporary_target (pos-x ?r) (pos-y ?c))
-	=>
-		(retract ?f1)
-		(retract ?f2)
-		(retract ?f3)
-		(assert (invalid-target (pos-r ?r) (pos-c ?c)))
-		(pop-focus)
+        (retract ?f1)
+        (retract ?f2)
+        (assert (exit_checked))
+        (pop-focus)
 )

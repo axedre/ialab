@@ -1,23 +1,31 @@
 (defmodule MOVE (import AGENT ?ALL) (export ?ALL))
 
 (defrule move-path-star
-        ; (not (hurry))
-        (status (step ?s))
+        (declare (salience 1))
 ?f1 <-	(path-star (id ?id) (oper ?oper))
-        (not (path-star (id ?id2&:(neq ?id ?id2)&:(< ?id2 ?id))))
+        (not (path-star (id ?id2&:(< ?id2 ?id))))
+?f2 <-  (inform_checked)
     =>
-        (printout t "MOVE-PATH-STAR: Eseguo exec: "?id", azione: "?oper" " crlf)
-        (retract ?f1)
         (assert (move-path (id ?id) (oper ?oper)))
+        (retract ?f1 ?f2)
+        (pop-focus)
 )
 
-(defrule move-path
-        ; (hurry)
-        (status (step ?s))
+; commento
+(defrule move-path-hurry
+        (declare (salience 1))
 ?f1 <-	(path (id ?id) (oper ?oper))
-        (not (path (id ?id2&:(neq ?id ?id2)&:(< ?id2 ?id))))
+        (not (path (id ?id2&:(< ?id2 ?id))))
+?f2 <-  (inform_checked)
     =>
-        (printout t "MOVE-PATH: Eseguo exec: "?id", azione: "?oper" " crlf)
-        (retract ?f1)
         (assert (move-path (id ?id) (oper ?oper)))
+        (retract ?f1 ?f2)
+        (pop-focus)
+)
+
+(defrule move-ok
+    (declare (salience 0))
+    (status (step ?s))
+=>
+    (assert (move_checked))
 )

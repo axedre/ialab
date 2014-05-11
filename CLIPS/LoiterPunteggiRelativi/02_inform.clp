@@ -20,10 +20,10 @@
     (if (and (not (informed ?r ?c)) (interesting ?r ?c)) then
         (if (= (str-compare ?cell water) 0) then
             ;(printout t "Asserisco flood in " ?r ", " ?c crlf)
-            (assert (inform-act (r ?r) (c ?c) (status flood)))
+            (assert (inform-act (r ?r) (c ?c) (status flood) (id 0)))
         else
             ;(printout t "Asserisco ok in " ?r ", " ?c crlf)
-            (assert (inform-act (r ?r) (c ?c) (status ok)))
+            (assert (inform-act (r ?r) (c ?c) (status ok) (id 0)))
         )
         (assert (must-update-val ?r ?c))
     )
@@ -45,6 +45,14 @@
             (case 9 then (inform (- ?r 1) (+ ?c 1) ?cell ?step))
         )
     )
+)
+
+; Regola per inizializzare il contatore delle inform-act
+(defrule init-id-cnt
+    (declare (salience 100))
+    (not (id-cnt ?c))
+=>
+    (assert (id-cnt 0))
 )
 
 ; Regola per ispezionare celle mentre ci si sposta in direzione nord
@@ -149,11 +157,7 @@
     )
 )
 
-; Regola che aggiorna il valore di una cella dopo la "FULL" inform
-;(defrule update_full_val
-;)
-
-; Regola che aggiorna il punteggio assoluo di una cella quando cambiano il suo valore
+; Regola che aggiorna il punteggio assoluto di una cella quando cambiano il suo valore
 ; ed eventualmente quello delle celle circostanti a seguito di esecuzioni di update_val o update_full_val
 (defrule update_abs_score
     (declare (salience 1))
@@ -173,10 +177,21 @@
     ;(printout t "Update_abs_score eseguita per cella " ?x ", " ?y crlf)
 )
 
+(defrule fill-inform-act
+        (declare (salience 1))
+?f1 <-  (inform-act (id 0))
+?f2 <-  (id-cnt ?c)
+    =>
+        (modify ?f1 (id (+ ?c 1)))
+        (modify ?f2 (id-cnt (+ ?c 1)))
+)
+
 ; Regola che asserisce la fine di una sessione di inform
 (defrule inform-ok
-    (declare (salience 0))
-    (status (step ?s))
-=>
-    (assert (inform_checked ?s))
+        (declare (salience 0))
+?f <-   (id-cnt ?c)
+    =>
+        (assert (inform_checked))
+        (retract ?f)
+        (pop-focus)
 )

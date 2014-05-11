@@ -20,10 +20,10 @@
     (if (and (not (informed ?r ?c)) (interesting ?r ?c)) then
         (if (= (str-compare ?cell water) 0) then
             ;(printout t "Asserisco flood in " ?r ", " ?c crlf)
-            (assert (inform-act (r ?r) (c ?c) (status flood)))
+            (assert (inform-act (r ?r) (c ?c) (status flood) (id 0)))
         else
             ;(printout t "Asserisco ok in " ?r ", " ?c crlf)
-            (assert (inform-act (r ?r) (c ?c) (status ok)))
+            (assert (inform-act (r ?r) (c ?c) (status ok) (id 0)))
         )
         (assert (must-update-val ?r ?c))
     )
@@ -45,6 +45,14 @@
             (case 9 then (inform (- ?r 1) (+ ?c 1) ?cell ?step))
         )
     )
+)
+
+; Regola per inizializzare il contatore delle inform-act
+(defrule init-id-cnt
+    (declare (salience 100))
+    (not (id-cnt ?c))
+=>
+    (assert (id-cnt 0))
 )
 
 ; Regola per ispezionare celle mentre ci si sposta in direzione nord
@@ -143,11 +151,22 @@
     (retract ?f)
     (modify ?g (val -5))
 )
-    
+
+(defrule fill-inform-act
+        (declare (salience 1))
+?f1 <-  (inform-act (id 0))
+?f2 <-  (id-cnt ?c)
+    =>
+        (modify ?f1 (id (+ ?c 1)))
+        (modify ?f2 (id-cnt (+ ?c 1)))
+)
+
 ; Regola che asserisce la fine di una sessione di inform
 (defrule inform-ok
-    (declare (salience 0))
-    (status (step ?s))
-=>
-    (assert (inform_checked ?s))
+        (declare (salience 0))
+?f <-   (id-cnt ?c)
+    =>
+        (assert (inform_checked))
+        (retract ?f)
+        (pop-focus)
 )

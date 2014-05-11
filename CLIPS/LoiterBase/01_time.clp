@@ -119,7 +119,7 @@
 		(status (step ?s) (time ?t))
 		(costo-check-astar (cost ?g)(step ?s))
 		(maxduration ?m)
-		(test (> 
+		(test (>
 				(/(*(+ ?g ?cost) 3) 15)
 				(- ?m ?t)
 			)
@@ -148,7 +148,7 @@
 		(declare (salience 15))
 		(best-exit ?x ?y ?cost)
 		(status (step ?s) (time ?t))
-		(costo-check-astar (cost ?g)(step ?s))
+		(costo-check-astar (cost ?g) (step ?s))
 		(maxduration ?m)
 		(test (< (+ ?g ?cost)
 				(- ?m ?t))
@@ -158,7 +158,7 @@
 
 	=>
 		(printout t "Tempo checked. Time: "?t crlf)
-		(assert (time_checked ?s))
+		(assert (time_checked))
 )
 
 (defrule time-clean5

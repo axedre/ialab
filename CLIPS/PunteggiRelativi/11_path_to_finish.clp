@@ -1,4 +1,4 @@
-(defmodule PATH-TO-FINISH (import TIME ?ALL) (export ?ALL))
+(defmodule PATH-TO-FINISH (import AGENT ?ALL) (export ?ALL))
 
 (defrule pathtofinish-clean1
 		(declare (salience 90))
@@ -64,9 +64,11 @@
 
 (defrule pathtofinish
 		(declare (salience 89))
+		(status (time ?t))
+		(maxduration ?m)
 	=>
 		(assert (path-to-finish))
-		(printout t "HURRYYYYYY!!!!")
+		(printout t "Tempo rimanente: " (- ?m ?t))
 )
 
 ;scegliere il percorso più breve per uscire oppure un qualunque percorso che stia nel tempo

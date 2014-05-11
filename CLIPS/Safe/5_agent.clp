@@ -1,4 +1,3 @@
-
 ;;;;;   REGOLE MINIMALI PER IL FUNZIONAMENTO DELL'AGENTE
 ;;;;;   Ad ogni istante utente umano deve fornire indicazione sulla regola da eseguire tramite
 ;;;;;   apposita assert
@@ -118,6 +117,7 @@
     (slot r)
     (slot c)
     (slot status)
+    (slot id)
 )
 
 (deftemplate invalid-target
@@ -135,158 +135,148 @@
 
 ;------------------ Fine delle nostre modifiche --------------------
 
-;; COMMENTATO PER VEDERLO NELL'INTERFACCIA
-;;(defrule ask_act
-;; ?f <-   (status (step ?i))
-;;    =>  (printout t crlf crlf)
-;;        (printout t "action to be executed at step:" ?i)
-;;        (printout t crlf crlf)
-;;        (modify ?f (result no)))
-
 (defrule exec_act
-    (declare (salience 10))
-    (status (step ?i))
-    (exec (step ?i))
+    (declare (salience 11))
+    (status (step ?s))
+    (exec (step ?s))
 =>
     (focus MAIN)
 )
 
-(defrule exec-inform
-        (declare (salience 9))
-        (status (step ?s))
-?f  <-  (inform-act (r ?r) (c ?c) (status ?status))
-    =>
-        (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
-        (retract ?f)
-)
-
-(defrule exec-move-path
-        (declare (salience 9))
-        (status (step ?s))
-		(not (inform-act))
-?f  <-	(move-path (id ?id) (oper ?oper))
-        (not (move-path (id ?id2&:(neq ?id ?id2)&:(< ?id2 ?id))))
-    =>
-        (assert (exec (step ?s) (action ?oper)))
-        (retract ?f)
-        (focus INFORM)
-)
-
-(defrule turno0
-    (declare (salience 5))
-    (status (step 0))
-=>
-    (assert (temporary_target (pos-x 2) (pos-y 5)))
-    (assert (dummy_target (pos-x 2) (pos-y 5)))
-    (assert (exec (action go-forward) (step 0)))
-    (focus INIT_PUNTEGGI)
-)
-
-(defrule control-finish
-    (declare (salience 1))
-	(status (step ?s))
-    (not (finish_checked ?s))
-    (not (finished))
-    (not (punteggi_checked ?s))
-    (not (astar_checked ?s))
-    (not (exit_checked ?s))
-    (not (time_checked ?s))
-    (not (move_checked ?s))
-=>
-    (printout t "--- Focus finish ---" crlf)
-    (focus FINISH)
-)
-
-(defrule control-punteggi
-    (declare (salience 1))
+(defrule inform_act
+    (declare (salience 10))
     (status (step ?s))
-    (finish_checked ?s)
-    (not (punteggi_checked ?s))
-    (not (astar_checked ?s))
-    (not (exit_checked ?s))
-    (not (time_checked ?s))
-    (not (move_checked ?s))
-    (not (finished))
+?f <- (inform-act (r ?r) (c ?c) (status ?status) (id ?id))
+    (not (inform-act (id ?id2&:(< ?id2 ?id))))
 =>
-    (printout t "--- Focus punteggi ---" crlf)
-    (focus PUNTEGGI)
-    (printout t "Fatti di tipo score_cell: " (count-facts score_cell) crlf)
+    (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
+    (retract ?f)
 )
 
-(defrule control-astar
-    (declare (salience 1))
+(defrule move_act
+    (declare (salience 9))
     (status (step ?s))
-    (perc-vision (step ?s) (pos-r ?r) (pos-c ?c))
-    (finish_checked ?s)
-    (punteggi_checked ?s)
-    (not (astar_checked ?s))
-    (not (exit_checked ?s))
-    (not (time_checked ?s))
-    (not (move_checked ?s))
-    (not (finished))
+?f <- (move-path (oper ?oper) (id ?id))
+    (not (move-path (id ?id2&:(< ?id2 ?id))))
 =>
-    (printout t "--- Focus a* ---" crlf)
-    (focus ASTAR)
-)
-
-(defrule control-exit
-    (declare (salience 1))
-    (status (step ?s))
-    (finish_checked ?s)
-    (punteggi_checked ?s)
-    (astar_checked ?s)
-    (not (exit_checked ?s))
-    (not (time_checked ?s))
-    (not (move_checked ?s))
-    (not (finished))
-=>
-    (printout t "--- Focus exit ---" crlf)
-    (focus EXIT)
-)
-
-(defrule control-time
-    (declare (salience 1))
-    (status (step ?s))
-    (finish_checked ?s)
-    (punteggi_checked ?s)
-    (astar_checked ?s)
-    (exit_checked ?s)
-    (not (time_checked ?s))
-    (not (move_checked ?s))
-    (not (finished))
-=>
-    (printout t "--- Focus time ---" crlf)
-    (focus TIME)
-)
-
-(defrule control-move
-    (declare (salience 1))
-    (status (step ?s))
-    (finish_checked ?s)
-    (punteggi_checked ?s)
-    (astar_checked ?s)
-    (exit_checked ?s)
-    (time_checked ?s)
-    (not (move_checked ?s))
-	(not (finished))
-=>
-    (printout t "--- Focus move ---" crlf)
-    (focus MOVE)
-)
-
-(defrule control-move-finished
-    (declare (salience 1))
-    (status (step ?s))
-    (finished)
-=>
-    (printout t "--- Focus move ---" crlf)
-    (focus MOVE)
+    (assert (exec (step ?s) (action ?oper)))
+    (retract ?f)
 )
 
 (defrule done
-	(declare (salience 0))
-	(status (step ?s))
-	(not (exec (step ?s)))
-	=>
-	(assert (exec (action done) (step ?s)))
+    (declare (salience 0))
+    (status (step ?s))
+    (not (exec (step ?s)))
+=>
+    (assert (exec (action done) (step ?s)))
+)
+
+(defrule init
+    (declare (salience 2))
+    (status (step 0))
+    (initial_agentstatus (pos-r ?r) (pos-c ?c) (direction ?d))
+=>
+    (switch ?d
+        (case north then
+            (assert (temporary_target (pos-x (+ ?r 1)) (pos-y ?c)))
+            (assert (dummy_target (pos-x (+ ?r 1)) (pos-y ?c)))
+        )
+        (case west then
+            (assert (temporary_target (pos-x ?r) (pos-y (- ?c 1))))
+            (assert (dummy_target (pos-x ?r) (pos-y (- ?c 1))))
+        )
+        (case east then
+            (assert (temporary_target (pos-x ?r) (pos-y (+ ?c 1))))
+            (assert (dummy_target (pos-x ?r) (pos-y (+ ?c 1))))
+        )
+        (case south then
+            (assert (temporary_target (pos-x (- ?r 1)) (pos-y ?c)))
+            (assert (dummy_target (pos-x (- ?r 1)) (pos-y ?c)))
+        )
+    )
+    (assert (move-path (oper go-forward) (id 0)))
+    (printout t "--- Focus INIT_PUNTEGGI ---" crlf)
+    (focus INIT_PUNTEGGI)
+)
+
+; 1) FINISH
+(defrule control-finish
+    (declare (salience 1))
+    (not (finished))
+    (not (finish_checked))
+    =>
+    (printout t "--- Focus FINISH ---" crlf)
+    (focus FINISH)
+)
+; 2) PUNTEGGI
+(defrule control-punteggi
+    (declare (salience 1))
+    (not (finished))
+    (finish_checked)
+    (not (punteggi_checked))
+=>
+    (printout t "--- Focus PUNTEGGI ---" crlf)
+    (focus PUNTEGGI)
+)
+; 3) ASTAR
+(defrule control-astar
+    (declare (salience 1))
+    (not (finished))
+    (punteggi_checked)
+    (not (astar_checked))
+=>
+    (printout t "--- Focus ASTAR ---" crlf)
+    (focus ASTAR)
+)
+; 4) EXIT
+(defrule control-exit
+    (declare (salience 1))
+    (not (finished))
+    (astar_checked)
+    (not (exit_checked))
+=>
+    (printout t "--- Focus EXIT ---" crlf)
+    (focus EXIT)
+)
+; 5) TIME
+(defrule control-time
+    (declare (salience 1))
+    (not (finished))
+    (exit_checked)
+    (not (time_checked))
+    =>
+    (printout t "--- Focus TIME ---" crlf)
+    (focus TIME)
+)
+; 6) INFORM
+(defrule control-inform
+    (declare (salience 1))
+    (or (finished) (time_checked))
+    (not (inform_checked))
+=>
+    (printout t "--- Focus INFORM ---" crlf)
+    (focus INFORM)
+)
+; 7) MOVE
+(defrule control-move
+    (declare (salience 1))
+    (not (move_checked))
+    (or (finished) (inform_checked))
+=>
+    (printout t "--- Focus MOVE ---" crlf)
+    (focus MOVE)
+)
+; 8) CLEANUP
+(defrule cleanup
+    (declare (salience 1))
+    ?f1 <- (finish_checked)
+    ?f2 <- (punteggi_checked)
+    ?f3 <- (astar_checked)
+    ?f4 <- (exit_checked)
+    ?f5 <- (time_checked)
+    ?f6 <- (inform_checked)
+    ?f7 <- (move_checked)
+=>
+    (printout t "--- CLEANUP ---" crlf)
+    (retract ?f1 ?f2 ?f3 ?f4 ?f5 ?f6 ?f7)
 )
