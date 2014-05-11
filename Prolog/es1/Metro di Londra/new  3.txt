@@ -97,35 +97,43 @@ dist_eucl([at(F1)|_], [at(F2)|_], Dist) :-
 	writeln(Dist).
 	
 h(N,DIST) :- finale(S), dist_eucl(N,S,DIST).
-g(G,SP,SA,NUOVA_G) :-
-	dist_eucl(SP,SA,Dist),
-	Distanza is Dist,
-	NUOVA_G is G + Distanza.
+g(G,NUOVA_G) :- NUOVA_G is G + 1.
 
 eur_start :- iniziale(I), finale(F), dist_eucl(I, F, X), writeln(X).
 
-% ricerca A*
-ric_astar([nodo(_,_,S,LISTA_AZ)|_],_,LISTA_AZ):- finale(S).
-ric_astar([nodo(F,G,S,LISTA_AZ)|RESTO],CHIUSI,SOL):-
-    member(S,CHIUSI) ->
-        ric_astar(RESTO,CHIUSI,SOL);
+% ricerca in profondità limitata
+ric_prof_lim(S,_,[],F,_,D) :- F =< D, finale(S), !.
+ric_prof_lim(S,Visitati,[Az|Resto],F,G,D) :-
+     F =< D,
+     applicabile(Az,S),
+     trasforma(Az,S,Nuovo_S),
+     \+ member(Nuovo_S,Visitati),
+     g(G,Nuova_G), h(Nuovo_S,Nuova_H), Nuova_F is Nuova_G + Nuova_H,
+     ric_prof_lim(Nuovo_S,[S|Visitati],Resto,Nuova_F,Nuova_G,D).
+ric_prof_lim(_,_,_,F,_,D) :-
+     F > D,
+     aggiorna_prof(F),
+     fail.
 
-        espandi(nodo(F,G,S,LISTA_AZ),LISTA_SUCC),
-        ord_union(RESTO,LISTA_SUCC,CODA),
-        ric_astar(CODA,[S|CHIUSI],SOL).
+aggiorna_prof(F) :-
+    f_minima(Bound),
+    Bound =< F, !
+    ;
+    retract(f_minima(Bound)), !,
+    asserta(f_minima(F)).
 
-espandi(nodo(F,G,S,LISTA_AZ),LISTA_SUCC):-
-    findall(AZ,applicabile(AZ,S),AZIONI),
-    successori(nodo(F,G,S,LISTA_AZ),AZIONI,LISTA_SUCC).
+:- dynamic(f_minima/1).
+f_minima(99999).
 
-successori(_,[],[]).
-successori(nodo(F,G,S,LISTA_AZ),[AZ|RESTO],SUCCESSORI):-
-    trasforma(AZ,S,NUOVO_S),
-    append(LISTA_AZ,[AZ],NUOVA_LISTA_AZ),
-    successori(nodo(F,G,S,LISTA_AZ),RESTO,ALTRI),
-    g(G,S,NUOVO_S,NUOVA_G), h(NUOVO_S,NUOVA_H), NUOVA_F is NUOVA_G + NUOVA_H,
-    ord_add_element(ALTRI,nodo(NUOVA_F,NUOVA_G,NUOVO_S,NUOVA_LISTA_AZ),SUCCESSORI).
+% ricerca idastar
+ric_idastar(I,Ris,F,G,D) :- ric_prof_lim(I,[],Ris,F,G,D).
+ric_idastar(I,Ris,F,G,_) :-
+     f_minima(Nuova_D),
+     retract(f_minima(Nuova_D)),
+     asserta(f_minima(99999)),
+     ric_idastar(I,Ris,F,G,Nuova_D).
 
-astar :- iniziale(S),
+% chiamata
+idastar :- iniziale(S),
     h(S,H), G is 0, F is G + H,
-    ric_astar([nodo(F,G,S,[])],[],SOL), write(SOL).
+    ric_idastar(S,SOL,F,G,F), write(SOL).

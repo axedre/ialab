@@ -1,14 +1,18 @@
-dist_manhattan([at(F1)|_], [at(F2)|_], Dist) :-
+dist_eucl([at(F1)|_], [at(F2)|_], Dist) :-
 	stazione(F1,X1,Y1),
 	stazione(F2,X2,Y2),
-	X is X1 - X2,
-	Y is Y1 - Y2,
-	abs(X, Xabs),
-	abs(Y, Yabs),
-	Dist is Xabs + Yabs,
+	Xdiff is X1 - X2,
+	XExp is Xdiff * Xdiff,
+	Ydiff is Y1 - Y2,
+	YExp is Ydiff * Ydiff,
+	Somm is XExp + YExp,
+	Dist is sqrt(Somm),
 	writeln(Dist).
 	
-h(N,DIST) :- finale(S), dist_manhattan(N,S,DIST).
-g(G,NUOVA_G) :- NUOVA_G is G + 1.
+h(N,DIST) :- finale(S), dist_eucl(N,S,DIST).
+g(G,SP,SA,NUOVA_G) :-
+	dist_eucl(SP,SA,Dist),
+	Distanza is Dist,
+	NUOVA_G is G + Distanza.
 
-eur_start :- iniziale(I), finale(F), dist_manhattan(I, F, X), writeln(X).
+eur_start :- iniziale(I), finale(F), dist_eucl(I, F, X), writeln(X).
