@@ -177,7 +177,7 @@
 	(status (step ?s))
 	(perc-monitor (step ?s) (pos-r ?r) (pos-c ?c) (perc ?perc))
     =>
-	(printout t "inform-loiter-act" crlf)
+	(printout t "inform-loiter-act (pos-r:" ?r ", pos-c: " ?c ", " ?perc ")" crlf)
 	(assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?perc)))
 )
 
