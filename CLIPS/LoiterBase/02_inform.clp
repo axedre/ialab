@@ -47,8 +47,9 @@
     (if (and (interesting ?r ?c) (not (informed ?r ?c))) then
         (if (eq ?cell water) then
             (if (urban ?r ?c) then
-                ;(assert (loiter-act (r ?r) (c ?c) (status flood) (id 0)))
-                (assert (inform-act (r ?r) (c ?c) (status flood) (id 0)))
+                (assert (loiter-act))
+		(printout t "Sto asserendo loiter-act" crlf)
+                ;(assert (inform-act (r ?r) (c ?c) (status flood) (id 0)))
             else
                 (assert (inform-act (r ?r) (c ?c) (status flood) (id 0)))
             )

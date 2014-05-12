@@ -161,6 +161,26 @@
     (focus MAIN)
 )
 
+(defrule loiter_act
+	(declare (salience 12))
+	(status (step ?s))
+?f  <-  (loiter-act)
+    =>
+	(printout t "loiter-act" crlf)
+	(assert (exec (step ?s) (action loiter-monitoring)))
+	(focus MAIN)
+	(retract ?f)
+)
+
+(defrule inform_loiter_act
+	(declare (salience 11))
+	(status (step ?s))
+	(perc-monitor (step ?s) (pos-r ?r) (pos-c ?c) (perc ?perc))
+    =>
+	(printout t "inform-loiter-act (pos-r:" ?r ", pos-c: " ?c ", " ?perc ")" crlf)
+	(assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?perc)))
+)
+
 (defrule inform_act
         (declare (salience 10))
         (status (step ?s))
