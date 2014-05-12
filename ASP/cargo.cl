@@ -30,13 +30,17 @@ posizione(C,A,S+1) :- scarica(C,P,A,S), stato(S).
 posizione(P,A,S+1) :- vola(P,D,A,S), stato(S).
 
 % PRECONDIZIONI
+%Per caricare la merce C sull'aereplano P nell'aereoporto A nello stato S, C deve essere in A nello stato S.
 :- carica(C,P,A,S), not posizione(C,A,S).
+%Per caricare la merce C sull'aereplano P nell'aereoporto A nello stato S, P deve essere in A nello stato S.
 :- carica(C,P,A,S), not posizione(P,A,S).
+%Per scaricare la merce C dall'aereplano P nell'aereoporto A nello stato S, C deve essere in P nello stato S.
 :- scarica(C,P,A,S), not in(C,P,S).
+%Per scaricare la merce C dall'aereplano P nell'aereoporto A nello stato S, P deve essere in A nello stato S.
 :- scarica(C,P,A,S), not posizione(P,A,S).
 
 %VINCOLI
-% Se allo stato s si è eseguita l'azione vola(P,D,A,S) non si potrà eseguire di nuovo nello stato S+1 dato che P si troverà in A
+% Se allo stato S si è eseguita l'azione vola(P,D,A,S), questa non si potrà eseguire di nuovo nello stato S+1 dato che P si troverà in A
 :- vola(P,D,A,S), vola(P,D,A,S+1).
 
 % STATO INIZIALE
