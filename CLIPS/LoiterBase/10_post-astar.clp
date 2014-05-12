@@ -14,14 +14,14 @@
         ;(printout t " Eseguo azione " ?oper " da cella (" ?r "," ?c ") " crlf)
         ;(printout t " Eseguo azione " ?oper " da cella (" ?r "," ?c ") per arrivare al dummy target (" ?x "," ?y ")" crlf)
         ; Se non c'è ancora un fatto "astar_chacked" significa che sto eseguendo POSTASTAR per computare un percorso utile alla MOVE;
-        ; di conseguenza, entro nel seguente if per marcare le celle di tipo urban sul mio percorso come da evitare
+        ; di conseguenza, entro nel seguente if per marcare le celle di tipo urban sul mio percorso (compreso il dummy_target) come da evitare (se non sono già state informate)
         (if (eq (count-facts astar_checked) 0) then
-            (if (eq ?t urban) then
+            (if (and (eq ?t urban) (not (informed ?r ?c))) then
                 (printout t "Evito la (" ?r "," ?c ")" crlf)
                 (assert (avoid-inform (pos-r ?r) (pos-c ?c)))
             )
-            (do-for-fact ((?cell prior_cell)) (and (eq ?cell:pos-r ?x) (eq ?cell:pos-c ?y) (eq ?cell:type urban))
-                (printout t "Evito la (" ?x "," ?x ") (dummy_target)" crlf)
+            (do-for-fact ((?cell prior_cell)) (and (eq ?cell:pos-r ?x) (eq ?cell:pos-c ?y) (eq ?cell:type urban) (not (any-factp ((?f avoid-inform)) (and (eq ?f:pos-r ?x) (eq ?f:pos-c ?y)))))
+                (printout t "Evito la (" ?x "," ?y ") (dummy_target)" crlf)
                 (assert (avoid-inform (pos-r ?x) (pos-c ?y)))
             )
         )

@@ -17,12 +17,6 @@
     return (or (rural ?r ?c) (urban ?r ?c))
 )
 
-; Funzione che restituisce TRUE se è già stata eseguita una azione di tipo inform
-; per la cella di coordinate ?r ?c
-(deffunction informed (?r ?c)
-    return (any-factp ((?e exec)) (and (eq ?e:action inform) (= ?e:param1 ?r) (= ?e:param2 ?c)))
-)
-
 ; Funzione che restituisce TRUE se la cella di coordinate ?r ?c è da evitare
 (deffunction avoid (?r ?c)
     return (any-factp ((?e avoid-inform)) (and (= ?e:pos-r ?r) (= ?e:pos-c ?c)))
@@ -53,7 +47,8 @@
     (if (and (interesting ?r ?c) (not (informed ?r ?c))) then
         (if (eq ?cell water) then
             (if (urban ?r ?c) then
-                (assert (loiter-act (r ?r) (c ?c) (status flood) (id 0)))
+                ;(assert (loiter-act (r ?r) (c ?c) (status flood) (id 0)))
+                (assert (inform-act (r ?r) (c ?c) (status flood) (id 0)))
             else
                 (assert (inform-act (r ?r) (c ?c) (status flood) (id 0)))
             )

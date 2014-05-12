@@ -145,6 +145,12 @@
     ?count
 )
 
+; Funzione che restituisce TRUE se è già stata eseguita una azione di tipo inform
+; per la cella di coordinate ?r ?c
+(deffunction informed (?r ?c)
+    return (any-factp ((?e exec)) (and (eq ?e:action inform) (eq ?e:param1 ?r) (eq ?e:param2 ?c)))
+)
+
 ;------------------ Fine delle nostre modifiche --------------------
 
 (defrule exec_act
@@ -164,9 +170,10 @@
         (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
         (retract ?f1)
         ; annulla un eventuale fatto di tipo avoid-inform per la cella (r,c), se esiste
-        (do-for-fact ((?f2 avoid-inform)) (and (eq ?f2:pos-r ?r) (eq ?f2:pos-c ?c))
-            (retract ?f2)
-        )
+        ;(do-for-all-facts ((?f2 avoid-inform)) (and (eq ?f2:pos-r ?r) (eq ?f2:pos-c ?c))
+        ;    (printout t "annullo avoid-inform (" ?f2:pos-r "," ?f2:pos-c ")" crlf)
+        ;    (retract ?f2)
+        ;)
 )
 
 (defrule move_act
@@ -298,7 +305,10 @@
 =>
     (printout t "--- CLEANUP ---" crlf)
     (retract ?f1 ?f2 ?f3 ?f4 ?f5 ?f6 ?f7)
-    ;(do-for-all-facts ((?fc caller)) TRUE
-    ;    (printout t ?fc crlf)
-    ;)
+    (printout t "Ho " (count-facts avoid-inform) " fatti di tipo avoid-inform, li ritiro tutti" crlf)
+    (do-for-all-facts ((?f avoid-inform)) TRUE
+        ;(printout t "avoid-inform (" ?av:pos-r "," ?av:pos-c ")" crlf)
+        (retract ?f)
+    )
+    (printout t "Ora ho " (count-facts avoid-inform) " fatti di tipo avoid-inform" crlf)
 )
