@@ -41,7 +41,7 @@ posizione(scorta,asse,S+1):-
 
 % PERSISTENZA
 
-posizione(X,Y,S+1):-
+%posizione(X,Y,S+1):-
 	posizione(X,Y,S), stato(S),
 	not -posizione(X,Y,S+1).
 -posizione(X,Y,S+1):-
