@@ -120,7 +120,19 @@
     (slot id)
 )
 
+(deftemplate loiter-act
+    (slot r)
+    (slot c)
+    (slot status)
+    (slot id)
+)
+
 (deftemplate invalid-target
+    (slot pos-r)
+    (slot pos-c)
+)
+
+(deftemplate avoid-inform
     (slot pos-r)
     (slot pos-c)
 )
@@ -144,13 +156,17 @@
 )
 
 (defrule inform_act
-    (declare (salience 10))
-    (status (step ?s))
-?f <- (inform-act (r ?r) (c ?c) (status ?status) (id ?id))
-    (not (inform-act (id ?id2&:(< ?id2 ?id))))
-=>
-    (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
-    (retract ?f)
+        (declare (salience 10))
+        (status (step ?s))
+?f1 <-  (inform-act (r ?r) (c ?c) (status ?status) (id ?id))
+        (not (inform-act (id ?id2&:(< ?id2 ?id))))
+    =>
+        (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
+        (retract ?f1)
+        ; annulla un eventuale fatto di tipo avoid-inform per la cella (r,c), se esiste
+        (do-for-fact ((?f2 avoid-inform)) (and (eq ?f2:pos-r ?r) (eq ?f2:pos-c ?c))
+            (retract ?f2)
+        )
 )
 
 (defrule move_act
@@ -225,6 +241,7 @@
     (punteggi_checked)
     (not (astar_checked))
 =>
+    ;(assert (caller astar))
     (printout t "--- Focus ASTAR ---" crlf)
     (focus ASTAR)
 )
@@ -235,6 +252,7 @@
     (astar_checked)
     (not (exit_checked))
 =>
+    ;(assert (caller exit))
     (printout t "--- Focus EXIT ---" crlf)
     (focus EXIT)
 )
@@ -245,6 +263,7 @@
     (exit_checked)
     (not (time_checked))
     =>
+    ;(assert (caller time))
     (printout t "--- Focus TIME ---" crlf)
     (focus TIME)
 )
@@ -279,4 +298,7 @@
 =>
     (printout t "--- CLEANUP ---" crlf)
     (retract ?f1 ?f2 ?f3 ?f4 ?f5 ?f6 ?f7)
+    ;(do-for-all-facts ((?fc caller)) TRUE
+    ;    (printout t ?fc crlf)
+    ;)
 )

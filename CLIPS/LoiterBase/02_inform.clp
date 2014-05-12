@@ -1,28 +1,63 @@
 (defmodule INFORM (import AGENT ?ALL) (export ?ALL))
 
-; Funzione che restituisce TRUE se è già stata eseguita una azione di tipo inform
-; per la cella di coordinate ?r ?c
-(deffunction informed (?r ?c)
-    return (any-factp ((?e exec)) (and (= (str-compare ?e:action inform) 0) (= ?e:param1 ?r) (= ?e:param2 ?c)))
+; Funzione che restituisce TRUE se la cella (prior_cell) di coordinate ?r ?c è di tipo urban
+(deffunction urban (?r ?c)
+    return (any-factp ((?cell prior_cell)) (and (eq ?cell:pos-r ?r) (eq ?cell:pos-c ?c) (eq ?cell:type urban)))
+)
+
+; Funzione che restituisce TRUE se la cella (prior_cell) di coordinate ?r ?c è di tipo rural
+(deffunction rural (?r ?c)
+    return (any-factp ((?cell prior_cell)) (and (eq ?cell:pos-r ?r) (eq ?cell:pos-c ?c) (eq ?cell:type rural)))
 )
 
 ; Funzione che restituisce TRUE se la cella (prior_cell) di coordinate ?r ?c è
-; interessante (ossia di tipo rural o urban) NB Se servisse altrove, fattorizzare in altro modulo
+; interessante (ossia di tipo rural o urban)
 (deffunction interesting (?r ?c)
-    return (any-factp ((?cell prior_cell)) (and (= ?cell:pos-r ?r) (= ?cell:pos-c ?c) (or (= (str-compare ?cell:type rural) 0) (= (str-compare ?cell:type urban) 0))))
+    ;return (any-factp ((?cell prior_cell)) (and (= ?cell:pos-r ?r) (= ?cell:pos-c ?c) (or (eq ?cell:type rural) (eq ?cell:type urban))))
+    return (or (rural ?r ?c) (urban ?r ?c))
+)
+
+; Funzione che restituisce TRUE se è già stata eseguita una azione di tipo inform
+; per la cella di coordinate ?r ?c
+(deffunction informed (?r ?c)
+    return (any-factp ((?e exec)) (and (eq ?e:action inform) (= ?e:param1 ?r) (= ?e:param2 ?c)))
+)
+
+; Funzione che restituisce TRUE se la cella di coordinate ?r ?c è da evitare
+(deffunction avoid (?r ?c)
+    return (any-factp ((?e avoid-inform)) (and (= ?e:pos-r ?r) (= ?e:pos-c ?c)))
+)
+
+; Funzione che:
+; * esegue l'azione di inform sulla cella ?cell di coordinate ?r ?c
+;   (se interessante, non già informata e non da evitare) allo step ?step
+; * asserisce un fatto di tipo must-update-rel-score
+(deffunction inform (?r ?c ?cell ?step)
+    (if (and (interesting ?r ?c) (not (informed ?r ?c)) (not (avoid ?r ?c))) then
+        (if (eq ?cell water) then
+            ;(printout t "Asserisco flood in " ?r ", " ?c crlf)
+            (assert (inform-act (r ?r) (c ?c) (status flood) (id 0)))
+        else
+            ;(printout t "Asserisco ok in " ?r ", " ?c crlf)
+            (assert (inform-act (r ?r) (c ?c) (status ok) (id 0)))
+        )
+        (assert (must-update-val ?r ?c))
+    )
 )
 
 ; Funzione che:
 ; * esegue l'azione di inform sulla cella ?cell di coordinate ?r ?c
 ;   (se interessante e non già informata) allo step ?step
 ; * asserisce un fatto di tipo must-update-rel-score
-(deffunction inform (?r ?c ?cell ?step)
-    (if (and (not (informed ?r ?c)) (interesting ?r ?c)) then
-        (if (= (str-compare ?cell water) 0) then
-            ;(printout t "Asserisco flood in " ?r ", " ?c crlf)
-            (assert (inform-act (r ?r) (c ?c) (status flood) (id 0)))
+(deffunction inform-5 (?r ?c ?cell ?step)
+    (if (and (interesting ?r ?c) (not (informed ?r ?c))) then
+        (if (eq ?cell water) then
+            (if (urban ?r ?c) then
+                (assert (loiter-act (r ?r) (c ?c) (status flood) (id 0)))
+            else
+                (assert (inform-act (r ?r) (c ?c) (status flood) (id 0)))
+            )
         else
-            ;(printout t "Asserisco ok in " ?r ", " ?c crlf)
             (assert (inform-act (r ?r) (c ?c) (status ok) (id 0)))
         )
         (assert (must-update-val ?r ?c))
@@ -38,7 +73,7 @@
             (case 2 then (inform (+ ?r 1) ?c ?cell ?step))
             (case 3 then (inform (+ ?r 1) (+ ?c 1) ?cell ?step))
             (case 4 then (inform ?r (- ?c 1) ?cell ?step))
-            (case 5 then (inform ?r ?c ?cell ?step))
+            (case 5 then (inform-5 ?r ?c ?cell ?step))
             (case 6 then (inform ?r (+ ?c 1) ?cell ?step))
             (case 7 then (inform (- ?r 1) (- ?c 1) ?cell ?step))
             (case 8 then (inform (- ?r 1) ?c ?cell ?step))
