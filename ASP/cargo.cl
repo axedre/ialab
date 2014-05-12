@@ -34,13 +34,10 @@ posizione(P,A,S+1) :- vola(P,D,A,S), stato(S).
 :- carica(C,P,A,S), not posizione(P,A,S).
 :- scarica(C,P,A,S), not in(C,P,S).
 :- scarica(C,P,A,S), not posizione(P,A,S).
-:- vola(P,D,A,S), vola(P,D,A,S+1).
 
-% PERSISTENZA
-%posizione(X,A,S+1) :- posizione(X,A,S), stato(S), not -posizione(X,A,S+1).
-%-posizione(X,A,S+1) :- -posizione(X,A,S), stato(S), not posizione(X,A,S+1).
-%vola(P,D,A,S+1) :- -vola(P,D,A,S), stato(S), not vola(P,D,A,S+1).
-%-vola(P,D,A,S+1) :- vola(P,D,A,S), stato(S), not -vola(P,D,A,S+1).
+%VINCOLI
+% Se allo stato s si è eseguita l'azione vola(P,D,A,S) non si potrà eseguire di nuovo nello stato S+1 dato che P si troverà in A
+:- vola(P,D,A,S), vola(P,D,A,S+1).
 
 % STATO INIZIALE
 posizione(c1,sfo,0).
