@@ -54,7 +54,7 @@ public class ClipsCore {
      * @param actualPath il percorso del file contenente la mappa "actual"
      */
     public ClipsCore(String initialPath, String actualPath) {
-        clips = new Environment();
+	clips = new Environment();
         clips.load("1_main.clp");
         clips.load(initialPath);
         clips.load("3_env.clp");
@@ -62,6 +62,19 @@ public class ClipsCore {
         clips.load("5_agent.clp");
         String extensionsPath = "extensions" + File.separator + "regolaHalt.clp";
         clips.load(extensionsPath);
+        clips.load("6_init_punteggi.clp");
+        clips.load("01_time.clp");
+        clips.load("02_inform.clp");
+        clips.load("03_punteggi.clp");
+        clips.load("04_exit.clp");
+        clips.load("05_astar.clp");
+        clips.load("06_move.clp");
+        clips.load("07_finish.clp");
+        clips.load("8_a_star.clp");
+        clips.load("9_new.clp");
+        clips.load("10_post-astar.clp");
+        clips.load("11_path_to_finish.clp");
+        clips.load("12_path_to_bestexit.clp");
         router = new RouterDialog("routerCore");
         clips.addRouter(router);
     }

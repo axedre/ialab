@@ -12,7 +12,7 @@
     =>
         ; Se non c'è ancora un fatto "astar_chacked" significa che sto eseguendo POSTASTAR per computare un percorso utile alla MOVE;
         ; di conseguenza, entro nel seguente if per marcare le celle di tipo urban sul mio percorso (compreso il dummy_target) come da evitare (se non sono già state informate)
-        (if (eq (count-facts astar_checked) 0) then
+        (if (and (eq (count-facts astar_checked) 0) (not (any-factp ((?sl stop-loiter)) TRUE))) then
             (if (and (eq ?t urban) (not (informed ?r ?c))) then
                 (printout t "Evito la (" ?r "," ?c ")" crlf)
                 (assert (avoid-inform (pos-r ?r) (pos-c ?c)))
