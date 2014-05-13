@@ -22,6 +22,24 @@
         (retract ?f)
 )
 
+(defrule stop-loiter
+	(declare (salience 150))
+	(status (step ?s) (time ?t))
+	(maxduration ?m)
+	(test 
+	    (>
+		?t
+		( * 
+		    (/ ?m (+ (count-facts score_cell) 1))
+		    50
+		)
+	    )
+	)
+    =>
+	(assert (stop-loiter))
+	(printout t "STOP LOITER TIME" crlf)
+)
+
 ;; Eseguo questa regola per ogni gate. Intendo valutare il costo di
 ;; raggiungimento dello stesso a partire dalla posizione attuale
 ;; PROBLEMA: calcola il percorso solo per il primo gate che matcha
@@ -86,11 +104,11 @@
     (declare (salience 50))
     (status (step ?s))
     (not (best-exit-time ?a ?b ?c ?s))
-    (prior_cell (pos-r ?x) (pos-c ?y) (type gate))
+    (prior_cell (pos-r ?r1) (pos-c ?c1) (type gate))
     (costo-check (pos-r ?r1) (pos-c ?c1) (cost ?cost))
     (not (costo-check (pos-r ?r2&:(neq ?r2 ?r1)) (pos-c ?c2&:(neq ?c2 ?c1))))
 =>
-    (assert (best-exit-time ?x ?y ?cost ?s))
+    (assert (best-exit-time ?r1 ?c1 ?cost ?s))
 )
 
 (defrule not-in-time

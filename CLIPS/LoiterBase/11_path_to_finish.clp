@@ -130,11 +130,11 @@
 (defrule check-exit-cost3
 		(declare (salience 50))
 		(not (best-exit ?a ?b ?c))
-		(prior_cell (pos-r ?x) (pos-c ?y) (type gate))
+		(prior_cell (pos-r ?r1) (pos-c ?c1) (type gate))
 		(costo-check (pos-r ?r1) (pos-c ?c1) (cost ?cost))
 		(not (costo-check (pos-r ?r2&:(neq ?r2 ?r1)) (pos-c ?c2&:(neq ?c2 ?c1))))
 	=>
-		(assert (best-exit ?x ?y ?cost))
+		(assert (best-exit ?r1 ?c1 ?cost))
 )
 
 (defrule control-bestexit
