@@ -10,9 +10,10 @@
 ?f2 <-  (exec-star (anc ?anc) (id ?id) (op ?oper) (direction ?dir) (pos-x ?r) (pos-y ?c))
         (prior_cell (pos-r ?r) (pos-c ?c) (type ?t))
     =>
-        ; Se non c'è ancora un fatto "astar_chacked" significa che sto eseguendo POSTASTAR per computare un percorso utile alla MOVE;
-        ; di conseguenza, entro nel seguente if per marcare le celle di tipo urban sul mio percorso (compreso il dummy_target) come da evitare (se non sono già state informate)
-        (if (and (eq (count-facts astar_checked) 0) (not (any-factp ((?sl stop-loiter)) TRUE))) then
+        ; Se non c'è ancora un fatto "astar_checked" significa che sto eseguendo POSTASTAR per computare un percorso utile alla MOVE;
+        ; di conseguenza, entro nel seguente if per marcare le celle di tipo urban sul mio percorso (compreso il dummy_target) come da evitare
+        ; (se non sono già state informate e se non sono in modalità stop-loiter)
+        (if (and (eq (count-facts astar_checked) 0) (eq (count-facts stop-loiter) 0)) then
             (if (and (eq ?t urban) (not (informed ?r ?c))) then
                 (printout t "Evito la (" ?r "," ?c ")" crlf)
                 (assert (avoid-inform (pos-r ?r) (pos-c ?c)))
@@ -24,8 +25,7 @@
         )
         (assert (path (id ?id) (oper ?oper)))
         (assert (last (id ?anc)))
-        (retract ?f1)
-        (retract ?f2)
+        (retract ?f1 ?f2)
 )
 
 ;regole per eliminare i fatti generati da A* non più utili

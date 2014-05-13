@@ -144,6 +144,10 @@
     return (any-factp ((?e exec)) (and (eq ?e:action inform) (eq ?e:param1 ?r) (eq ?e:param2 ?c)))
 )
 
+; Questo deftemplate è usato al solo scopo di testare l'esistenza di un fatto
+; (che potrebbe essere di tipo ordinato) non ancora asserito
+(deftemplate stop-loiter)
+
 ;------------------ Fine delle nostre modifiche --------------------
 
 (defrule exec_act

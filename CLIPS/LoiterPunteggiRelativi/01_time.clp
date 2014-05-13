@@ -26,15 +26,7 @@
 	(declare (salience 150))
 	(status (step ?s) (time ?t))
 	(maxduration ?m)
-	(test 
-	    (>
-		?t
-		( * 
-		    (/ ?m (+ (count-facts score_cell) 1))
-		    50
-		)
-	    )
-	)
+	(test (> ?t (* (/ ?m (+ (count-facts score_cell) 1)) 50)))
     =>
 	(assert (stop-loiter))
 	(printout t "STOP LOITER TIME" crlf)
