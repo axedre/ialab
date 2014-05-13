@@ -176,6 +176,8 @@ public class MonitorView extends ClipsView implements Observer {
 
                 String[] parts = mapString[i][j].split("_");
                 // cerca se, nei primi 6 caratteri (se ce ne sono almeno 6), c'è la stringa "robot_"...
+                Color[] colors = {Color.red, new Color(235, 145, 55), new Color(38, 133, 26)};
+                int color;
                 if (parts[0].equals("robot")) {
                     direction = model.getDirection();
                     // ...nel, caso prosegue dal 6° carattere in poi.
@@ -185,19 +187,21 @@ public class MonitorView extends ClipsView implements Observer {
                     // disegna le immagini, preservando i canali alpha per le trasparenze
                     g.drawImage(background, 0, 0, null);
                     g.drawImage(robot, 0, 0, null);
+                    color = Integer.parseInt(parts[4]);
                 } else {
                     g.drawImage(ImageIO.read(new File("img" + File.separator + parts[0] + "_" + parts[1] + ".jpg")), 0, 0, null);
                     if (Boolean.parseBoolean(parts[4])) {
                         g.drawImage(target, 0, 0, null);
                     }
                     text = parts[2];
+                    color = Integer.parseInt(parts[3]);
                 }
                 icon = new ImageIcon(combined);
                 image = icon.getImage().getScaledInstance(cellDimension, cellDimension, Image.SCALE_SMOOTH);
                 icon = new ImageIcon(image);
                 map[i][j].setIcon(icon);
                 map[i][j].setText(model.showScores ? text : "");
-                map[i][j].setForeground(Boolean.parseBoolean(parts[3]) ? new Color(38, 133, 26) : Color.red);
+                map[i][j].setForeground(colors[color]);
                 map[i][j].repaint();
             }
         }

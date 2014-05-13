@@ -83,8 +83,7 @@ public class MonitorModel extends ClipsModel {
         String[] array = {"pos-r", "pos-c", "type", "actual"};
         String[][] mp = core.findAllFacts("ENV", "actual_cell", "TRUE", array);
         String[] slots_temporary_target = {"pos-x", "pos-y"};
-        String temporary_target[] = core.findFact("AGENT", "temporary_target", "TRUE", slots_temporary_target);
-
+        String[] temporary_target = core.findFact("AGENT", "temporary_target", "TRUE", slots_temporary_target);
         for (String[] mp_i : mp) {
             int r = new Integer(mp_i[0]);
             int c = new Integer(mp_i[1]);
@@ -92,13 +91,23 @@ public class MonitorModel extends ClipsModel {
             String[] slots_rs = {"pos-r", "pos-c", "rel_score"};
             String[] rs = core.findFact("AGENT", "score_cell", "and (= ?f:pos-r " + r + ") (= ?f:pos-c " + c + ")", slots_rs);
             String[] slots_inf = {"param3"};
-            String inf = core.findFact("MAIN", "exec", "and (= (str-compare ?f:action inform) 0) (= ?f:param1 " + r + ") (= ?f:param2 " + c + ")", slots_inf)[0];
+            String inf = core.findFact("MAIN", "exec", "and (eq ?f:action inform) (= ?f:param1 " + r + ") (= ?f:param2 " + c + ")", slots_inf)[0];
+            int inform_status = 0;
+            if (inf == null) {
+                //Se la cella (r,c) non è stata informata potrebbe essere stata marcata come avoid-inform
+                String[] slots_avoid_inform = {"pos-r", "pos-c"};
+                if (core.findFact("POSTASTAR", "avoid-inform", "and (eq ?f:pos-r " + r + ") (= ?f:pos-c " + c + ")", slots_avoid_inform)[0] != null) {
+                    inform_status = 1;
+                }
+            } else {
+                inform_status = 2;
+            }
             double relScore = 0.0;
             try {
                 relScore = Math.floor(Double.parseDouble(rs[2]) * 100) / 100;
             } catch (NumberFormatException e) {
             }
-            map[r - 1][c - 1] = mp_i[2] + "_" + mp_i[3] + "_" + relScore + "_" + (inf != null) + "_" + (temporary_target[0].equals(mp_i[0]) && temporary_target[1].equals(mp_i[1]));
+            map[r - 1][c - 1] = mp_i[2] + "_" + mp_i[3] + "_" + relScore + "_" + inform_status + "_" + (temporary_target[0].equals(mp_i[0]) && temporary_target[1].equals(mp_i[1]));
         }
         DebugFrame.appendText("...RIEMPITA BASE...");
         String[] arrayRobot = {"pos-r", "pos-c", "direction", "dur-last-act", "time", "step"};

@@ -125,12 +125,23 @@
     (slot pos-c)
 )
 
+(deftemplate avoid-inform
+    (slot pos-r)
+    (slot pos-c)
+)
+
 (deffunction count-facts (?template)
     (bind ?count 0)
     (do-for-all-facts ((?fct ?template)) TRUE
         (bind ?count (+ ?count 1))
     )
     ?count
+)
+
+; Funzione che restituisce TRUE se è già stata eseguita una azione di tipo inform
+; per la cella di coordinate ?r ?c
+(deffunction informed (?r ?c)
+    return (any-factp ((?e exec)) (and (eq ?e:action inform) (eq ?e:param1 ?r) (eq ?e:param2 ?c)))
 )
 
 ;------------------ Fine delle nostre modifiche --------------------
@@ -143,24 +154,45 @@
     (focus MAIN)
 )
 
-(defrule inform_act
-    (declare (salience 10))
-    (status (step ?s))
-?f <- (inform-act (r ?r) (c ?c) (status ?status) (id ?id))
-    (not (inform-act (id ?id2&:(< ?id2 ?id))))
-=>
-    (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
-    (retract ?f)
+(defrule move_act
+        (declare (salience 9))
+        (status (step ?s))
+?f  <-  (move-path (oper ?oper) (id ?id))
+        (not (move-path (id ?id2&:(< ?id2 ?id))))
+    =>
+        (assert (exec (step ?s) (action ?oper)))
+        (retract ?f)
 )
 
-(defrule move_act
-    (declare (salience 9))
-    (status (step ?s))
-?f <- (move-path (oper ?oper) (id ?id))
-    (not (move-path (id ?id2&:(< ?id2 ?id))))
-=>
-    (assert (exec (step ?s) (action ?oper)))
-    (retract ?f)
+(defrule inform_act
+        (declare (salience 10))
+        (status (step ?s))
+?f  <-  (inform-act (r ?r) (c ?c) (status ?status) (id ?id))
+        (not (inform-act (id ?id2&:(< ?id2 ?id))))
+    =>
+        (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
+        (retract ?f)
+)
+
+(defrule loiter_act
+	(declare (salience 11))
+	(status (step ?s))
+?f  <-  (loiter-act)
+    =>
+	(assert (exec (step ?s) (action loiter-monitoring)))
+	(retract ?f)
+)
+
+(defrule inform_loiter_act
+	(declare (salience 11))
+?f  <-	(perc-monitor (step ?s) (pos-r ?r) (pos-c ?c) (perc ?perc))
+    =>
+	(if (eq ?perc low-water) then
+            (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 initial-flood)))
+        else
+            (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 severe-flood)))
+        )
+        (retract ?f)
 )
 
 (defrule done
@@ -279,4 +311,7 @@
 =>
     (printout t "--- CLEANUP ---" crlf)
     (retract ?f1 ?f2 ?f3 ?f4 ?f5 ?f6 ?f7)
+    (do-for-all-facts ((?f avoid-inform)) TRUE
+        (retract ?f)
+    )
 )

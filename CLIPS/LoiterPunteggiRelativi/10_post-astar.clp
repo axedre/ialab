@@ -6,10 +6,22 @@
         (declare (salience 50))
 ?f1 <-  (last (id ?id))
         (node (ident ?id) (father ?anc&~NA))
+        (dummy_target (pos-x ?x) (pos-y ?y))
 ?f2 <-  (exec-star (anc ?anc) (id ?id) (op ?oper) (direction ?dir) (pos-x ?r) (pos-y ?c))
-        ;(not (double-check))
+        (prior_cell (pos-r ?r) (pos-c ?c) (type ?t))
     =>
-        ;(printout t " Eseguo azione " ?oper " da cella (" ?r "," ?c ") " crlf)
+        ; Se non c'è ancora un fatto "astar_chacked" significa che sto eseguendo POSTASTAR per computare un percorso utile alla MOVE;
+        ; di conseguenza, entro nel seguente if per marcare le celle di tipo urban sul mio percorso (compreso il dummy_target) come da evitare (se non sono già state informate)
+        (if (eq (count-facts astar_checked) 0) then
+            (if (and (eq ?t urban) (not (informed ?r ?c))) then
+                (printout t "Evito la (" ?r "," ?c ")" crlf)
+                (assert (avoid-inform (pos-r ?r) (pos-c ?c)))
+            )
+            (do-for-fact ((?cell prior_cell)) (and (eq ?cell:pos-r ?x) (eq ?cell:pos-c ?y) (eq ?cell:type urban) (not (any-factp ((?f avoid-inform)) (and (eq ?f:pos-r ?x) (eq ?f:pos-c ?y)))))
+                (printout t "Evito la (" ?x "," ?y ") (dummy_target)" crlf)
+                (assert (avoid-inform (pos-r ?x) (pos-c ?y)))
+            )
+        )
         (assert (path (id ?id) (oper ?oper)))
         (assert (last (id ?anc)))
         (retract ?f1)

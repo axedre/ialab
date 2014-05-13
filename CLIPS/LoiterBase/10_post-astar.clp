@@ -9,10 +9,7 @@
         (dummy_target (pos-x ?x) (pos-y ?y))
 ?f2 <-  (exec-star (anc ?anc) (id ?id) (op ?oper) (direction ?dir) (pos-x ?r) (pos-y ?c))
         (prior_cell (pos-r ?r) (pos-c ?c) (type ?t))
-        ;(not (double-check))
     =>
-        ;(printout t " Eseguo azione " ?oper " da cella (" ?r "," ?c ") " crlf)
-        ;(printout t " Eseguo azione " ?oper " da cella (" ?r "," ?c ") per arrivare al dummy target (" ?x "," ?y ")" crlf)
         ; Se non c'è ancora un fatto "astar_chacked" significa che sto eseguendo POSTASTAR per computare un percorso utile alla MOVE;
         ; di conseguenza, entro nel seguente if per marcare le celle di tipo urban sul mio percorso (compreso il dummy_target) come da evitare (se non sono già state informate)
         (if (eq (count-facts astar_checked) 0) then

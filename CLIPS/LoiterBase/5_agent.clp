@@ -120,13 +120,6 @@
     (slot id)
 )
 
-;(deftemplate loiter-act
-;    (slot r)
-;    (slot c)
-;    (slot status)
-;    (slot id)
-;)
-
 (deftemplate invalid-target
     (slot pos-r)
     (slot pos-c)
@@ -162,24 +155,23 @@
 )
 
 (defrule move_act
-    (declare (salience 9))
-    (status (step ?s))
-?f <- (move-path (oper ?oper) (id ?id))
-    (not (move-path (id ?id2&:(< ?id2 ?id))))
-=>
-    (assert (exec (step ?s) (action ?oper)))
-    (retract ?f)
+        (declare (salience 9))
+        (status (step ?s))
+?f  <-  (move-path (oper ?oper) (id ?id))
+        (not (move-path (id ?id2&:(< ?id2 ?id))))
+    =>
+        (assert (exec (step ?s) (action ?oper)))
+        (retract ?f)
 )
 
 (defrule inform_act
         (declare (salience 10))
         (status (step ?s))
-?f1 <-  (inform-act (r ?r) (c ?c) (status ?status) (id ?id))
+?f  <-  (inform-act (r ?r) (c ?c) (status ?status) (id ?id))
         (not (inform-act (id ?id2&:(< ?id2 ?id))))
     =>
-	(printout t "inform-act" crlf)
         (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
-        (retract ?f1)
+        (retract ?f)
 )
 
 (defrule loiter_act
@@ -187,18 +179,14 @@
 	(status (step ?s))
 ?f  <-  (loiter-act)
     =>
-	(printout t "loiter-act" crlf)
 	(assert (exec (step ?s) (action loiter-monitoring)))
 	(retract ?f)
-	;(focus MAIN)
 )
 
 (defrule inform_loiter_act
 	(declare (salience 11))
-	;(status (step ?s))
 ?f  <-	(perc-monitor (step ?s) (pos-r ?r) (pos-c ?c) (perc ?perc))
     =>
-	(printout t "inform-loiter-act (pos-r:" ?r ", pos-c: " ?c ", " ?perc ") allo step " ?s crlf)
 	(if (eq ?perc low-water) then
             (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 initial-flood)))
         else
@@ -269,7 +257,6 @@
     (punteggi_checked)
     (not (astar_checked))
 =>
-    ;(assert (caller astar))
     (printout t "--- Focus ASTAR ---" crlf)
     (focus ASTAR)
 )
@@ -280,7 +267,6 @@
     (astar_checked)
     (not (exit_checked))
 =>
-    ;(assert (caller exit))
     (printout t "--- Focus EXIT ---" crlf)
     (focus EXIT)
 )
@@ -291,7 +277,6 @@
     (exit_checked)
     (not (time_checked))
     =>
-    ;(assert (caller time))
     (printout t "--- Focus TIME ---" crlf)
     (focus TIME)
 )
@@ -326,10 +311,7 @@
 =>
     (printout t "--- CLEANUP ---" crlf)
     (retract ?f1 ?f2 ?f3 ?f4 ?f5 ?f6 ?f7)
-    (printout t "Ho " (count-facts avoid-inform) " fatti di tipo avoid-inform, li ritiro tutti" crlf)
     (do-for-all-facts ((?f avoid-inform)) TRUE
-        ;(printout t "avoid-inform (" ?av:pos-r "," ?av:pos-c ")" crlf)
         (retract ?f)
     )
-    (printout t "Ora ho " (count-facts avoid-inform) " fatti di tipo avoid-inform" crlf)
 )

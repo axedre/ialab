@@ -13,7 +13,6 @@
 ; Funzione che restituisce TRUE se la cella (prior_cell) di coordinate ?r ?c è
 ; interessante (ossia di tipo rural o urban)
 (deffunction interesting (?r ?c)
-    ;return (any-factp ((?cell prior_cell)) (and (= ?cell:pos-r ?r) (= ?cell:pos-c ?c) (or (eq ?cell:type rural) (eq ?cell:type urban))))
     return (or (rural ?r ?c) (urban ?r ?c))
 )
 
