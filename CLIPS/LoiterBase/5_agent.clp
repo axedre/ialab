@@ -120,12 +120,12 @@
     (slot id)
 )
 
-(deftemplate loiter-act
-    (slot r)
-    (slot c)
-    (slot status)
-    (slot id)
-)
+;(deftemplate loiter-act
+;    (slot r)
+;    (slot c)
+;    (slot status)
+;    (slot id)
+;)
 
 (deftemplate invalid-target
     (slot pos-r)
@@ -161,41 +161,6 @@
     (focus MAIN)
 )
 
-(defrule loiter_act
-	(declare (salience 12))
-	(status (step ?s))
-?f  <-  (loiter-act)
-    =>
-	(printout t "loiter-act" crlf)
-	(assert (exec (step ?s) (action loiter-monitoring)))
-	(focus MAIN)
-	(retract ?f)
-)
-
-(defrule inform_loiter_act
-	(declare (salience 11))
-	(status (step ?s))
-	(perc-monitor (step ?s) (pos-r ?r) (pos-c ?c) (perc ?perc))
-    =>
-	(printout t "inform-loiter-act (pos-r:" ?r ", pos-c: " ?c ", " ?perc ")" crlf)
-	(assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?perc)))
-)
-
-(defrule inform_act
-        (declare (salience 10))
-        (status (step ?s))
-?f1 <-  (inform-act (r ?r) (c ?c) (status ?status) (id ?id))
-        (not (inform-act (id ?id2&:(< ?id2 ?id))))
-    =>
-        (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
-        (retract ?f1)
-        ; annulla un eventuale fatto di tipo avoid-inform per la cella (r,c), se esiste
-        ;(do-for-all-facts ((?f2 avoid-inform)) (and (eq ?f2:pos-r ?r) (eq ?f2:pos-c ?c))
-        ;    (printout t "annullo avoid-inform (" ?f2:pos-r "," ?f2:pos-c ")" crlf)
-        ;    (retract ?f2)
-        ;)
-)
-
 (defrule move_act
     (declare (salience 9))
     (status (step ?s))
@@ -204,6 +169,42 @@
 =>
     (assert (exec (step ?s) (action ?oper)))
     (retract ?f)
+)
+
+(defrule inform_act
+        (declare (salience 10))
+        (status (step ?s))
+?f1 <-  (inform-act (r ?r) (c ?c) (status ?status) (id ?id))
+        (not (inform-act (id ?id2&:(< ?id2 ?id))))
+    =>
+	(printout t "inform-act" crlf)
+        (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 ?status)))
+        (retract ?f1)
+)
+
+(defrule loiter_act
+	(declare (salience 11))
+	(status (step ?s))
+?f  <-  (loiter-act)
+    =>
+	(printout t "loiter-act" crlf)
+	(assert (exec (step ?s) (action loiter-monitoring)))
+	(retract ?f)
+	;(focus MAIN)
+)
+
+(defrule inform_loiter_act
+	(declare (salience 11))
+	;(status (step ?s))
+?f  <-	(perc-monitor (step ?s) (pos-r ?r) (pos-c ?c) (perc ?perc))
+    =>
+	(printout t "inform-loiter-act (pos-r:" ?r ", pos-c: " ?c ", " ?perc ") allo step " ?s crlf)
+	(if (eq ?perc low-water) then
+            (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 initial-flood)))
+        else
+            (assert (exec (step ?s) (action inform) (param1 ?r) (param2 ?c) (param3 severe-flood)))
+        )
+        (retract ?f)
 )
 
 (defrule done
