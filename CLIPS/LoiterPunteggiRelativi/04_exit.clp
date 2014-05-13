@@ -58,7 +58,7 @@
             (node
                 (ident 0)
                 (gcost 0)
-                (fcost (+ (* (+ (abs (- ?x1 ?r)) (abs (- ?y1 ?c))) 10) 5))
+                (fcost (* (+ (abs (- ?x1 ?r)) (abs (- ?y1 ?c))) 10))
                 (father NA)
                 (pos-r ?r)
                 (pos-c ?c)
@@ -92,7 +92,7 @@
             (node
                 (ident 0)
                 (gcost 0)
-                (fcost (+ (* (+ (abs (- ?x1 ?r)) (abs (- ?y1 ?c))) 10) 5))
+                (fcost (* (+ (abs (- ?x1 ?r)) (abs (- ?y1 ?c))) 10))
                 (father NA)
                 (pos-r ?r)
                 (pos-c ?c)

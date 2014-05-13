@@ -17,7 +17,7 @@
 (defrule time-clean3
         (declare (salience 150))
         (not (costo-check))
-?f <-	(best-exit)
+?f <-	(best-exit-time)
     =>
         (retract ?f)
 )
@@ -44,7 +44,7 @@
         (node
             (ident 0)
             (gcost 0)
-            (fcost (+ (* (+ (abs (- ?x ?r)) (abs (- ?y ?c))) 10) 5))
+            (fcost (* (+ (abs (- ?x ?r)) (abs (- ?y ?c))) 10))
             (father NA)
             (pos-r ?r)
             (pos-c ?c)
@@ -57,42 +57,46 @@
     (focus ASTAR-ALGORITHM)
 )
 
-;; Asserisco un fatto best-exit con le coordinate dell'uscita più conveniente
+;; Asserisco un fatto best-exit-time con le coordinate dell'uscita più conveniente
 (defrule check-exit-cost1
     (declare (salience 50))
-    (not (best-exit ?a ?b ?c))
+    (status (step ?s))
+    (not (best-exit-time ?a ?b ?c ?s))
     (prior_cell (pos-r ?x) (pos-c ?y) (type gate))
     (costo-check (cost ?g))
     (costo-check (pos-r ?x) (pos-c ?y) (cost ?cost))
     (test (< ?cost ?g))
 =>
-    (assert (best-exit ?x ?y ?cost))
+    (assert (best-exit-time ?x ?y ?cost ?s))
 )
 
 (defrule check-exit-cost2
         (declare (salience 50))
-?f <-	(best-exit ?x1 ?y1 ?cost)
+        (status (step ?s))
+?f <-	(best-exit-time ?x1 ?y1 ?cost ?s)
         (costo-check (pos-r ?x1) (pos-c ?y1) (cost ?cost))
         (costo-check (pos-r ?x2) (pos-c ?y2) (cost ?best))
         (test (< ?best ?cost))
-    =>
+   =>
         (retract ?f)
-        (assert (best-exit ?x2 ?y2 ?best))
+        (assert (best-exit-time ?x2 ?y2 ?best ?s))
 )
 
 (defrule check-exit-cost3
     (declare (salience 50))
-    (not (best-exit ?a ?b ?c))
+    (status (step ?s))
+    (not (best-exit-time ?a ?b ?c ?s))
     (prior_cell (pos-r ?x) (pos-c ?y) (type gate))
     (costo-check (pos-r ?r1) (pos-c ?c1) (cost ?cost))
     (not (costo-check (pos-r ?r2&:(neq ?r2 ?r1)) (pos-c ?c2&:(neq ?c2 ?c1))))
 =>
-    (assert (best-exit ?x ?y ?cost))
+    (assert (best-exit-time ?x ?y ?cost ?s))
 )
 
 (defrule not-in-time
         (declare (salience 20))
-        (best-exit ?x ?y ?cost)
+        (status (step ?s))
+        (best-exit-time ?x ?y ?cost ?s)
         (status (step ?s) (time ?t))
         (costo-check-astar (cost ?g)(step ?s))
         (maxduration ?m)
@@ -121,7 +125,8 @@
 
 (defrule time-ok
     (declare (salience 15))
-    (best-exit ?x ?y ?cost)
+    (status (step ?s))
+    (best-exit-time ?x ?y ?cost ?s)
     (status (step ?s) (time ?t))
     (costo-check-astar (cost ?g) (step ?s))
     (maxduration ?m)

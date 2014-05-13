@@ -283,7 +283,7 @@
 ; 6) INFORM
 (defrule control-inform
     (declare (salience 1))
-    (or (finished) (time_checked))
+    (or (finished) (time_checked) (hurry))
     (not (inform_checked))
 =>
     (printout t "--- Focus INFORM ---" crlf)
@@ -293,7 +293,7 @@
 (defrule control-move
     (declare (salience 1))
     (not (move_checked))
-    (or (finished) (inform_checked))
+    (or (finished) (inform_checked) (hurry))
 =>
     (printout t "--- Focus MOVE ---" crlf)
     (focus MOVE)
