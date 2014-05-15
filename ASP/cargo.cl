@@ -14,34 +14,50 @@ stato(0..lastlev+1).
 } :- livello(S).
 
 % EFFETTI
+
 % Se allo stato S carichiamo il cargo C sull'aereo P che si trova all'aereoporto A, allo stato S+1 la posizione del cargo C non sarà più l'aereoporto A
 -posizione(C,A,S+1) :- carica(C,P,A,S), stato(S).
+
 % Se allo stato S carichiamo il cargo C sull'aereo P che si trova all'aereoporto A, allo stato S+1 il cargo C sarà sull'aereo P
 in(C,P,S+1) :- carica(C,P,A,S), stato(S).
 
 % Se allo stato S scarichiamo il cargo C dall'aereo P che si trova all'aereoporto A, allo stato S+1 la posizione del cargo C sarà l'aereoporto A
 posizione(C,A,S+1) :- scarica(C,P,A,S), stato(S).
+
 % Se allo stato S scarichiamo il cargo C dall'aereo P che si trova all'aereoporto A, allo stato S+1 la posizione del cargo C non sarà più l'aereo P
 -in(C,P,S+1) :- scarica(C,P,A,S), stato(S).
 
 % Se allo stato S l'aereo P vola dall'aereoporto D all'aereoporto A, l'aereo P non si troverà all'aereoporto D allo stato S+1
 -posizione(P,D,S+1) :- vola(P,D,A,S), stato(S).
+
 % Se allo stato S l'aereo P vola dall'aereoporto D all'aereoporto A, l'aereo P si troverà all'aereoporto A allo stato S+1
 posizione(P,A,S+1) :- vola(P,D,A,S), stato(S).
 
 % PRECONDIZIONI
-% Per caricare la merce C sull'aereo P nell'aereoporto A nello stato S, C deve essere in A allo stato S.
+
+% Per caricare la merce C sull'aereo P nell'aereoporto A allo stato S, C deve essere in A allo stato S.
 :- carica(C,P,A,S), not posizione(C,A,S).
-% Per caricare la merce C sull'aereo P nell'aereoporto A nello stato S, P deve essere in A allo stato S.
+
+% Per caricare la merce C sull'aereo P nell'aereoporto A allo stato S, P deve essere in A allo stato S.
 :- carica(C,P,A,S), not posizione(P,A,S).
-% Per scaricare la merce C dall'aereo P nell'aereoporto A nello stato S, C deve essere in P allo stato S.
+
+% Per scaricare la merce C dall'aereo P nell'aereoporto A allo stato S, C deve essere in P allo stato S.
 :- scarica(C,P,A,S), not in(C,P,S).
-% Per scaricare la merce C dall'aereo P nell'aereoporto A nello stato S, P deve essere in A allo stato S.
+
+% Per scaricare la merce C dall'aereo P nell'aereoporto A allo stato S, P deve essere in A allo stato S.
 :- scarica(C,P,A,S), not posizione(P,A,S).
+
+% L'aereo P, per volare dall'aereoporto D all'aereoporto A allo stato S, deve trovarsi all'aereoporto D allo stato S.
+:- vola(P,D,A,S), not posizione(P,D,S).
+
+% PERSISTENZA
+
+posizione(X,A,S+1):- posizione(X,A,S), stato(S), not -posizione(X,A,S+1).
+-posizione(X,A,S+1):- -posizione(X,A,S), stato(S), not posizione(X,A,S+1).
 
 % VINCOLI
 % Se allo stato S si è eseguita l'azione vola(P,D,A,S), questa non si potrà eseguire di nuovo nello stato S+1 dato che P si troverà in A
-:- vola(P,D,A,S), vola(P,D,A,S+1).
+%:- vola(P,D,A,S), vola(P,D,A,S+1).
 
 % STATO INIZIALE
 posizione(c1,sfo,0).
