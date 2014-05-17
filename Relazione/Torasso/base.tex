@@ -1,7 +1,7 @@
 Questa strategia risulta essere una leggera variante di quella illustrata nel capitolo \ref{cap:safe}. Ciò che varia, rispetto alla precedente, è il sistema di calcolo dei punteggi al fine di individuare la cella più promettente da esplorare verso cui dirigersi. Verranno enfatizzate solo le differenze rispetto alla strategia Safe.
 
 \section{Modulo: individuazione della cella target} \label{sec:base-target}
-L'individuazione della cella più appetibile nella strategia di base è molto semplice. Durante la fase di inizializzazione dell'ambiente viene assegnato un punteggio a ogni cella, in base alla propria tipologia, e salvato nello slot \texttt{val} del template \texttt{score\_cell}. Questo template serve a memorizzare i punteggi delle celle per individuare la più appetibile presente sulla mappa. I valori, che ricordo non vengono calcolati in questo modulo, bensì nella fase di inizializzazione dell'ambiente, vengono assegnati nel seguente modo: 
+L'individuazione della cella più appetibile nella strategia di base è molto semplice. Durante la fase di inizializzazione dell'ambiente viene assegnato un punteggio a ogni cella, in base alla propria tipologia, e salvato nello slot \texttt{val} del template \texttt{score\_cell}. Questo template serve a memorizzare i punteggi delle celle per individuare la più appetibile presente sulla mappa. I valori, che - ricordiamo - non vengono calcolati in questo modulo (bensì nella fase di inizializzazione dell'ambiente), vengono assegnati nel seguente modo:
 \begin{itemize}
 	\item Rural: 900\footnote{il valore viene abbassato a -5 una volta informata}
 	\item Urban: 1000\footnote{il valore viene abbassato a -5 una volta informata}
