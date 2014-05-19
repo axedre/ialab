@@ -52,12 +52,20 @@ posizione(P,A,S+1) :- vola(P,D,A,S), stato(S).
 
 % PERSISTENZA
 
-posizione(X,A,S+1):- posizione(X,A,S), stato(S), not -posizione(X,A,S+1).
--posizione(X,A,S+1):- -posizione(X,A,S), stato(S), not posizione(X,A,S+1).
+posizione(X,A,S+1) :- posizione(X,A,S), stato(S), not -posizione(X,A,S+1).
+-posizione(X,A,S+1) :- -posizione(X,A,S), stato(S), not posizione(X,A,S+1).
 
-% VINCOLI
-% Se allo stato S si è eseguita l'azione vola(P,D,A,S), questa non si potrà eseguire di nuovo nello stato S+1 dato che P si troverà in A
-%:- vola(P,D,A,S), vola(P,D,A,S+1).
+in(C,P,S+1) :- in(C,P,S), stato(S), not -in(C,P,S+1).
+-in(C,P,S+1) :- -in(C,P,S), stato(S), not in(C,P,S+1).
+
+vola(P,D,A,S+1) :- vola(P,D,A,S), stato(S), not -vola(P,D,A,S+1).
+-vola(P,D,A,S+1) :- -vola(P,D,A,S), stato(S), not vola(P,D,A,S+1).
+
+carica(C,P,A,S+1) :- carica(C,P,A,S), stato(S), not -carica(C,P,A,S+1).
+-carica(C,P,A,S+1) :- -carica(C,P,A,S), stato(S), not carica(C,P,A,S+1).
+
+scarica(C,P,A,S+1) :- scarica(C,P,A,S), stato(S), not -scarica(C,P,A,S+1).
+-scarica(C,P,A,S+1) :- -scarica(C,P,A,S), stato(S), not scarica(C,P,A,S+1).
 
 % STATO INIZIALE
 posizione(c1,sfo,0).
