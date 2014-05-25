@@ -53,19 +53,10 @@ posizione(P,A,S+1) :- vola(P,D,A,S), stato(S).
 % PERSISTENZA
 
 posizione(X,A,S+1) :- posizione(X,A,S), stato(S), not -posizione(X,A,S+1).
--posizione(X,A,S+1) :- -posizione(X,A,S), stato(S), not posizione(X,A,S+1).
+%-posizione(X,A,S+1) :- -posizione(X,A,S), stato(S), not posizione(X,A,S+1).
 
-in(C,P,S+1) :- in(C,P,S), stato(S), not -in(C,P,S+1).
--in(C,P,S+1) :- -in(C,P,S), stato(S), not in(C,P,S+1).
-
-vola(P,D,A,S+1) :- vola(P,D,A,S), stato(S), not -vola(P,D,A,S+1).
--vola(P,D,A,S+1) :- -vola(P,D,A,S), stato(S), not vola(P,D,A,S+1).
-
-carica(C,P,A,S+1) :- carica(C,P,A,S), stato(S), not -carica(C,P,A,S+1).
--carica(C,P,A,S+1) :- -carica(C,P,A,S), stato(S), not carica(C,P,A,S+1).
-
-scarica(C,P,A,S+1) :- scarica(C,P,A,S), stato(S), not -scarica(C,P,A,S+1).
--scarica(C,P,A,S+1) :- -scarica(C,P,A,S), stato(S), not scarica(C,P,A,S+1).
+%in(C,P,S+1) :- in(C,P,S), stato(S), not -in(C,P,S+1).
+%-in(C,P,S+1) :- -in(C,P,S), stato(S), not in(C,P,S+1).
 
 % STATO INIZIALE
 posizione(c1,sfo,0).
@@ -76,6 +67,10 @@ posizione(p2,jfk,0).
 % STATO FINALE
 goal :- posizione(c1,jfk,lastlev+1), posizione(c2,sfo,lastlev+1).
 :- not goal.
+
+#minimize {vola(_,_,_,_) @ 1}.
+#minimize {carica(_,_,_,_) @ 2}.
+#minimize {scarica(_,_,_,_) @ 3}.
 
 #hide.
 #show carica/4.
