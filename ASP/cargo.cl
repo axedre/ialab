@@ -3,15 +3,14 @@
 aereo(p1;p2).
 merci(c1;c2).
 aereoporto(jfk;sfo).
-livello(0..lastlev).
-stato(0..lastlev+1).
+stato(0..1). 
 
 % AZIONI
 1 {
     carica(C,P,A,S) : merci(C) : aereo(P) : aereoporto(A),
     scarica(C,P,A,S)  : merci(C) : aereo(P) : aereoporto(A),
     vola(P,D,A,S) : aereo(P) : aereoporto(D) : aereoporto(A)
-} :- livello(S).
+} :- stato(S).
 
 % EFFETTI
 
@@ -53,10 +52,10 @@ posizione(P,A,S+1) :- vola(P,D,A,S), stato(S).
 % PERSISTENZA
 
 posizione(X,A,S+1) :- posizione(X,A,S), stato(S), not -posizione(X,A,S+1).
-%-posizione(X,A,S+1) :- -posizione(X,A,S), stato(S), not posizione(X,A,S+1).
+-posizione(X,A,S+1) :- -posizione(X,A,S), stato(S), not posizione(X,A,S+1).
 
-%in(C,P,S+1) :- in(C,P,S), stato(S), not -in(C,P,S+1).
-%-in(C,P,S+1) :- -in(C,P,S), stato(S), not in(C,P,S+1).
+in(C,P,S+1) :- in(C,P,S), stato(S), not -in(C,P,S+1).
+-in(C,P,S+1) :- -in(C,P,S), stato(S), not in(C,P,S+1).
 
 % STATO INIZIALE
 posizione(c1,sfo,0).
@@ -65,7 +64,7 @@ posizione(p1,sfo,0).
 posizione(p2,jfk,0).
 
 % STATO FINALE
-goal :- posizione(c1,jfk,lastlev+1), posizione(c2,sfo,lastlev+1).
+goal :- posizione(c1,jfk,_), posizione(c2,sfo,_).
 :- not goal.
 
 #minimize {vola(_,_,_,_) @ 1}.
