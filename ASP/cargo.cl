@@ -1,9 +1,9 @@
 % DOMINIO
-#const lastlev=1.
+#const lastlev=2.
 aereo(p1;p2).
 merci(c1;c2).
 aereoporto(jfk;sfo).
-stato(0..1). 
+stato(0..lastlev). 
 
 % AZIONI
 1 {
@@ -48,6 +48,12 @@ posizione(P,A,S+1) :- vola(P,D,A,S), stato(S).
 
 % L'aereo P, per volare dall'aereoporto D all'aereoporto A allo stato S, deve trovarsi all'aereoporto D allo stato S.
 :- vola(P,D,A,S), not posizione(P,D,S).
+
+% Non posso caricare merce sull'aereo P e far volare P allo stesso stato
+:- vola(P,_,_,S), carica(_,P,_,S).
+
+% Non posso scaricare merce dall'aereo P e far volare P allo stesso stato
+:- vola(P,_,_,S), carica(_,P,_,S).
 
 % PERSISTENZA
 
