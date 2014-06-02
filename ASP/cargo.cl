@@ -1,9 +1,9 @@
 % DOMINIO
-#const lastlev=2.
-aereo(p1;p2).
-merci(c1;c2).
-aereoporto(jfk;sfo).
-stato(0..lastlev). 
+#const s=1.
+aereo(p1;p2;p3).
+merci(c1;c2;c3).
+aereoporto(jfk;sfo;lax).
+stato(0..s). 
 
 % AZIONI
 1 {
@@ -53,7 +53,7 @@ posizione(P,A,S+1) :- vola(P,D,A,S), stato(S).
 :- vola(P,_,_,S), carica(_,P,_,S).
 
 % Non posso scaricare merce dall'aereo P e far volare P allo stesso stato
-:- vola(P,_,_,S), carica(_,P,_,S).
+:- vola(P,_,_,S), scarica(_,P,_,S).
 
 % PERSISTENZA
 
@@ -66,11 +66,13 @@ in(C,P,S+1) :- in(C,P,S), stato(S), not -in(C,P,S+1).
 % STATO INIZIALE
 posizione(c1,sfo,0).
 posizione(c2,jfk,0).
+posizione(c3,lax,0).
 posizione(p1,sfo,0).
 posizione(p2,jfk,0).
+posizione(p3,lax,0).
 
 % STATO FINALE
-goal :- posizione(c1,jfk,_), posizione(c2,sfo,_).
+goal :- posizione(c1,jfk,_), posizione(c2,lax,_), posizione(c3,sfo,_).
 :- not goal.
 
 #minimize {vola(_,_,_,_) @ 1}.
