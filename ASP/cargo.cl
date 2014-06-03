@@ -56,7 +56,7 @@ posizione(P,A,S+1) :- vola(P,D,A,S), stato(S).
 % Non posso scaricare merce dall'aereo P e far volare P allo stesso stato
 :- vola(P,_,_,S), scarica(_,P,_,S).
 
-% Lo stesso aereo non può volare in due direzioni diverse allo stesso step
+% Lo stesso aereo non può volare in due direzioni diverse allo stesso stato
 :- vola(P,_,A1,S), vola(P,_,A2,S), A1!=A2.
 
 % PERSISTENZA
