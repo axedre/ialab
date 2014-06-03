@@ -37,9 +37,9 @@ holds(F,0) :- init(F).
 % -------  Inizio della parte cumulative  --------
 #cumulative s.
 
-0 { carica(C,P,A,s) : merci(C) : aereo(P) : aeroporto(A) } .
-0 { scarica(C,P,A,s) : merci(C) : aereo(P) : aeroporto(A) } .
-0 { vola(P,DA,A,s) : aereo(P) : aeroporto(DA) : aeroporto(A) : DA!=A } .
+0 { carica(C,P,A,s) : merci(C) : aereo(P) : aeroporto(A) }.
+0 { scarica(C,P,A,s) : merci(C) : aereo(P) : aeroporto(A) }.
+0 { vola(P,DA,A,s) : aereo(P) : aeroporto(DA) : aeroporto(A) : DA!=A }.
 
 % PRECONDIZIONI
 % Azione Carica
@@ -48,7 +48,6 @@ holds(F,0) :- init(F).
 :- carica(C,P,A,s), holds(in(C,_), s-1).
 :- carica(C,P,A,s), holds(in(_,P), s-1).
 :- carica(C,P1,_,s), carica(C,P2,_,s), P1!=P2.
-
 
 % Azione Scarica
 :- scarica(C,P,A,s), not holds(in(C,P), s-1).
@@ -74,7 +73,6 @@ holds(F,s) :- holds(F,s-1), not -holds(F,s).
 :- vola(P1,_,_,s), scarica(_,P2,_,s), P1==P2 .
 :- vola(P1,_,_,s), carica(_,P3,_,s), P1==P3 .
 :- scarica(_,P2,_,s), carica(_,P3,_,s), P2==P3 .
-
 
 % -------  Inizio della parte volatile  --------
 #volatile s.
