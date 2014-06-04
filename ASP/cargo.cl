@@ -1,10 +1,11 @@
 % DOMINIO
-#const s=1.
+#const i=1.
+#const s=6.
 %aereo(p1;p2;p3).
 aereo(p1;p2).
 merci(c1;c2;c3).
 aereoporto(jfk;sfo;lax).
-stato(0..s). 
+stato(i..s). 
 
 % AZIONI
 1 {
@@ -56,6 +57,9 @@ posizione(P,A,S+1) :- vola(P,D,A,S), stato(S).
 % Non posso scaricare merce dall'aereo P e far volare P allo stesso stato
 :- vola(P,_,_,S), scarica(_,P,_,S).
 
+% Non posso caricare e scaricare merce dall'aereo P allo stesso stato
+:- carica(_,P,_,S), scarica(_,P,_,S).
+
 % Lo stesso aereo non può volare in due direzioni diverse allo stesso stato
 :- vola(P,_,A1,S), vola(P,_,A2,S), A1!=A2.
 
@@ -68,12 +72,12 @@ in(C,P,S+1) :- in(C,P,S), stato(S), not -in(C,P,S+1).
 -in(C,P,S+1) :- -in(C,P,S), stato(S), not in(C,P,S+1).
 
 % STATO INIZIALE
-posizione(c1,sfo,0).
-posizione(c2,jfk,0).
-posizione(c3,lax,0).
-posizione(p1,sfo,0).
-posizione(p2,jfk,0).
-%posizione(p3,lax,0).
+posizione(c1,sfo,i).
+posizione(c2,jfk,i).
+posizione(c3,lax,i).
+posizione(p1,sfo,i).
+posizione(p2,jfk,i).
+%posizione(p3,lax,i).
 
 % STATO FINALE
 goal :- posizione(c1,jfk,_), posizione(c2,lax,_), posizione(c3,sfo,_).

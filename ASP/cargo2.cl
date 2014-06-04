@@ -6,14 +6,9 @@
 %l'ultimo stato
 
 %DOMINIO
-aereo(p1).
-aereo(p2).
-merci(c1).
-merci(c2).
-merci(c3).
-aeroporto(jfk).
-aeroporto(sfo).
-aeroporto(lax).
+aereo(p1;p2).
+merci(c1;c2;c3).
+aeroporto(jfk;sfo;lax).
 
 % STATO INIZIALE
 init(posizione(c1,sfo)).
@@ -27,12 +22,10 @@ goal(posizione(c1,jfk)).
 goal(posizione(c2,lax)).
 goal(posizione(c3,sfo)).
 
-
 % -------  Inizio della parte base  --------
 #base.
 
 holds(F,0) :- init(F).
-
 
 % -------  Inizio della parte cumulative  --------
 #cumulative s.
@@ -70,9 +63,9 @@ holds(posizione(P,A),s) :- vola(P,DA,A,s).
 holds(F,s) :- holds(F,s-1), not -holds(F,s).
 -holds(F,s) :- -holds(F,s-1), not holds(F,s).
 
-:- vola(P1,_,_,s), scarica(_,P2,_,s), P1==P2 .
-:- vola(P1,_,_,s), carica(_,P3,_,s), P1==P3 .
-:- scarica(_,P2,_,s), carica(_,P3,_,s), P2==P3 .
+:- vola(P1,_,_,s), carica(_,P2,_,s), P1==P2.
+:- vola(P1,_,_,s), scarica(_,P2,_,s), P1==P2.
+:- carica(_,P1,_,s), scarica(_,P2,_,s), P1==P2.
 
 % -------  Inizio della parte volatile  --------
 #volatile s.
